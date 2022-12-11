@@ -21,10 +21,10 @@ end
 ---@class GlobalConstants
 local L = LibStub:NewLibrary(LibName('GlobalConstants'), 1)
 
+---@param o GlobalConstants
 local function Methods(o)
-    function o:LibName(...) return LibName(...) end
+    --  TODO
 end
-
 Methods(L)
 
-SDNR_LibName = LibName
+ns.LibName = LibName

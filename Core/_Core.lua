@@ -13,7 +13,7 @@ local O = SDNR_Namespace(...):LibPack()
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local LibStub, LibName = LibStub, SDNR_LibName
+local LibStub, LibName = LibStub, ns.LibName
 local AceConsole = O.AceConsole
 
 --[[-----------------------------------------------------------------------------
