@@ -8,6 +8,7 @@ local LibUtil = Kapresoft_LibUtil
 
 ---@type Kapresoft_LibUtil_PrettyPrint
 local PrettyPrint = Kapresoft_LibUtil.PrettyPrint
+PrettyPrint.setup({ show_function = true, show_metatable = true, indent_size = 2, depth_limit = 3 })
 
 ---@class Namespace
 local NamespaceObject = {
@@ -28,6 +29,14 @@ local NamespaceObject = {
     ToStringFunction = {}
 }
 
+---@class AceConsole
+local AceConsole_Interface = {
+    -- Embeds AceConsole into the target object making the functions from the mixins list available on target:..
+    ---@param self AceConsole
+    ---@param target any object to embed AceBucket in
+    Embed = function(self, target)  end
+}
+
 ---@type string
 local addonName
 ---@type Namespace
@@ -41,13 +50,18 @@ GlobalObjects
 -------------------------------------------------------------------------------]]
 ---@class GlobalObjects
 local GlobalObjects = {
+    ---@type AceConsole
+    AceConsole = {},
+
     ---@type GlobalConstants
     GlobalConstants = {},
-    ---@class AceConsole
-    AceConsole = {},
+    ---@type Logger
+    Logger = {},
 
     ---@type fun(fmt:string, ...)|fun(val:string)
     pformat = {},
+    ---@type fun(fmt:string, ...)|fun(val:string)
+    sformat = {},
 
     ---@type Kapresoft_LibUtil_Objects
     LU = {},
@@ -65,16 +79,25 @@ local GlobalObjects = {
     String = {},
     ---@type Kapresoft_LibUtil_Table
     Table = {},
+
+    ---@type Core
+    Core = {},
+    ---@type Wrapper
+    Wrapper = {},
 }
 --[[-----------------------------------------------------------------------------
 Modules
 -------------------------------------------------------------------------------]]
+
 ---@class Modules
 local M = {
     LU = 'LU',
     pformat = 'pformat',
+    sformat = 'sformat',
     GlobalConstants = 'GlobalConstants',
+    Core = 'Core',
     AceConsole = 'AceConsole',
+    Logger = 'Logger',
     Wrapper = 'Wrapper',
 }
 
@@ -98,26 +121,38 @@ function SDNR_Namespace(...)
     local namespace
     addon, namespace = ...
 
+
     ---@type GlobalObjects
     namespace.O = namespace.O or {}
     ---@type string
     namespace.name = addon
 
-    for key, val in pairs(LibUtil) do namespace.O[key] = val end
-    for key, _ in pairs(M) do namespace.O[key] = InitialModuleInstances[key] end
+    if 'table' ~= type(namespace.O) then namespace.O = {} end
 
-    local pformat = namespace.O.pformat
+    for key, val in pairs(LibUtil) do namespace.O[key] = val end
+    for key, _ in pairs(M) do
+        local lib = InitialModuleInstances[key]
+        if lib then namespace.O[key] = lib end
+    end
+
+    namespace.pformat = namespace.O.pformat
+    namespace.sformat = namespace.O.sformat
+    namespace.M = M
+
+    local pformat = namespace.pformat
     local getSortedKeys = namespace.O.Table.getSortedKeys
 
-    ---@return GlobalObjects, LibStub, Modules
-    function namespace:LibPack() return self.O, LibStub, M end
+    ---@return GlobalObjects, LocalLibStub, Modules
+    function namespace:LibPack() return self.O, ns.LibStub, M end
     ---@param libName string The library name. Ex: 'GlobalConstants'
     ---@param o table The library object instance
     function namespace:Register(libName, o)
         if not (libName or o) then return end
-        ns.O[libName] = o
+        self.O[libName] = o
     end
 
+    ---@param libName string The library name. Ex: 'GlobalConstants'
+    function namespace:NewLogger(libName) return self.O.Logger:NewLogger(libName) end
     function namespace:ToStringNamespaceKeys() return pformat(getSortedKeys(ns)) end
     function namespace:ToStringObjectKeys() return pformat(getSortedKeys(ns.O)) end
 

@@ -1,20 +1,12 @@
+local ns = SDNR_Namespace(...)
 --[[-----------------------------------------------------------------------------
 Lua Vars
 -------------------------------------------------------------------------------]]
-local sformat = string.format
----@type Namespace
-local ns
---@type string
-local addon
-addon, ns = ...
-
-local O = SDNR_Namespace(...):LibPack()
 
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local LibStub, LibName = LibStub, ns.LibName
-local AceConsole = O.AceConsole
+local O, LibStub, M = ns:LibPack()
 
 --[[-----------------------------------------------------------------------------
 Support Functions
@@ -24,15 +16,11 @@ Support Functions
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
----@class _Core
-local L = LibStub:NewLibrary(LibName('Core'), 1)
-local mt = {
-    __tostring = function() return sformat('{{%s::%s}}', addon, 'Core')  end
-}
-setmetatable(L, mt)
-AceConsole:Embed(L)
+---@class Core
+local L = LibStub:NewLibrary(M.Core, 1)
+local p = L.logger
 
-L:Printf("Loaded: %s", 'Core')
+p:log("Loaded: %s", 'Core')
 
 --[[-----------------------------------------------------------------------------
 Methods

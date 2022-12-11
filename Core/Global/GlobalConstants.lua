@@ -1,14 +1,27 @@
+if type(SDNR_DB) ~= "table" then SDNR_DB = {} end
+if type(SDNR_LOG_LEVEL) ~= "number" then SDNR_LOG_LEVEL = 1 end
+if type(SDNR_DEBUG_MODE) ~= "boolean" then SDNR_DEBUG_MODE = false end
+
+
 --[[-----------------------------------------------------------------------------
 Lua Vars
 -------------------------------------------------------------------------------]]
 local sformat = string.format
-local addon, ns = ...
 
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
+---@type string
+local addon
+---@type Namespace
+local ns
+addon, ns = ...
+
+local pformat = Kapresoft_LibUtil.PrettyPrint.pformat
+local addonShortName = 'SavedDNR'
+local useShortName = true
+
 local LibStub = LibStub
-ns.LibStub = LibStub
 
 local TOSTRING_ADDON_FMT = '|cfdfefefe{{|r|cfdeab676%s|r|cfdfefefe}}|r'
 local TOSTRING_SUBMODULE_FMT = '|cfdfefefe{{|r|cfdeab676%s|r|cfdfefefe::|r|cfdfbeb2d%s|r|cfdfefefe}}|r'
@@ -23,8 +36,10 @@ local function LibName(moduleName, optionalMajorVersion)
 end
 ---@param moduleName string
 local function ToStringFunction(moduleName)
-    if moduleName then return function() return string.format(TOSTRING_SUBMODULE_FMT, addon, moduleName) end end
-    return function() return string.format(TOSTRING_ADDON_FMT, addon) end
+    local name = addon
+    if useShortName then name = addonShortName end
+    if moduleName then return function() return string.format(TOSTRING_SUBMODULE_FMT, name, moduleName) end end
+    return function() return string.format(TOSTRING_ADDON_FMT, name) end
 end
 
 ---@class LocalLibStub
@@ -33,12 +48,16 @@ local S = {}
 ---@param moduleName string
 ---@param optionalMinorVersion number
 function S:NewLibrary(moduleName, optionalMinorVersion)
+    --use Ace3 LibStub here
     local o = LibStub:NewLibrary(LibName(moduleName), optionalMinorVersion or 1)
     assert(o, sformat("Module not found: %s", tostring(moduleName)))
     o.mt = getmetatable(o) or {}
     o.mt.__tostring = ns.ToStringFunction(moduleName)
-    setmetatable(o.mt, o)
+    setmetatable(o, o.mt)
     ns:Register(moduleName, o)
+    ---@type Logger
+    local loggerLib = LibStub(LibName(ns.M.Logger), 1)
+    o.logger = loggerLib:NewLogger(moduleName)
     return o
 end
 
