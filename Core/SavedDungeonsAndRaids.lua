@@ -1,7 +1,10 @@
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
+local Table = Kapresoft_LibUtil.Table
+local toStringSorted = Table.toStringSorted
 local addon, ns = ...
-print('loaded:', addon)
-print('ns:', type(ns))
+print('{{SavedDungeonsAndRaids}}: loaded:', addon)
+ns.Table = Table
+print('{{SavedDungeonsAndRaids}}: namespace:', toStringSorted(ns))
 
