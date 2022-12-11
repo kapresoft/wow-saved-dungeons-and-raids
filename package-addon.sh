@@ -18,7 +18,7 @@ IncludeBase && Validate
 # --------------------------------------------
 
 # Use Common Release Dir
-RELEASE_DIR="${dev_release_dir}"
+RELEASE_DIR="${pre_release_dir}"
 
 Package() {
   local arg1=$1
@@ -28,7 +28,7 @@ Package() {
   # -e Skip checkout of external repositories.
   # default: -cdzul
   # for checking debug tags: -edzul
-  local rel_cmd="release-wow-addon -r ${RELEASE_DIR} -cdzul $*"
+  local rel_cmd="release-wow-addon -r ${RELEASE_DIR} -du $*"
 
   if [[ "$arg1" == "-h" ]]; then
     echo "Usage: $0 [-o]"
@@ -45,17 +45,4 @@ Package() {
   eval "$rel_cmd"
 }
 
-SyncExtLib() {
-  local src="${RELEASE_DIR}/${ADDON_NAME}/${EXTLIB}/WowAce/"
-  local dest="${EXTLIB}/WowAce/."
-  SyncDir "${src}" "${dest}"
-}
-
-SyncKapresoftLib() {
-  local src="${RELEASE_DIR}/${ADDON_NAME}/${EXTLIB}/Kapresoft-LibUtil"
-  local dest="${EXTLIB}/."
-  SyncDir "${src}" "${dest}"
-}
-
-#SyncExtLib && SyncKapresoftLib
-Package $* && SyncExtLib && SyncKapresoftLib
+Package $*

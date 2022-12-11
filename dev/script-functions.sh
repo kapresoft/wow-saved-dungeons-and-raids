@@ -12,6 +12,8 @@ ADDON_NAME="SavedDungeonsAndRaids"
 proj_dir=ADDON_NAME
 pre_release_dir="$HOME/.wow-pre-release"
 dev_release_dir="$HOME/.wow-dev"
+EXTLIB="Core/ExtLib"
+INTERFACE_LIB="Core/Interface"
 
 #KAPRESOFT_LIB="$HOME/sandbox/github/kapresoft/wow/wow-lib-util/"
 #PROJ_CORE_EXTLIB="./Core/ExtLib"
