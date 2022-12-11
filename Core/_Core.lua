@@ -1,7 +1,40 @@
--- ## External -------------------------------------------------
-local format = string.format
----@class LibStub Ace3 LibStub
-local LibStub = LibStub
+--[[-----------------------------------------------------------------------------
+Lua Vars
+-------------------------------------------------------------------------------]]
+local sformat = string.format
+---@type Namespace
+local ns
+--@type string
+local addon
+addon, ns = ...
 
-local addon, ns = ...
-print('loaded:', addon)
+local O = SDNR_Namespace(...):LibPack()
+
+--[[-----------------------------------------------------------------------------
+Local Vars
+-------------------------------------------------------------------------------]]
+local LibStub, LibName = LibStub, SDNR_LibName
+local AceConsole = O.AceConsole
+
+--[[-----------------------------------------------------------------------------
+Support Functions
+-------------------------------------------------------------------------------]]
+
+
+--[[-----------------------------------------------------------------------------
+New Instance
+-------------------------------------------------------------------------------]]
+---@class _Core
+local L = LibStub:NewLibrary(LibName('Core'), 1)
+local mt = {
+    __tostring = function() return sformat('{{%s::%s}}', addon, 'Core')  end
+}
+setmetatable(L, mt)
+AceConsole:Embed(L)
+
+L:Printf("Loaded: %s", 'Core')
+
+--[[-----------------------------------------------------------------------------
+Methods
+-------------------------------------------------------------------------------]]
+

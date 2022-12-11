@@ -7,10 +7,11 @@
     <Include file='ExtLib\_ExtLib.xml'/>
 
     <!-- Global Lib for the Addon   -->
-<!--    <Include file='Global\_Global.xml'/>-->
+    <Include file='Global\_Global.xml'/>
 
-<!--    <Script file="_Core.lua"/>-->
-<!--    <Include file='Lib\_Lib.xml'/>-->
-<!--    <Include file='AddonLib\_AddonLib.xml'/>-->
+    <Script file="_Core.lua"/>
+    <Include file='Lib\_Lib.xml'/>
+
+    <!--    <Include file='AddonLib\_AddonLib.xml'/>-->
 
 </Ui>
