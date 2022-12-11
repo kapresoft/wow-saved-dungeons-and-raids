@@ -6,16 +6,18 @@ local sformat = string.format
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
+local ns = SDNR_Namespace(...)
+local O = ns:LibPack()
 local LibStub = LibStub
-local Table = Kapresoft_LibUtil.Table
+local Table = O.Table
 local toStringSorted = Table.toStringSorted
-local addon, ns = ...
+local pformat = O.pformat
+
 ---@class SavedDungeonsAndRaid
-local A = LibStub("AceAddon-3.0"):NewAddon(addon, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
-local mt = getmetatable(A)
-if mt then
-    mt.__tostring = function() return sformat('{{%s}}', addon) end
-end
+local A = LibStub("AceAddon-3.0"):NewAddon(ns.name, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
+local mt = getmetatable(A) or {}
+mt.__tostring = ns.ToStringFunction()
+
 --setmetatable(A, mt)
 ns['addon'] = A
 
@@ -56,8 +58,9 @@ local function Constructor()
     Methods(A)
     RegisterEvents(A)
 
-    A:Print('loaded:', addon)
-    A:Printf('Namespace keys: %s', pformat(Table.getSortedKeys(ns)))
+    A:Print('loaded:', ns.name)
+    A:Printf('Namespace keys: %s', ns:ToStringNamespaceKeys())
+    A:Printf('Namespace Object keys: %s', ns:ToStringObjectKeys())
 
     SDNR = A
 end

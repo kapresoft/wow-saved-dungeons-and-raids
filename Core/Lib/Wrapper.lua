@@ -1,12 +1,11 @@
 local ns = SDNR_Namespace(...)
-local O, LibStub = ns:LibPack()
-local sformat = string.format
+local O, LibStub, M = ns:LibPack()
 local AceConsole = O.AceConsole
 local GC = O.GlobalConstants
 
-local L = LibStub:NewLibrary(ns.LibName('Wrapper'), 1)
+local L = ns.LibStub:NewLibrary(M.Wrapper)
 local mt = {
-    __tostring = function() return sformat('{{%s::%s}}', ns.name, 'Wrapper')  end
+    __tostring = ns.ToStringFunction(M.Wrapper)
 }
 setmetatable(L, mt)
 AceConsole:Embed(L)
