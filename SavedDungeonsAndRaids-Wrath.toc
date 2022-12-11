@@ -1,4 +1,4 @@
-## Interface: 304000
+## Interface: 30400
 ## Version: @project-version@
 ## Title: Saved |cff1784d1Dungeons & Raids|r WOTLK
 ## Notes: Utility Addon for reporting saved dungeons & raids
