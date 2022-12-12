@@ -1,0 +1,13 @@
+# SavedDungeonsAndRaids 1.0.0
+
+[Release Notes](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases/tag/1.0.0) | [Full Changelog](https://github.com/kapresoft/wow-saved-dungeons-and-raids/compare/1.0.0...1.0.0) | [Release Page](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases)
+
+[Milestone 12.4](https://github.com/kapresoft/wow-saved-dungeons-and-raids/milestone/17?closed=1)
+
+- TBD
+
+### SavedDungeonsAndRaids-1.0.0.zip
+
+```text
+MD5 <tbd>
+```
