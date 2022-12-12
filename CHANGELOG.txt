@@ -1,12 +1,10 @@
-# SavedDungeonsAndRaids 1.0.0
+#### SavedDungeonsAndRaids 0.0.3-alpha
 
-[Release Notes](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases/tag/1.0.0) | [Full Changelog](https://github.com/kapresoft/wow-saved-dungeons-and-raids/compare/1.0.0...1.0.0) | [Release Page](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases)
+[Release Notes](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases/tag/0.0.3-alpha) | [Full Changelog](https://github.com/kapresoft/wow-saved-dungeons-and-raids/compare/0.0.2-alpha...0.0.3-alpha) | [Release Page](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases)
 
-[Milestone 12.4](https://github.com/kapresoft/wow-saved-dungeons-and-raids/milestone/17?closed=1)
+- Null change to verify automatic packaging by Curse Forge
 
-- TBD
-
-### SavedDungeonsAndRaids-1.0.0.zip
+### SavedDungeonsAndRaids-0.0.3-alpha.zip
 
 ```text
 MD5 <tbd>
