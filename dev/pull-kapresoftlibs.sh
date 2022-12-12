@@ -22,7 +22,7 @@ IncludeBase && Validate
 # --------------------------------------------
 # Use Common Release Dir
 RELEASE_DIR="${dev_release_dir}"
-ADDON_NAME="ActionbarPlus"
+
 # Source must be the same as where it is extracted in pkgmeta-kapresoftlibs.yaml
 PKGMETA_EXTRACT_DIR="Core/ExtLib/Kapresoft-LibUtil"
 SRC="${RELEASE_DIR}/${ADDON_NAME}/${PKGMETA_EXTRACT_DIR}"
