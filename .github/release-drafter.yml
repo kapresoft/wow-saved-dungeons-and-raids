@@ -4,7 +4,7 @@ tag-template: '$RESOLVED_VERSION'
 
 template: |
   ### SavedDungeonsAndRaids 1.0.6 (2022-Dec-13)
-  [Release Notes]($REPOSITORY/releases/tag/1.0.6) | [Full Changelog]($REPOSITORY/compare/1.0.5...1.0.6) | [Release Page]($REPOSITORY/releases)
+  [Release Notes]($GITHUB_SERVER_URL/$REPOSITORY/releases/tag/1.0.6) | [Full Changelog]($GITHUB_SERVER_URL/$REPOSITORY/compare/1.0.5...1.0.6) | [Release Page]($GITHUB_SERVER_URL/$REPOSITORY/releases)
   
   #### What’s Changed
 
