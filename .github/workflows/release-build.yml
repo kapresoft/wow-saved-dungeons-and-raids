@@ -54,25 +54,22 @@ jobs:
           echo "Build Artifacts: ${{ env.build_dir }}" 
           echo "$(ls -l ${{ env.build_dir }})"
 
-  #### release drafter ####
-  DraftRelease:
-    name: CreateDraftRelease
-    permissions:
-      # write permission is required to create a github release
-      contents: write
-      # write permission is required for autolabeler
-      # otherwise, read permission is required at least
-      pull-requests: write
-    runs-on: ubuntu-latest
-    steps:
-      # Drafts your next Release notes as Pull Requests are merged into "master"
-      - uses: release-drafter/release-drafter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-            tag_name: ${{ github.ref }}
-            release_name: ${{ github.ref }}
-            draft: true
-            prerelease: false
+      - name: Create Draft Release
+        permissions:
+          # write permission is required to create a github release
+          contents: write
+          # write permission is required for autolabeler
+          # otherwise, read permission is required at least
+          pull-requests: write
+        runs-on: ubuntu-latest
+        steps:
+          # Drafts your next Release notes as Pull Requests are merged into "master"
+          - uses: release-drafter/release-drafter@v5
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            with:
+              tag: ${{ github.ref }}
+              name: ${{ github.ref }}
+              prerelease: false
 
 # end
