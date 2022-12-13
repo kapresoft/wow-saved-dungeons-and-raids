@@ -54,7 +54,7 @@ jobs:
           echo "$(ls -l ${{ env.build_dir }})"
 
   #### release drafter ####
-  update_release_draft:
+  create_release_draft:
     permissions:
       # write permission is required to create a github release
       contents: write
