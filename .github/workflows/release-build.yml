@@ -56,6 +56,8 @@ jobs:
 
 
   #### release drafter ####
+  #### see: https://github.com/marketplace/actions/release-drafter ###
+  #### for upload:https://github.com/actions/upload-release-asset#example-workflow---upload-a-release-asset ###
   DraftRelease:
     needs: build
     name: Prepare a draft release
@@ -72,8 +74,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-            tag: ${{ github.ref }}
-            name: ${{ github.ref }}
+            tag: ${{ github.ref_name }}
+            name: ${{ github.ref_name }}
             prerelease: false
 
 # end
