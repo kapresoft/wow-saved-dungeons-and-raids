@@ -30,7 +30,8 @@ jobs:
       - name: Print zsh exists
         run: echo "$(which zsh)"
       - name: Setup environment
-        run: echo "action_state=yellow" >> $GITHUB_ENV
+        # build types: branch, release
+        run: echo "build_type=branch" >> $GITHUB_ENV
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -38,7 +39,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Setup Build Scripts
         run: |
-          echo "Action State: ${{ env.action_state }}"
+          echo "Build Type: ${{ env.build_type }}"
           echo Verify zsh exists: "$(which zsh)"
           echo pwd is: "$(pwd)"
           chmod a+x ./release.sh ./package-addon.sh
