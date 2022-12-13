@@ -53,5 +53,5 @@ jobs:
       - name: List the build artifacts
         run: |
           echo "Build Artifacts: ${{ env.build_dir }}" 
-          echo "$(ls ${{ env.build_dir }})"
+          echo "$(ls -l ${{ env.build_dir }})"
 # end
