@@ -25,6 +25,17 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install zsh
+      - name: Print outputs branch name
+        id: vars_branch
+        run: echo "::set-output name=branch::${${GITHUB_BRANCH#refs/heads/}//\//-}"
+        env:
+          GITHUB_BRANCH: "test/1.2.3"
+        shell: zsh {0}
+      - name: Print branch name
+        id: print
+        run: echo "${{steps.vars_branch.outputs.branch}}"
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
