@@ -31,7 +31,7 @@ jobs:
         run: echo "$(which zsh)"
       - name: Print branch name
         id: print
-        run: echo "${{GITHUB_BRANCH}}"
+        run: echo "${GITHUB_BRANCH}"
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
