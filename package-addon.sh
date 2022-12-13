@@ -11,7 +11,9 @@ IncludeBase() {
     echo "${fn} not found" && exit 1
   fi
 }
-IncludeBase && Validate
+IncludeBase
+#Validate() Only works for local
+#IncludeBase && Validate
 
 # --------------------------------------------
 # Vars / Support Functions
