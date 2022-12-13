@@ -48,4 +48,4 @@ jobs:
       - name: Run the release script
         run: |
           echo "Executing: package-addon.sh"
-          ./package-addon.sh >> $GITHUB_OUTPUT
+          ./package-addon.sh
