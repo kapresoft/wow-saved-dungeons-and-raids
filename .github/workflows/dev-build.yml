@@ -30,6 +30,7 @@ jobs:
         run: |
           echo shell is: $SHELL
           echo pwd is: "$(pwd)"
+          chmod a+x ./package-addon.sh
           echo "$(ls -l)"
           ./package-addon.sh        
 
