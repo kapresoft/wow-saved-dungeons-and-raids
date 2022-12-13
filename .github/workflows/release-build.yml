@@ -46,3 +46,9 @@ jobs:
         run: |
           echo "Executing: package-addon.sh"
           ./package-addon.sh
+      - name : List the build artifacts
+        run: |
+          echo "Build Artifacts:" 
+          echo "$(ls $GITHUB_WORKSPACE)"
+
+# end
