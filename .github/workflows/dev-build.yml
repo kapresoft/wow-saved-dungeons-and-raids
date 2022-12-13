@@ -32,7 +32,6 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
-          shell: zsh
           echo shell is: $SHELL
           echo pwd is: "$(pwd)"
           chmod a+x ./package-addon.sh
