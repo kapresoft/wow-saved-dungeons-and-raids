@@ -2,7 +2,7 @@
 
 [Release Notes](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases/tag/0.0.3-alpha) | [Full Changelog](https://github.com/kapresoft/wow-saved-dungeons-and-raids/compare/0.0.2-alpha...0.0.3-alpha) | [Release Page](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases)
 
-- Null change to verify automatic packaging by Curse Forge
+- alpha stage
 
 ### SavedDungeonsAndRaids-0.0.3-alpha.zip
 

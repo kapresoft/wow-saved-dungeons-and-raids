@@ -1,5 +1,26 @@
+# see https://github.com/marketplace/actions/release-drafter
+name-template: '$RESOLVED_VERSION'
+tag-template: '$RESOLVED_VERSION'
+
 template: |
-  ## What’s Changed
+  ### SavedDungeonsAndRaids 1.0.6 (2022-Dec-13)
+  
+  #### What’s Changed
 
   $CHANGES
   
+  ### Contributors:
+  $CONTRIBUTORS
+  
+  ### Repository: 
+  $REPOSITORY
+  
+  ### Links
+  
+  [Release Notes]($REPOSITORY/releases/tag/1.0.6) | [Full Changelog]($REPOSITORY/compare/1.0.5...1.0.6) | [Release Page]($REPOSITORY/releases)
+  
+  ### ActionbarPlus-1.0.6.zip
+  
+  ```text
+  MD5 <tbd>
+  ```
