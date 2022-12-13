@@ -40,7 +40,7 @@ jobs:
         run: |
           echo Verify zsh exists: "$(which zsh)"
           echo pwd is: "$(pwd)"
-          chmod a+x ./package-addon.sh
+          chmod a+x ./release.sh ./package-addon.sh
           ln -s ./release.sh release-wow-addon
           echo "$(ls -l)"
 
