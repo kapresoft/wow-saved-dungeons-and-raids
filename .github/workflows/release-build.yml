@@ -74,7 +74,6 @@ jobs:
         with:
             tag: ${{ github.ref }}
             name: ${{ github.ref }}
-            draft: true
             prerelease: false
 
 # end
