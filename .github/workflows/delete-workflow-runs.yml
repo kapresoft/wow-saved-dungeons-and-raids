@@ -44,7 +44,7 @@ on:
           - skipped
           - success
       dry_run:
-        description: 'Only log actions, do not perform any delete operations (1 or 0).'
+        description: 'Only log actions, do not perform any delete operations (any value to enable)'
         required: false
 
 jobs:
