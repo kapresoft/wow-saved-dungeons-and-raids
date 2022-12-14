@@ -35,11 +35,6 @@ jobs:
       - name: Print zsh exists
         run: echo "$(which zsh)"
       ## ------------------------------------------------ ##
-      - name: Setup environment
-        # build types: branch, release
-        run: |
-          echo "build_type=branch" >> $GITHUB_ENV
-          echo "build_dir=~/.wow-pre-release" >> $GITHUB_ENV
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -61,10 +56,11 @@ jobs:
         run: |
           echo "Executing: package-addon.sh"
           ./package-addon.sh
+      - name: Setup Environment Variables
+          echo "buildArtifact=${{ env.buildBasePath }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
       - name: List the build artifacts
         run: |
-          echo "buildArtifact=${{ env.buildBasePath }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
-          echo "Build Artifacts: ${{ env.buildDir }}*" 
+          echo "Build Artifacts: ${{ env.buildBasePath }}*" 
           echo "$(ls -l ${{ env.buildDir }}*)"
           echo "Build Artifact (Addon): ${{ env.buildArtifact }}"
           echo "$(ls -l ${{ env.buildArtifact }})"
