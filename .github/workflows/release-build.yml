@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
 
 env:
-  buildDir: ~/.wow-pre-release
+  buildDir: $HOME
   addonName: SavedDungeonsAndRaids
-  buildBaseName: ~/.wow-pre-release/SavedDungeonsAndRaids
+  buildBaseName: $HOME/.wow-pre-release/SavedDungeonsAndRaids
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -47,7 +47,8 @@ jobs:
       ## Runs a single command using the runners shell ##
       - name: Setup Build Scripts
         run: |
-          echo "Home is $HOME"
+          echo "Home: $HOME"
+          echo Build base: ${{ env.buildBaseDir }}
           echo Verify zsh exists: "$(which zsh)"
           echo pwd is: "$(pwd)"
           chmod a+x ./release.sh ./package-addon.sh
@@ -62,7 +63,8 @@ jobs:
           ./package-addon.sh
       - name: List the build artifacts
         run: |
-          echo "buildBaseNameAbs=${{ env.HOME }}/.wow-pre-release/SavedDungeonsAndRaids" >> $GITHUB_ENV        
+          echo "buildBaseDirAbs=${{ env.HOME }}/.wow-pre-release/SavedDungeonsAndRaids" >> $GITHUB_ENV
+          echo Absolute Build Base Dir: ${{ env.buildBaseDirAbs }}
           echo "Build Artifacts: ${{ env.build_dir }}" 
           echo "$(ls -l ${{ env.build_dir }})"
           echo "Addon Artifact Exists:"
