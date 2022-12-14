@@ -78,6 +78,7 @@ jobs:
           name: ${{ github.ref_name }}
           version: ${{ github.ref_name }}
           prerelease: false
+          footer: MD5 12345
       ## ------------------------------------------------ ##
       - name: Upload Release Asset
         id: upload-release-asset
