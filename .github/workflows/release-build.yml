@@ -47,6 +47,7 @@ jobs:
       - name: "Set Variable: buildArtifact"
         run: |
           echo buildArtifact="${buildBasePath}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo buildArtifactChecksumFile=${buildBasePath}-${{ github.ref_name }}-md5.txt" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: Print Environment Variables
         run: |
@@ -55,6 +56,7 @@ jobs:
           echo buildDir=${buildDir}
           echo addonName=${addonName}
           echo buildArtifact=${buildArtifact}
+          echo buildArtifactChecksumFile=${buildArtifactChecksumFile}
           echo buildBasePath=${buildBasePath}
           echo zipName=${zipName}
 
@@ -97,18 +99,14 @@ jobs:
           echo "Build Artifact Exists:"
           echo "$(ls -l  $buildArtifact)"
       ## ------------------------------------------------ ##
-      - name: Upload addon artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-artifact
-          path: ${{ env.buildArtifact }}
-      ## ------------------------------------------------ ##
       - name: Check Vars
         run: |
           echo buildArtifactChecksum="$(./dev/md5sum.sh $buildArtifact)" >> $GITHUB_ENV
           echo "buildArtifact is $buildArtifact"
           echo "buildArtifactChecksum is $buildArtifactChecksum"
-
+      - name: Create checksum file
+        run: |
+          echo "$buildArtifactChecksum" >> $buildArtifactChecksumFile
       - name: Create a draft release
         id: create_draft_release
         if: ${{ env.createDraftRelease == true }}
@@ -126,6 +124,18 @@ jobs:
             ```text
             MD5 ${{ env.buildArtifactChecksum }}
             ```
+      ## ------------------------------------------------ ##
+      - name: Upload addon artifact file
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.zipName }}
+          path: ${{ env.buildArtifact }}
+      ## ------------------------------------------------ ##
+      - name: Upload addon artifact checksum file
+        uses: actions/upload-artifact@v3
+        with:
+          name: checksum
+          path: ${{ env.buildArtifactChecksumFile }}
       ## ------------------------------------------------ ##
       - name: Upload Release Asset
         id: upload-release-asset
