@@ -43,7 +43,7 @@ jobs:
         run: |
           echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
           echo zipName="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
-          echo checksumName="${addonName}-${{ github.ref_name }}-md5.txt"
+          echo checksumName="${addonName}-${{ github.ref_name }}-md5.txt"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set Variable: buildArtifact"
         run: |
