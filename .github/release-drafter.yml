@@ -1,8 +1,8 @@
 # see https://github.com/marketplace/actions/release-drafter
 
 template: |
-  ### SavedDungeonsAndRaids 1.0.6 (2022-Dec-13)
-  [Release Notes](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases/tag/1.0.6) | [Full Changelog](https://github.com/kapresoft/wow-saved-dungeons-and-raids//compare/1.0.5...1.0.6) | [Release Page](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases)
+  ### SavedDungeonsAndRaids $NEXT_PATCH_VERSION
+  [Release Notes](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases/tag/$NEXT_PATCH_VERSION) | [Full Changelog](https://github.com/kapresoft/wow-saved-dungeons-and-raids//compare/$PREVIOUS_TAG...$NEXT_PATCH_VERSION) | [Release Page](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases)
   
   #### What’s Changed
 
@@ -14,7 +14,7 @@ template: |
   ### Repository: 
   $REPOSITORY
   
-  ### ActionbarPlus-1.0.6.zip
+  ### ActionbarPlus-$NEXT_PATCH_VERSION.zip
   
   ```text
   MD5 <tbd>
