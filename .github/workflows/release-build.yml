@@ -170,12 +170,13 @@ jobs:
 
     steps:
       ## ------------------------------------------------ ##
+      - uses: actions/checkout@v2
+
+      ## ------------------------------------------------ ##
       - name: Set ENV Variable
         run: |
           echo buildArtifactFile="${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo checksumFile="${{ env.addonName }}-${{ github.ref_name }}-md5.txt" >> $GITHUB_ENV
-      ## ------------------------------------------------ ##
-      - uses: actions/checkout@v2
       ## ------------------------------------------------ ##
       ## Runs a single command using the runners shell ##
       - name: "Setup Build Scripts"
@@ -216,7 +217,7 @@ jobs:
             
             #### ${{ env.buildArtifactFile }}
             ```text
-            MD5 ${{ env.$buildArtifactChecksum }}
+            MD5 ${{ env.buildArtifactChecksum }}
             ```
       ## ------------------------------------------------ ##
       ## see: https://github.com/actions/upload-release-asset ##
