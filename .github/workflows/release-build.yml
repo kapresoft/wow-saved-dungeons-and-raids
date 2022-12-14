@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 env:
-  buildDir: $HOME
   addonName: SavedDungeonsAndRaids
+  buildBasePath: $HOME/.wow-pre-release/SavedDungeonsAndRaids
   buildBaseName: $HOME/.wow-pre-release/SavedDungeonsAndRaids
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -36,9 +36,9 @@ jobs:
       - name: Setup environment
         # build types: branch, release
         run: |
-          echo "Build Dir: $${ env.buildDir }}"
-          echo "Build basename: ${{ env.buildBaseName }}"
+          echo "Build Home: $${ env.HOME }}"
           echo "Addon Name: ${{ env.addonName }}"
+          echo "Build basename: ${{ env.buildBaseName }}"
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -47,8 +47,6 @@ jobs:
       ## Runs a single command using the runners shell ##
       - name: Setup Build Scripts
         run: |
-          echo "Home: $HOME"
-          echo Build base: ${{ env.buildBaseDir }}
           echo Verify zsh exists: "$(which zsh)"
           echo pwd is: "$(pwd)"
           chmod a+x ./release.sh ./package-addon.sh
@@ -63,12 +61,13 @@ jobs:
           ./package-addon.sh
       - name: List the build artifacts
         run: |
-          echo "buildBaseDirAbs=${{ env.HOME }}/.wow-pre-release/SavedDungeonsAndRaids" >> $GITHUB_ENV
-          echo Absolute Build Base Dir: ${{ env.buildBaseDirAbs }}
           echo "Build Artifacts: ${{ env.build_dir }}" 
           echo "$(ls -l ${{ env.build_dir }})"
           echo "Addon Artifact Exists:"
-          echo "$(ls -l  ${{ env.buildDir }}/${{ env.addonName }}-${{ github.ref_name }}.zip)"
+          echo "buildArtifact=${{ env.buildBasePath }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo "buildArtifactName=${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo "Build Artifact Exists:"
+          echo "$(ls -l  ${{ env.buildArtifact }}"
       ## ------------------------------------------------ ##
       - name: Create a draft release
         id: create_draft_release
@@ -88,8 +87,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_draft_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ${{ env.buildDir }}/${{ env.addonName }}-${{ github.ref_name }}.zip
-          asset_name: ${{ env.addonName }}-${{ github.ref_name }}.zip
+          asset_path: ${{ env.buildArtifact }}
+          asset_name: ${{ env.buildArtifactName }}
           asset_content_type: application/zip
 
   #### release drafter ####
