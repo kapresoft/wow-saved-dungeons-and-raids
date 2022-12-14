@@ -1,10 +1,13 @@
 # see https://github.com/marketplace/actions/release-drafter
+# For RESOLVED_VERSION
+version-template: '$MAJOR.$MINOR.$PATCH-alpha'
+#
 name-template: '$RESOLVED_VERSION'
 tag-template: '$RESOLVED_VERSION'
-version-template: '$MAJOR.$MINOR.$PATCH-alpha'
+#
 template: |
   ### SavedDungeonsAndRaids $RESOLVED_VERSION
-  [Release Notes](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases/tag/$RESOLVED_VERSION) | [Full Changelog](https://github.com/kapresoft/wow-saved-dungeons-and-raids/compare/$PREVIOUS_TAG...$RESOLVED_VERSION) | [Release Page](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases)
+  [Release Notes](https://github.com/kapresoft/$REPOSITORY/releases/tag/$RESOLVED_VERSION) | [Full Changelog](https://github.com/kapresoft/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_VERSION) | [Release Page](https://github.com/kapresoft/$REPOSITORY/releases)
   
   #### What’s Changed
 
@@ -12,11 +15,8 @@ template: |
   
   ### Contributors:
   $CONTRIBUTORS
-  
-  ### Repository: 
-  $REPOSITORY
-  
-  ### ActionbarPlus-$RESOLVED_VERSION.zip
+   
+  ### SavedDungeonsAndRaids-$RESOLVED_VERSION.zip
   
   ```text
   MD5 <tbd>
