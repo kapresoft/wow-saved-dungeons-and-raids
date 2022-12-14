@@ -1,4 +1,4 @@
-name: Delete old workflow runs
+name: Delete Workflow Runs
 on:
   #Run monthly, at 00:00 on the 1st day of month.
   #schedule:
@@ -44,7 +44,7 @@ on:
           - skipped
           - success
       dry_run:
-        description: 'Only log actions, do not perform any delete operations.'
+        description: 'Only log actions, do not perform any delete operations (Dry Run).'
         required: false
 jobs:
   del_runs:
