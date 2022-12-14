@@ -117,7 +117,7 @@ jobs:
       - name: Create checksum file
         run: |
           echo "$buildArtifactChecksum" >> $buildArtifactChecksumFile
-          echo "::notice::${checksumName} checksum: ${$buildArtifactChecksum}"
+          echo "::notice::${checksumName} checksum: ${buildArtifactChecksum}"
       - name: Create a draft release
         id: create_draft_release
         if: ${{ env.createDraftRelease == true }}
