@@ -32,13 +32,24 @@ jobs:
       - name: Print zsh exists
         run: echo "$(which zsh)"
       ## ------------------------------------------------ ##
-      - name: Setup environment
-        # build types: branch, release
+      - name: Set Variable buildBasePath
         run: |
-          echo "Build Home: ${{ env.HOME }}"
-          echo "Addon Name: ${{ env.addonName }}"
-          echo "Build basename: ${{ env.buildBasePath }}"
+          echo "buildBasePath=${{ env.buildDir }}/${{ env.addonName }}" >> $GITHUB_ENV
+      ## ------------------------------------------------ ##
+      - name: Set Variable buildArtifact
+        run: |
+          echo "buildArtifact=$buildBasePath-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+      ## ------------------------------------------------ ##
+      - name: Print Environment Variables
+        run: |
+          echo HOME=$HOME
+          echo buildDir=$buildDir
+          echo addonName=$addonName
+          echo buildArtifact=$buildBasePath
+          echo buildBasePath=$buildBasePath
+          echo zipName=$zipName
 
+      ## ------------------------------------------------ ##
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
@@ -58,12 +69,6 @@ jobs:
         run: |
           echo "Executing: package-addon.sh"
           ./package-addon.sh
-      - name: Set Variable buildBasePath
-        run: |
-          echo "buildBasePath=${{ env.buildDir }}/${{ env.addonName }}" >> $GITHUB_ENV
-      - name: Set Variable buildArtifact
-        run: |
-          echo "buildArtifact=$buildBasePath-${{ github.ref_name }}.zip" >> $GITHUB_ENV
       - name: List the build artifacts
         run: |
           echo "Build Artifacts: $buildDir" 
