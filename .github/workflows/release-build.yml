@@ -36,17 +36,17 @@ jobs:
           files: "/usr/bin/env, /usr/bin/zsh"
           fail: true
       ## ------------------------------------------------ ##
-      - name: "Set Variable: buildDir"
+      - name: "Set ENV Variable: buildDir"
         run: |
           echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
-      - name: "Set Variable: buildBasePath & zipName"
+      - name: "Set ENV Variable: buildBasePath & zipName"
         run: |
           echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
           echo zipName="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
           echo checksumName="${addonName}-${{ github.ref_name }}-md5.txt"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
-      - name: "Set Variable: buildArtifact"
+      - name: "Set ENV Variable: buildArtifact"
         run: |
           echo buildArtifact="${buildBasePath}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo buildArtifactChecksumFile="${buildBasePath}-${{ github.ref_name }}-md5.txt" >> $GITHUB_ENV
@@ -169,6 +169,9 @@ jobs:
     needs: [build]
 
     steps:
+      - name: Set ENV Variable
+        env:
+          zipName: ${{ env.addonName }}-${{ github.ref_name }}.zip
       - name: Create a draft releasex
         id: create_draft_releasex
         #if: ${{ env.createDraftRelease == true }}
@@ -192,7 +195,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           name: ${{ env.zipName }}
-          path: ${{ env.buildArtifact }}
       ## ------------------------------------------------ ##
       ## see: https://github.com/actions/upload-release-asset ##
       - name: Upload Release Assetx
