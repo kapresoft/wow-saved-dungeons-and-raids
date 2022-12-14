@@ -57,6 +57,7 @@ jobs:
           echo "Executing: package-addon.sh"
           ./package-addon.sh
       - name: Setup Environment Variables
+        run: |
           echo "buildArtifact=${{ env.buildBasePath }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
       - name: List the build artifacts
         run: |
