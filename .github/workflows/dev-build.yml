@@ -39,11 +39,12 @@ jobs:
       - name: "Set ENV Variable: buildDir"
         run: |
           echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
+          echo git_hash="$(git rev-parse --short $GITHUB_SHA)"
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
           echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
-          echo buildArtifactFilename="${addonName}-*.zip"  >> $GITHUB_ENV
+          echo buildArtifactFilename="${addonName}-${git_hash}.zip"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildArtifact"
         run: |
