@@ -169,6 +169,8 @@ jobs:
     needs: [build]
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Set ENV Variable
         run: |
           echo zipName="${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
