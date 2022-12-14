@@ -13,8 +13,7 @@ on:
 
 env:
   addonName: SavedDungeonsAndRaids
-  buildDir: $HOME/.wow-pre-release
-  zipName: SavedDungeonsAndRaids-${{ github.ref_name }}.zip
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -32,11 +31,17 @@ jobs:
       - name: Print zsh exists
         run: echo "$(which zsh)"
       ## ------------------------------------------------ ##
-      - name: Set Variable buildBasePath
+      - name: "Set Variable: buildDir"
         run: |
-          echo "buildBasePath=${{ env.buildDir }}/${{ env.addonName }}" >> $GITHUB_ENV
+          echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
-      - name: Set Variable buildArtifact
+      - name: "Set Variable: buildBasePath"
+        run: |
+          echo buildDirx="$HOME/.wow-pre-release"  >> $GITHUB_ENV
+          echo "buildBasePath=${{ env.buildDir }}/${{ env.addonName }}" >> $GITHUB_ENV
+          echo zipName=$addonName-${{ github.ref_name }}.zip  >> $GITHUB_ENV
+      ## ------------------------------------------------ ##
+      - name: "Set Variable: buildArtifact"
         run: |
           echo "buildArtifact=$buildBasePath-${{ github.ref_name }}.zip" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
