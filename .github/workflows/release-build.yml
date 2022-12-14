@@ -67,9 +67,11 @@ jobs:
           echo "buildArtifactName=${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo "Build Artifact Exists:"
           echo "$(ls -l  ${{ env.buildArtifact }})"
-          checksum=`md5sum $buildArtifact`"
-          echo "checksum: $checksum"
+          echo "checksum=\"$(md5sum $buildArtifact)\"" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
+      - name: Check Vars
+        run: |
+          echo "checksum: ${{ env.checksum }}"
       - name: Create a draft release
         id: create_draft_release
         uses: release-drafter/release-drafter@v5
