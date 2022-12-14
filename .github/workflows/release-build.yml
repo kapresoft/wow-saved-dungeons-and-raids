@@ -57,8 +57,6 @@ jobs:
           echo buildArtifact=${buildArtifact}
           echo buildBasePath=${buildBasePath}
           echo zipName=${zipName}
-          echo "github env"
-          echo "${{ toJSON(github) }}"
 
       ## ------------------------------------------------ ##
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -94,16 +92,20 @@ jobs:
           echo "Build Artifacts: $buildDir" 
           echo "$(ls -l ${{ env.buildDir }})"
           echo "buildArtifact is $buildArtifact"
-          echo "Addon Artifact Exists:"
-          echo buildArtifactName="${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo "Build Artifact Exists:"
           echo "$(ls -l  $buildArtifact)"
       ## ------------------------------------------------ ##
+      - name: Upload addon artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: ${{ env.buildArtifactName }}
+      ## ------------------------------------------------ ##
       - name: Check Vars
         run: |
-          echo checksum="$(./dev/md5sum.sh $buildArtifact)" >> $GITHUB_ENV
+          echo buildArtifactChecksum="$(./dev/md5sum.sh $buildArtifact)" >> $GITHUB_ENV
           echo "buildArtifact is $buildArtifact"
-          echo "checksum is $checksum"
+          echo "buildArtifactChecksum is $buildArtifactChecksum"
 
       - name: Create a draft release
         id: create_draft_release
@@ -120,7 +122,7 @@ jobs:
             
             #### ${{ env.buildArtifactName }}
             ```text
-            MD5 ${{ env.checksum }}
+            MD5 ${{ env.buildArtifactChecksum }}
             ```
       ## ------------------------------------------------ ##
       - name: Upload Release Asset
