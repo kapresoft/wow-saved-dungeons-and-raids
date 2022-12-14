@@ -48,7 +48,7 @@ jobs:
         run: |
           echo Verify zsh exists: "$(which zsh)"
           echo pwd is: "$(pwd)"
-          chmod a+x ./release.sh ./package-addon.sh
+          chmod a+x ./release.sh ./package-addon.sh ./dev/md5sum.sh
           ln -s ./release.sh release-wow-addon
           echo "$(ls -l)"
 
@@ -70,7 +70,7 @@ jobs:
       ## ------------------------------------------------ ##
       - name: Check Vars
         run: |
-          echo "checksum=\"$(md5sum $buildArtifact)\"| awk '{split($0,a); print a[1]}" >> $GITHUB_ENV
+          echo "checksum=\"$(./dev/md5sum.sh $buildArtifact)\" >> $GITHUB_ENV
           echo "buildArtifact is $buildArtifact"
 
       - name: Check MD5
