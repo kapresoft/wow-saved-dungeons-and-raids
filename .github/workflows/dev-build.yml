@@ -50,7 +50,7 @@ jobs:
       - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
           echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
-          echo buildArtifactFilename="${addonName}-${$GITHUB_SHA_SHORT}.zip"  >> $GITHUB_ENV
+          echo buildArtifactFilename="${addonName}-${GITHUB_SHA_SHORT}.zip"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildArtifact"
         run: |
