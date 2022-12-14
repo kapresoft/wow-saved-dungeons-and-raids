@@ -170,11 +170,9 @@ jobs:
 
     steps:
       - name: Set ENV Variable
-        env:
-          zipName: ${{ env.addonName }}-${{ github.ref_name }}.zip
         run: |
-          echo zipName=$zipName
-      - name: Create a draft releasex
+          echo zipName="${zipName}" >> $GITHUB_ENV
+      - name: Create a draft release
         id: create_draft_release
         #if: ${{ env.createDraftRelease == true }}
         uses: release-drafter/release-drafter@v5
