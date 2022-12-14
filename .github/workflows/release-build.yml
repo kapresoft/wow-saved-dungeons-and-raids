@@ -13,8 +13,8 @@ on:
 
 env:
   addonName: SavedDungeonsAndRaids
-  buildDir: $HOME/.wow-pre-release
-  zipName: SavedDungeonsAndRaids-${{ github.ref_name }}.zip
+  createDraftRelease: false
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -51,6 +51,7 @@ jobs:
       - name: Print Environment Variables
         run: |
           echo HOME=${HOME}
+          echo createDraftRelease=${createDraftRelease}
           echo buildDir=${buildDir}
           echo addonName=${addonName}
           echo buildArtifact=${buildArtifact}
@@ -104,6 +105,7 @@ jobs:
 
       - name: Create a draft release
         id: create_draft_release
+        if: ${{ env.createDraftRelease }}
         uses: release-drafter/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -121,6 +123,7 @@ jobs:
       ## ------------------------------------------------ ##
       - name: Upload Release Asset
         id: upload-release-asset
+        if: ${{ env.createDraftRelease }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
