@@ -4,7 +4,8 @@ on:
   #schedule:
   #  - cron: '0 0 1 * *'
   push:
-    tags: [ 100.**" ]
+    #tags: [ 100.**" ]
+    branches: [ "main" ]
 
 jobs:
   del_runs:
@@ -15,5 +16,5 @@ jobs:
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
-          retain_days: 7
+          retain_days: 0
           keep_minimum_runs: 6
