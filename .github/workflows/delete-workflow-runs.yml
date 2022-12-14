@@ -43,9 +43,7 @@ on:
           - failure
           - skipped
           - success
-      dry_run:
-        description: 'Only log actions, do not perform any delete operations (Dry Run).'
-        required: false
+
 jobs:
   del_runs:
     runs-on: ubuntu-latest
@@ -56,6 +54,6 @@ jobs:
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
-          retain_days: 0
-          keep_minimum_runs: 6
+          #retain_days: ${{ input.days }}
+          #keep_minimum_runs: 6
           dry_run: false
