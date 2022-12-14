@@ -59,4 +59,3 @@ jobs:
           delete_workflow_pattern: ${{ inputs.delete_workflow_pattern }}
           delete_workflow_by_state_pattern: ${{ inputs.delete_workflow_by_state_pattern }}
           delete_run_by_conclusion_pattern: ${{ inputs.delete_run_by_conclusion_pattern }}
-          dry_run: false
