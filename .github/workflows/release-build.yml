@@ -67,6 +67,9 @@ jobs:
           echo "buildArtifactName=${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo "Build Artifact Exists:"
           echo "$(ls -l  ${{ env.buildArtifact }})"
+          checksum=`md5sum ${{ env.addonName }}-${{ github.ref_name }}.zip"
+          echo "checksum=`md5sum ${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo "checksum: $checksum"
       ## ------------------------------------------------ ##
       - name: Create a draft release
         id: create_draft_release
@@ -80,10 +83,10 @@ jobs:
           prerelease: false
           footer: |
             
-            
-            #### ${{ env.buildArtifactName }}
+            -----
+            ### ${{ env.buildArtifactName }}
             ```text
-            MD5 <tbd>
+            MD5 ${{ env.checksum }}
             ```
       ## ------------------------------------------------ ##
       - name: Upload Release Asset
