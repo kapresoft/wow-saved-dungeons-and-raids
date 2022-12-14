@@ -32,7 +32,7 @@ jobs:
       - name: Print zsh exists
         run: echo "$(which zsh)"
       ## ------------------------------------------------ ##
-      - name: "Set Variable: buildDir"
+      - name: "Set Variable: buildDirx"
         run: |
           echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
