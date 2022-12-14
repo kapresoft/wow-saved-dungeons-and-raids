@@ -67,7 +67,7 @@ jobs:
           echo "buildArtifactName=${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo "Build Artifact Exists:"
           echo "$(ls -l  ${{ env.buildArtifact }})"
-          checksum=`md5sum ${{ env.addonName }}-${{ github.ref_name }}.zip"
+          checksum=`md5sum ${{ env.addonName }}-${{ github.ref_name }}.zip`"
           echo "checksum=`md5sum ${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo "checksum: $checksum"
       ## ------------------------------------------------ ##
