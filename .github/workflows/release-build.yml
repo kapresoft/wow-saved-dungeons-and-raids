@@ -61,15 +61,15 @@ jobs:
           ./package-addon.sh
       - name: Set Artifact Variables
         run: |
-          echo buildBasePath="$buildDir/$addonName" >> $GITHUB_ENV
-          echo buildArtifact="$buildBasePath-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo buildBasePath="${{ env.buildDir }}/${{ env.addonName }}" >> $GITHUB_ENV
+          echo buildArtifact="${{ env.buildBasePath }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
 
       - name: List the build artifacts
         run: |
           echo "Build Artifacts: $buildDir" 
-          echo "$(ls -l $buildDir)"
+          echo "$(ls -l ${{ env.buildDir }})"
           echo "Addon Artifact Exists:"
-          echo "buildArtifactName=$addonName-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo buildArtifactName="${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo "Build Artifact Exists:"
           echo "$(ls -l  $buildArtifact)"
       ## ------------------------------------------------ ##
