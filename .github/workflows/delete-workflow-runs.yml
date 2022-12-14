@@ -1,8 +1,8 @@
 name: Delete Workflow Runs
 on:
   #Run monthly, at 00:00 on the 1st day of month.
-  #schedule:
-  #  - cron: '0 0 1 * *'
+  schedule:
+    - cron: '0 0 1 * *'
   push:
     tags: [ 100.**" ]
     #branches: [ "main" ]
