@@ -14,6 +14,7 @@ on:
 env:
   addonName: SavedDungeonsAndRaids
   createDraftRelease: true
+  uploadBuildArtifacts: false
   artifact_retentionDays: 7
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -136,14 +137,16 @@ jobs:
             ```
       ## ------------------------------------------------ ##
       ## https://github.com/actions/upload-artifact
-      - name: Upload addon artifact file
+      - name: Upload build artifact file
+        if: $${{ env.uploadBuildArtifacts == 'true' }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.buildArtifactFilename }}
           path: ${{ env.buildArtifact }}
           retention-days: ${{ env.artifact_retentionDays }}
       ## ------------------------------------------------ ##
-      - name: Upload addon artifact checksum file
+      - name: Upload build artifact checksum file
+        if: $${{ env.uploadBuildArtifacts == 'true' }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env. buildArtifactChecksumFilename }}
