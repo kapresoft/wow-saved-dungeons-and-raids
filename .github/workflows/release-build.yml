@@ -63,10 +63,6 @@ jobs:
           echo zipName=${zipName}
           echo checksumName=${checksumName}
           echo artifact_retentionDays=${{ env.artifact_retentionDays }}
-
-          echo "::notice::HOME=${HOME}"
-          echo "::notice::buildArtifact=${buildArtifact}"
-          echo "::notice::buildArtifactChecksumFile=${buildArtifactChecksumFile}"
       ## ------------------------------------------------ ##
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -114,7 +110,13 @@ jobs:
       - name: Create checksum file
         run: |
           echo "$buildArtifactChecksum" >> $buildArtifactChecksumFile
+      ## ------------------------------------------------ ##
+      - name: Notices
+        run: |
           echo "::notice::${checksumName}_checksum: ${buildArtifactChecksum}"
+          echo "::notice::HOME=${HOME}"
+          echo "::notice::buildArtifact=${buildArtifact}"
+          echo "::notice::buildArtifactChecksumFile=${buildArtifactChecksumFile}"
 
       - name: Create a draft release
         id: create_draft_release
