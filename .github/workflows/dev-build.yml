@@ -14,9 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  buildType: branch
   addonName: SavedDungeonsAndRaids
-  buildBasePath: $HOME/.wow-pre-release/SavedDungeonsAndRaids
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -32,8 +30,33 @@ jobs:
       - name: Install zsh
         run: sudo apt-get update && sudo apt-get install zsh
       ## ------------------------------------------------ ##
-      - name: Print zsh exists
-        run: echo "$(which zsh)"
+      - name: "Verify: /usr/bin/env & /usr/bin/zsh exists"
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "/usr/bin/env, /usr/bin/zsh"
+          fail: true
+      ## ------------------------------------------------ ##
+      - name: "Set ENV Variable: buildDir"
+        run: |
+          echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
+      ## ------------------------------------------------ ##
+      - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
+        run: |
+          echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
+          echo buildArtifactFilename="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
+      ## ------------------------------------------------ ##
+      - name: "Set ENV Variable: buildArtifact"
+        run: |
+          echo buildArtifact="${buildDir}/${buildArtifactFilename}" >> $GITHUB_ENV
+      ## ------------------------------------------------ ##
+      - name: Print Environment Variables
+        run: |
+          echo HOME=${HOME}
+          echo addonName=${addonName}
+          echo buildDir=${buildDir}
+          echo buildBasePath=${buildBasePath}
+          echo buildArtifactFilename=${buildArtifactFilename}
+          echo buildArtifact=${buildArtifact}
       ## ------------------------------------------------ ##
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -43,7 +66,6 @@ jobs:
       # Runs a single command using the runners shell
       - name: Setup Build Scripts
         run: |
-          echo "Build Type: ${{ env.buildType }}"
           echo Verify zsh exists: "$(which zsh)"
           echo pwd is: "$(pwd)"
           chmod a+x ./release.sh ./package-addon.sh
@@ -56,16 +78,14 @@ jobs:
         run: |
           echo "Executing: package-addon.sh"
           ./package-addon.sh
-      - name: Setup Environment Variables
-        run: |
-          echo "buildArtifact=${{ env.buildBasePath }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
-          echo "buildArtifactFile=${{ env.buildBasePath }}-*.zip" >> $GITHUB_ENV
       - name: List the build artifacts
         run: |
-          echo "Build Artifact (Addon): ${{ env.buildArtifactFile }}"
-          echo "$(ls -l ${{ env.buildArtifactFile }})"
-          echo " ********************************* "
-          echo "Build Artifact Dir Contents: ${{ env.buildBasePath }}*" 
-          echo "$(ls -l ${{ env.buildDir }}*)"
-
+          echo "Build Artifact (Addon): ${{ env.buildArtifact }}"
+          echo "$(ls -l ${{ env.buildArtifact }})"
+      ## ------------------------------------------------ ##
+      - name: "Verify Build Artifact exists"
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "${{ env.buildArtifact }}"
+          fail: true
 # end
