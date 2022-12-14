@@ -43,6 +43,7 @@ jobs:
         run: |
           echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
           echo zipName="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
+          echo checksumName="${addonName}-${{ github.ref_name }}-md5.txt"
       ## ------------------------------------------------ ##
       - name: "Set Variable: buildArtifact"
         run: |
@@ -59,6 +60,7 @@ jobs:
           echo buildArtifactChecksumFile=${buildArtifactChecksumFile}
           echo buildBasePath=${buildBasePath}
           echo zipName=${zipName}
+          echo checksumName=${checksumName}
 
       ## ------------------------------------------------ ##
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -134,7 +136,7 @@ jobs:
       - name: Upload addon artifact checksum file
         uses: actions/upload-artifact@v3
         with:
-          name: checksum
+          name: ${{ env. checksumName }}
           path: ${{ env.buildArtifactChecksumFile }}
       ## ------------------------------------------------ ##
       - name: Upload Release Asset
