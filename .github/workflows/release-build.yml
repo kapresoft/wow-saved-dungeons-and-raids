@@ -175,8 +175,19 @@ jobs:
           echo buildArtifactFile="${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo checksumFile="${{ env.addonName }}-${{ github.ref_name }}-md5.txt" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
-      ## see: https://github.com/actions/download-artifact ##
       - uses: actions/checkout@v2
+      ## ------------------------------------------------ ##
+      ## Runs a single command using the runners shell ##
+      - name: "Setup Build Scripts"
+        run: |
+          echo "------------------------------------"
+          echo Current working directory is: "$(pwd)"
+          chmod a+x ./dev/md5sum.sh
+          echo "------------------------------------"
+          echo "Current working directory files are:"
+          echo "$(ls -l)"
+      ## ------------------------------------------------ ##
+      ## see: https://github.com/actions/download-artifact ##
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
@@ -203,9 +214,9 @@ jobs:
           prerelease: false
           footer: |
             
-            #### ${{ env.buildArtifactChecksum }}
+            #### ${{ env.buildArtifactFile }}
             ```text
-            MD5 ${{ env.checksumFile }}
+            MD5 ${{ env.$buildArtifactChecksum }}
             ```
       ## ------------------------------------------------ ##
       ## see: https://github.com/actions/upload-release-asset ##
