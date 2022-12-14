@@ -38,9 +38,7 @@ jobs:
       ## ------------------------------------------------ ##
       - name: "Set Variable: buildDir"
         run: |
-          echo "::group::Set Variable"
           echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
-          echo "buildDir variable set"
       ## ------------------------------------------------ ##
       - name: "Set Variable: buildBasePath & zipName"
         run: |
@@ -52,7 +50,6 @@ jobs:
         run: |
           echo buildArtifact="${buildBasePath}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo buildArtifactChecksumFile="${buildBasePath}-${{ github.ref_name }}-md5.txt" >> $GITHUB_ENV
-          echo "::endgroup::"
       ## ------------------------------------------------ ##
       - name: Print Environment Variables
         run: |
@@ -117,7 +114,8 @@ jobs:
       - name: Create checksum file
         run: |
           echo "$buildArtifactChecksum" >> $buildArtifactChecksumFile
-          echo "::notice::${checksumName} checksum: ${buildArtifactChecksum}"
+          echo "::notice::${checksumName}_checksum: ${buildArtifactChecksum}"
+
       - name: Create a draft release
         id: create_draft_release
         if: ${{ env.createDraftRelease == true }}
