@@ -161,7 +161,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_draft_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: ${{ env.buildArtifact }}
-          asset_name: ${{ env.buildArtifactName }}
+          asset_name: ${{ env.buildArtifactFilename }}
           asset_content_type: application/zip
       ## ------------------------------------------------ ##
       - name: Upload Release Artifact Checksum File
