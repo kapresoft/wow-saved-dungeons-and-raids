@@ -72,9 +72,6 @@ jobs:
         run: |
           echo checksum="$(./dev/md5sum.sh $buildArtifact)" >> $GITHUB_ENV
           echo "buildArtifact is $buildArtifact"
-
-      - name: Check MD5
-        run: |
           echo "checksum is $checksum"
 
       - name: Create a draft release
@@ -89,8 +86,7 @@ jobs:
           prerelease: false
           footer: |
             
-            -----
-            ### ${{ env.buildArtifactName }}
+            #### ${{ env.buildArtifactName }}
             ```text
             MD5 ${{ env.checksum }}
             ```
@@ -105,45 +101,5 @@ jobs:
           asset_path: ${{ env.buildArtifact }}
           asset_name: ${{ env.buildArtifactName }}
           asset_content_type: application/zip
-
-  #### release drafter ####
-  #### see: https://github.com/marketplace/actions/release-drafter ###
-  #### for upload:https://github.com/actions/upload-release-asset#example-workflow---upload-a-release-asset ###
-#  draft_release:
-#    needs: build
-#    name: Prepare a draft release
-#    permissions:
-#      # write permission is required to create a github release
-#      contents: write
-#      # write permission is required for autolabeler
-#      # otherwise, read permission is required at least
-#      pull-requests: write
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Verify Asset
-#        # build types: branch, release
-#        run: |
-#          echo "Addon Exists:"
-#          echo "$(ls -l  ${{ env.buildDir }}/${{ env.addonName }}-${{ github.ref_name }}.zip)"
-#      - name: Create a draft release
-#        id: create_draft_release
-#        uses: release-drafter/release-drafter@v5
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag: ${{ github.ref_name }}
-#          name: ${{ github.ref_name }}
-#          version: ${{ github.ref_name }}
-#          prerelease: false
-#      - name: Upload Release Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_draft_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-#          asset_path: ${{ env.buildDir }}/${{ env.addonName }}-${{ github.ref_name }}.zip
-#          asset_name: ${{ env.addonName }}-${{ github.ref_name }}.zip
-#          asset_content_type: application/zip
 
 # end
