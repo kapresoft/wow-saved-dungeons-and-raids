@@ -84,6 +84,8 @@ jobs:
       ## ------------------------------------------------ ##
       ## Runs a set of commands using the runners shell ##
       - name: Packaging the addon
+        env:
+          hello: "there"
         run: |
           echo "Executing: package-addon.sh"
           ./package-addon.sh
