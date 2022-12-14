@@ -62,7 +62,8 @@ jobs:
       - name: Set Artifact Variables
         run: |
           echo "buildBasePath=${{ env.buildDir }}/${{ env.addonName }}" >> $GITHUB_ENV
-          echo "buildArtifact=$buildBasePath/${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo "buildArtifact=${{ env.buildBasePath }}/${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo "buildArtifact is $buildArtifact"
 
       - name: List the build artifacts
         run: |
