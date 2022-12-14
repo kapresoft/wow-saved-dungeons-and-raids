@@ -63,10 +63,10 @@ jobs:
       - uses: actions/checkout@v3
 
       ## ------------------------------------------------ ##
-      - name: "Verify: Project files"
+      - name: "Verify: Project script files exist"
         uses: andstor/file-existence-action@v2
         with:
-          files: "./package-addon.sh, ./release.sh, ./dev/md5sumx.sh"
+          files: "./package-addon.sh, ./release.sh, ./dev/md5sum.sh"
           fail: true
 
       ## ------------------------------------------------ ##
