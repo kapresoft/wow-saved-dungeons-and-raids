@@ -70,7 +70,7 @@ jobs:
       ## ------------------------------------------------ ##
       - name: Check Vars
         run: |
-          echo "checksum=\"$(./dev/md5sum.sh $buildArtifact)\" >> $GITHUB_ENV
+          echo checksum="$(./dev/md5sum.sh $buildArtifact)" >> $GITHUB_ENV
           echo "buildArtifact is $buildArtifact"
 
       - name: Check MD5
