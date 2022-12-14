@@ -76,6 +76,7 @@ jobs:
         with:
             tag: ${{ github.ref_name }}
             name: ${{ github.ref_name }}
+            version: ${{ github.ref_name }}
             prerelease: false
 
 # end
