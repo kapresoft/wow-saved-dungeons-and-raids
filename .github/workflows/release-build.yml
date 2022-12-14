@@ -72,8 +72,8 @@ jobs:
     steps:
       # Drafts your next Release notes as Pull Requests are merged into "master"
       - name: Create a draft release
-      - id: create_draft_release
-      - uses: release-drafter/release-drafter@v5
+        id: create_draft_release
+        uses: release-drafter/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
