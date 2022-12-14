@@ -61,13 +61,21 @@ jobs:
       - uses: actions/checkout@v3
 
       ## ------------------------------------------------ ##
+      - name: "Verify: Project files"
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "./package-addon.sh, ./release.sh, ./dev/md5sumx.sh"
+
+      ## ------------------------------------------------ ##
       ## Runs a single command using the runners shell ##
-      - name: Setup Build Scripts
+      - name: "Setup Build Scripts"
         run: |
-          echo Verify zsh exists: "$(which zsh)"
-          echo pwd is: "$(pwd)"
+          echo "------------------------------------"
+          echo Current working directory is: "$(pwd)"
           chmod a+x ./release.sh ./package-addon.sh ./dev/md5sum.sh
           ln -s ./release.sh release-wow-addon
+          echo "------------------------------------"
+          echo "Current working directory files are:"
           echo "$(ls -l)"
 
       ## ------------------------------------------------ ##
