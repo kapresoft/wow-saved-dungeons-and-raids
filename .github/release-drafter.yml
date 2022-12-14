@@ -1,8 +1,8 @@
 # see https://github.com/marketplace/actions/release-drafter
 
 template: |
-  ### SavedDungeonsAndRaids $TITLE
-  [Release Notes](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases/tag/$TITLE) | [Full Changelog](https://github.com/kapresoft/wow-saved-dungeons-and-raids/compare/$PREVIOUS_TAG...$TITLE) | [Release Page](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases)
+  ### SavedDungeonsAndRaids ${{ github.ref_name }}
+  [Release Notes](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases/tag/$TAG) | [Full Changelog](https://github.com/kapresoft/wow-saved-dungeons-and-raids/compare/$PREVIOUS_TAG...$TAG) | [Release Page](https://github.com/kapresoft/wow-saved-dungeons-and-raids/releases)
   
   #### What’s Changed
 
@@ -14,7 +14,7 @@ template: |
   ### Repository: 
   $REPOSITORY
   
-  ### ActionbarPlus-$NEXT_PATCH_VERSION.zip
+  ### ActionbarPlus-$TAG.zip
   
   ```text
   MD5 <tbd>
