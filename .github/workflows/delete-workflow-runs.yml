@@ -51,7 +51,7 @@ jobs:
   del_runs:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete workflow runs
+      - name: "@Delete workflow runs"
         # see: https://github.com/marketplace/actions/delete-workflow-runs
         uses: Mattraks/delete-workflow-runs@v2
         with:
