@@ -59,11 +59,13 @@ jobs:
       - name: Setup Environment Variables
         run: |
           echo "buildArtifact=${{ env.buildBasePath }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo "buildArtifactFile=${{ env.buildBasePath }}-*.zip" >> $GITHUB_ENV
       - name: List the build artifacts
         run: |
-          echo "Build Artifacts: ${{ env.buildBasePath }}*" 
+          echo "Build Artifact (Addon): ${{ env.buildArtifactFile }}"
+          echo "$(ls -l ${{ env.buildArtifactFile }})"
+          echo " ********************************* "
+          echo "Build Artifact Dir Contents: ${{ env.buildBasePath }}*" 
           echo "$(ls -l ${{ env.buildDir }}*)"
-          echo "Build Artifact (Addon): ${{ env.buildArtifact }}"
-          echo "$(ls -l ${{ env.buildArtifact }})"
 
 # end
