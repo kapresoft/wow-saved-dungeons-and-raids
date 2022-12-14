@@ -40,16 +40,16 @@ jobs:
         run: |
           echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
-      - name: "Set ENV Variable: buildBasePath & zipName"
+      - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
           echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
-          echo zipName="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
-          echo checksumName="${addonName}-${{ github.ref_name }}-md5.txt"  >> $GITHUB_ENV
+          echo buildArtifactFilename="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
+          echo buildArtifactChecksumFilename="${addonName}-${{ github.ref_name }}-md5.txt"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildArtifact"
         run: |
-          echo buildArtifact="${buildBasePath}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
-          echo buildArtifactChecksumFile="${buildBasePath}-${{ github.ref_name }}-md5.txt" >> $GITHUB_ENV
+          echo buildArtifact="${buildDir}/${buildArtifactFilename}" >> $GITHUB_ENV
+          echo buildArtifactChecksumFile="${buildDir}/${buildArtifactChecksumFilename}" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: Print Environment Variables
         run: |
@@ -60,8 +60,8 @@ jobs:
           echo buildArtifact=${buildArtifact}
           echo buildArtifactChecksumFile=${buildArtifactChecksumFile}
           echo buildBasePath=${buildBasePath}
-          echo zipName=${zipName}
-          echo checksumName=${checksumName}
+          echo buildArtifactFilename=${buildArtifactFilename}
+          echo buildArtifactChecksumFilename=${buildArtifactChecksumFilename}
           echo artifact_retentionDays=${{ env.artifact_retentionDays }}
       ## ------------------------------------------------ ##
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -130,7 +130,7 @@ jobs:
           prerelease: false
           footer: |
             
-            #### ${{ env.buildArtifactName }}
+            #### ${{ env.buildArtifactFilename }}
             ```text
             MD5 ${{ env.buildArtifactChecksum }}
             ```
@@ -139,19 +139,18 @@ jobs:
       - name: Upload addon artifact file
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.zipName }}
+          name: ${{ env.buildArtifactFilename }}
           path: ${{ env.buildArtifact }}
           retention-days: ${{ env.artifact_retentionDays }}
       ## ------------------------------------------------ ##
       - name: Upload addon artifact checksum file
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env. checksumName }}
+          name: ${{ env. buildArtifactChecksumFilename }}
           path: ${{ env.buildArtifactChecksumFile }}
           retention-days: ${{ env.artifact_retentionDays }}
       ## ------------------------------------------------ ##
-      - name: Upload Release Asset
-        id: upload-release-asset
+      - name: Upload Artifact
         if: ${{ env.createDraftRelease == true }}
         uses: actions/upload-release-asset@v1
         env:
@@ -161,85 +160,96 @@ jobs:
           asset_path: ${{ env.buildArtifact }}
           asset_name: ${{ env.buildArtifactName }}
           asset_content_type: application/zip
-
-
-  draft_release:
-    name: Create Draft Release
-    runs-on: ubuntu-latest
-    needs: [build]
-
-    steps:
       ## ------------------------------------------------ ##
-      - uses: actions/checkout@v2
-
-      ## ------------------------------------------------ ##
-      - name: Set ENV Variable
-        run: |
-          echo buildArtifactFile="${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
-          echo checksumFile="${{ env.addonName }}-${{ github.ref_name }}-md5.txt" >> $GITHUB_ENV
-      ## ------------------------------------------------ ##
-      ## Runs a single command using the runners shell ##
-      - name: "Setup Build Scripts"
-        run: |
-          echo "------------------------------------"
-          echo Current working directory is: "$(pwd)"
-          chmod a+x ./dev/md5sum.sh
-          echo "------------------------------------"
-          echo "Current working directory files are:"
-          echo "$(ls -l)"
-      ## ------------------------------------------------ ##
-      ## see: https://github.com/actions/download-artifact ##
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.buildArtifactFile }}
-      ## ------------------------------------------------ ##
-      - name: Create Checksum
-        run: |
-          echo buildArtifactChecksum="$(./dev/md5sum.sh $buildArtifactFile)" >> $GITHUB_ENV
-      ## ------------------------------------------------ ##
-      - name: Create checksum file
-        run: |
-          echo "$buildArtifactChecksum" >> $checksumFile
-      ## ------------------------------------------------ ##
-      - name: Create a draft release
-        id: create_draft_release
-        #if: ${{ env.createDraftRelease == true }}
-        uses: release-drafter/release-drafter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
-          version: ${{ github.ref_name }}
-          prerelease: false
-          footer: |
-            
-            #### ${{ env.buildArtifactFile }}
-            ```text
-            MD5 ${{ env.buildArtifactChecksum }}
-            ```
-      ## ------------------------------------------------ ##
-      ## see: https://github.com/actions/upload-release-asset ##
-      - name: Upload Addon Artifact
-        #if: ${{ env.createDraftRelease == true }}
+      - name: Upload Artifact Checksum File
+        if: ${{ env.createDraftRelease == true }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_draft_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ${{ env.buildArtifactFile }}
-          asset_name: ${{ env.buildArtifactFile }}
-          asset_content_type: application/zip
-      ## ------------------------------------------------ ##
-      - name: Upload Artifact Checksum
-        #if: ${{ env.createDraftRelease == true }}
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_draft_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ${{ env.checksumFile }}
-          asset_name: ${{ env.checksumFile }}
-          asset_content_type: text/plain
+          asset_path: ${{ env.buildArtifactChecksumFile }}
+          asset_name: ${{ env.buildArtifactChecksumFilename }}
+          asset_content_type: plain/text
+
+
+#  draft_release:
+#    name: Create Draft Release
+#    runs-on: ubuntu-latest
+#    needs: [build]
+#
+#    steps:
+#      ## ------------------------------------------------ ##
+#      - uses: actions/checkout@v2
+#
+#      ## ------------------------------------------------ ##
+#      - name: Set ENV Variable
+#        run: |
+#          echo buildArtifactFile="${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+#          echo checksumFile="${{ env.addonName }}-${{ github.ref_name }}-md5.txt" >> $GITHUB_ENV
+#      ## ------------------------------------------------ ##
+#      ## Runs a single command using the runners shell ##
+#      - name: "Setup Build Scripts"
+#        run: |
+#          echo "------------------------------------"
+#          echo Current working directory is: "$(pwd)"
+#          chmod a+x ./dev/md5sum.sh
+#          echo "------------------------------------"
+#          echo "Current working directory files are:"
+#          echo "$(ls -l)"
+#      ## ------------------------------------------------ ##
+#      ## see: https://github.com/actions/download-artifact ##
+#      - name: Download artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: ${{ env.buildArtifactFile }}
+#      ## ------------------------------------------------ ##
+#      - name: Create Checksum
+#        run: |
+#          echo buildArtifactChecksum="$(./dev/md5sum.sh $buildArtifactFile)" >> $GITHUB_ENV
+#      ## ------------------------------------------------ ##
+#      - name: Create checksum file
+#        run: |
+#          echo "$buildArtifactChecksum" >> $checksumFile
+#      ## ------------------------------------------------ ##
+#      - name: Create a draft release
+#        id: create_draft_release
+#        #if: ${{ env.createDraftRelease == true }}
+#        uses: release-drafter/release-drafter@v5
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag: ${{ github.ref_name }}
+#          name: ${{ github.ref_name }}
+#          version: ${{ github.ref_name }}
+#          prerelease: false
+#          footer: |
+#
+#            #### ${{ env.buildArtifactFile }}
+#            ```text
+#            MD5 ${{ env.buildArtifactChecksum }}
+#            ```
+#      ## ------------------------------------------------ ##
+#      ## see: https://github.com/actions/upload-release-asset ##
+#      - name: Upload Addon Artifact
+#        #if: ${{ env.createDraftRelease == true }}
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_draft_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+#          asset_path: ${{ env.buildArtifactFile }}
+#          asset_name: ${{ env.buildArtifactFile }}
+#          asset_content_type: application/zip
+#      ## ------------------------------------------------ ##
+#      - name: Upload Artifact Checksum
+#        #if: ${{ env.createDraftRelease == true }}
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_draft_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+#          asset_path: ${{ env.checksumFile }}
+#          asset_name: ${{ env.checksumFile }}
+#          asset_content_type: text/plain
 # end
