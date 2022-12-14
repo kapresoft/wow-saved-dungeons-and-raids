@@ -14,7 +14,7 @@ on:
 env:
   addonName: SavedDungeonsAndRaids
   buildDir: $HOME/.wow-pre-release
-  buildBasePathx: $HOME/.wow-pre-release/SavedDungeonsAndRaids
+  buildBasePathXXX: $HOME/.wow-pre-release/SavedDungeonsAndRaids
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -59,12 +59,15 @@ jobs:
         run: |
           echo "Executing: package-addon.sh"
           ./package-addon.sh
-      - name: Set Artifact Variables
+      - name: Set Variable buildBasePath
         run: |
           echo "buildBasePath=${{ env.buildDir }}/${{ env.addonName }}" >> $GITHUB_ENV
+      - name: Set Variable buildArtifact
+        run: |
           echo "buildArtifact=${{ env.buildBasePath }}/${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+      - name: Check Variable buildArtifact
+        run: |
           echo "buildArtifact is $buildArtifact"
-
       - name: List the build artifacts
         run: |
           echo "Build Artifacts: $buildDir" 
