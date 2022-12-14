@@ -26,11 +26,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       ## ------------------------------------------------ ##
-      - name: Install zsh
+      - name: "Install: zsh"
         run: sudo apt-get update && sudo apt-get install zsh
       ## ------------------------------------------------ ##
-      - name: Print zsh exists
-        run: echo "$(which zsh)"
+      - name: "Verify: /usr/bin/env & /usr/bin/zsh exists"
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "/usr/bin/env, /usr/bin/zsh"
       ## ------------------------------------------------ ##
       - name: "Set Variable: buildDir"
         run: |
@@ -40,11 +42,10 @@ jobs:
         run: |
           echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
           echo zipName="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
-          echo buildArtifact="${buildBasePath}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set Variable: buildArtifact"
         run: |
-          echo "no-op"
+          echo buildArtifact="${buildBasePath}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: Print Environment Variables
         run: |
