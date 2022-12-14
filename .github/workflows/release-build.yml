@@ -115,8 +115,7 @@ jobs:
         run: |
           echo -e "::notice::HOME=${HOME}\n::notice::buildArtifact=${buildArtifact}"
           echo "::notice::buildArtifactChecksumFile=${buildArtifactChecksumFile}"
-          echo "::notice::${checksumName} Checksum: ${buildArtifactChecksum}"
-          echo "::notice::buildArtifact=${buildArtifact}"
+          echo "::notice::buildArtifact=${buildArtifact} Checksum=${buildArtifactChecksum}"
 
       - name: Create a draft release
         id: create_draft_release
