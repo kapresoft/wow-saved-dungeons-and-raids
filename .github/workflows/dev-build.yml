@@ -36,15 +36,22 @@ jobs:
           files: "/usr/bin/env, /usr/bin/zsh"
           fail: true
       ## ------------------------------------------------ ##
+      - name: Short hash
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const sha = context.sha.substring(0, 7)
+            core.exportVariable('GITHUB_SHA_SHORT', sha)
+      ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildDir"
         run: |
           echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
-          echo git_hash="$(git rev-parse --short $GITHUB_SHA)"
+          echo shaShort=${{ github.sha_short }}
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
           echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
-          echo buildArtifactFilename="${addonName}-${git_hash}.zip"  >> $GITHUB_ENV
+          echo buildArtifactFilename="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildArtifact"
         run: |
