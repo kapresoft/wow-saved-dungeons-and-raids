@@ -38,8 +38,9 @@ jobs:
       ## ------------------------------------------------ ##
       - name: "Set Variable: buildDir"
         run: |
-          echo "::group:: Set Variable"
+          echo "::group::Set Variable"
           echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
+          echo "buildDir variable set"
       ## ------------------------------------------------ ##
       - name: "Set Variable: buildBasePath & zipName"
         run: |
