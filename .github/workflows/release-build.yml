@@ -30,6 +30,7 @@ jobs:
         run: |
           echo "build_type=branch" >> $GITHUB_ENV
           echo "build_dir=~/.wow-pre-release" >> $GITHUB_ENV
+          echo "addon_name=SavedDungeonsAndRaids" >> $GITHUB_ENV
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -70,6 +71,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Drafts your next Release notes as Pull Requests are merged into "master"
+      - name: Create a draft release
+      - id: create_draft_release
       - uses: release-drafter/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -78,5 +81,15 @@ jobs:
             name: ${{ github.ref_name }}
             version: ${{ github.ref_name }}
             prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_draft_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ${{ env.build_dir }}/${{ env.addon_name }}.zip
+          asset_name: ${{ env.addon_name }}.zip
+          asset_content_type: application/zip
 
 # end
