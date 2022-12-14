@@ -13,7 +13,8 @@ on:
 
 env:
   addonName: SavedDungeonsAndRaids
-  buildBasePath: $HOME/.wow-pre-release/SavedDungeonsAndRaids
+  buildDir: $HOME/.wow-pre-release
+  buildBasePathx: $HOME/.wow-pre-release/SavedDungeonsAndRaids
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -58,15 +59,19 @@ jobs:
         run: |
           echo "Executing: package-addon.sh"
           ./package-addon.sh
+      - name: Set Artifact Variables
+        run: |
+          echo buildBasePath="$buildDir/$addonName" >> $GITHUB_ENV
+          echo buildArtifact="$buildBasePath-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+
       - name: List the build artifacts
         run: |
-          echo "Build Artifacts: ${{ env.build_dir }}" 
-          echo "$(ls -l ${{ env.build_dir }})"
+          echo "Build Artifacts: $buildDir" 
+          echo "$(ls -l $buildDir)"
           echo "Addon Artifact Exists:"
-          echo "buildArtifact=${{ env.buildBasePath }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
-          echo "buildArtifactName=${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
+          echo "buildArtifactName=$addonName-${{ github.ref_name }}.zip" >> $GITHUB_ENV
           echo "Build Artifact Exists:"
-          echo "$(ls -l  ${{ env.buildArtifact }})"
+          echo "$(ls -l  $buildArtifact)"
       ## ------------------------------------------------ ##
       - name: Check Vars
         run: |
