@@ -64,9 +64,9 @@ jobs:
       - name: List the build artifacts
         run: |
           echo "buildArtifact=${{ env.buildBasePath }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
-          echo "Build Artifacts:" 
+          echo "Build Artifacts: ${{ env.buildDir }}*" 
           echo "$(ls -l ${{ env.buildDir }}*)"
-          echo "Build Artifact (Addon):"
+          echo "Build Artifact (Addon): ${{ env.buildArtifact }}"
           echo "$(ls -l ${{ env.buildArtifact }})"
 
 # end
