@@ -14,6 +14,8 @@ on:
 env:
   addonName: SavedDungeonsAndRaids
   createDraftRelease: false
+  artifact:
+    retentionDays: 7
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -61,6 +63,7 @@ jobs:
           echo buildBasePath=${buildBasePath}
           echo zipName=${zipName}
           echo checksumName=${checksumName}
+          echo artifact.retentionDays=${{ env.artifact.retentionDays }}
 
       ## ------------------------------------------------ ##
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -132,12 +135,14 @@ jobs:
         with:
           name: ${{ env.zipName }}
           path: ${{ env.buildArtifact }}
+          retention-days: 7
       ## ------------------------------------------------ ##
       - name: Upload addon artifact checksum file
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env. checksumName }}
           path: ${{ env.buildArtifactChecksumFile }}
+          retention-days: 7
       ## ------------------------------------------------ ##
       - name: Upload Release Asset
         id: upload-release-asset
