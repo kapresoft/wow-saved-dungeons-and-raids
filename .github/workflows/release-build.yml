@@ -162,4 +162,49 @@ jobs:
           asset_name: ${{ env.buildArtifactName }}
           asset_content_type: application/zip
 
+
+  draft_release:
+    name: Create Draft Releasex
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - name: Create a draft releasex
+        id: create_draft_releasex
+        #if: ${{ env.createDraftRelease == true }}
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          version: ${{ github.ref_name }}
+          prerelease: false
+          footer: |
+            
+            #### ${{ env.buildArtifactName }}
+            ```text
+            MD5 ${{ env.buildArtifactChecksum }}
+            ```
+      ## ------------------------------------------------ ##
+      ## see: https://github.com/actions/download-artifact ##
+      - name: Download artifact
+        steps:
+          - uses: actions/checkout@v2
+            with:
+              name: ${{ env.zipName }}
+              path: ${{ env.buildArtifact }}
+      ## ------------------------------------------------ ##
+      ## see: https://github.com/actions/upload-release-asset ##
+      - name: Upload Release Assetx
+        id: upload-release-assetx
+        #if: ${{ env.createDraftRelease == true }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_draft_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ${{ env.buildArtifact }}
+          asset_name: ${{ env.buildArtifactName }}
+          asset_content_type: application/zip
 # end
