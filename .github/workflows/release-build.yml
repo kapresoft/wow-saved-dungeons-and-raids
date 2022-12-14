@@ -173,7 +173,7 @@ jobs:
       - name: Set ENV Variable
         run: |
           echo buildArtifactFile="${{ env.addonName }}-${{ github.ref_name }}.zip" >> $GITHUB_ENV
-          echo checksumFile="${{ env.addonName }}-${{ github.ref_name }}-checksum.txt" >> $GITHUB_ENV
+          echo checksumFile="${{ env.addonName }}-${{ github.ref_name }}-md5.txt" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       ## see: https://github.com/actions/download-artifact ##
       - uses: actions/checkout@v2
@@ -203,7 +203,7 @@ jobs:
           prerelease: false
           footer: |
             
-            #### ${{ env.buildArtifactFile }}
+            #### ${{ env.buildArtifactChecksum }}
             ```text
             MD5 ${{ env.checksumFile }}
             ```
