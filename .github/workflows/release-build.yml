@@ -49,12 +49,12 @@ jobs:
       ## ------------------------------------------------ ##
       - name: Print Environment Variables
         run: |
-          echo HOME=$HOME
-          echo buildDir=$buildDir
-          echo addonName=$addonName
-          echo buildArtifact=buildArtifact
-          echo buildBasePath=$buildBasePath
-          echo zipName=$zipName
+          echo HOME=${HOME}
+          echo buildDir=${buildDir}
+          echo addonName=${addonName}
+          echo buildArtifact=${buildArtifact}
+          echo buildBasePath=${buildBasePath}
+          echo zipName=${zipName}
 
       ## ------------------------------------------------ ##
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
