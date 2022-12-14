@@ -70,7 +70,12 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      # Drafts your next Release notes as Pull Requests are merged into "master"
+      - name: Setup environment
+        # build types: branch, release
+        run: |
+          echo "build_type=branch" >> $GITHUB_ENV
+          echo "build_dir=~/.wow-pre-release" >> $GITHUB_ENV
+          echo "addon_name=SavedDungeonsAndRaids" >> $GITHUB_ENV
       - name: Create a draft release
         id: create_draft_release
         uses: release-drafter/release-drafter@v5
