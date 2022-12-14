@@ -115,7 +115,8 @@ jobs:
         run: |
           echo -e "::notice::HOME=${HOME}\n::notice::buildArtifact=${buildArtifact}"
           echo "::notice::buildArtifactChecksumFile=${buildArtifactChecksumFile}"
-          echo "::notice::${checksumName}_checksum: ${buildArtifactChecksum}"
+          echo "::notice::${checksumName} Checksum: ${buildArtifactChecksum}"
+          echo "::notice::buildArtifact=${buildArtifact}"
 
       - name: Create a draft release
         id: create_draft_release
@@ -135,6 +136,7 @@ jobs:
             MD5 ${{ env.buildArtifactChecksum }}
             ```
       ## ------------------------------------------------ ##
+      ## https://github.com/actions/upload-artifact
       - name: Upload addon artifact file
         uses: actions/upload-artifact@v3
         with:
