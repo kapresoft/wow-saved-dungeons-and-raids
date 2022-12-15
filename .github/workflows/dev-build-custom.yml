@@ -4,11 +4,11 @@ name: Branch Build
 
 # Controls when the workflow will run
 on:
-#  # Triggers the workflow on push or pull request events but only for the "main" branch
-#  push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  #push:
+  #  branches: [ "main" ]
+  #pull_request:
+  #  branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -86,18 +86,14 @@ jobs:
           echo "$(ls -l)"
       ## ------------------------------------------------ ##
       # Runs a set of commands using the runners shell
-#      - name: Packaging the addon
-#        run: |
-#          echo "Executing: package-addon.sh"
-#          ./package-addon.sh
-#      - name: List the build artifacts
-#        run: |
-#          echo "Build Artifact (Addon): ${{ env.buildArtifact }}"
-#          echo "$(ls -l ${{ env.buildArtifact }})"
-      ## ------------------------------------------------ ##
-      ## see: https://github.com/marketplace/actions/wow-packager
-      - uses: BigWigsMods/packager@v2
-
+      - name: Packaging the addon
+        run: |
+          echo "Executing: package-addon.sh"
+          ./package-addon.sh
+      - name: List the build artifacts
+        run: |
+          echo "Build Artifact (Addon): ${{ env.buildArtifact }}"
+          echo "$(ls -l ${{ env.buildArtifact }})"
       ## ------------------------------------------------ ##
       - name: "Verify Build Artifact exists"
         uses: andstor/file-existence-action@v2
