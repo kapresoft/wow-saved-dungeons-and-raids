@@ -16,6 +16,8 @@ env:
   createDraftRelease: false
   uploadBuildArtifacts: false
   artifact_retentionDays: 7
+  buildDir: ./.release
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -36,10 +38,6 @@ jobs:
         with:
           files: "/usr/bin/env, /usr/bin/zsh"
           fail: true
-      ## ------------------------------------------------ ##
-      - name: "Set ENV Variable: buildDir"
-        run: |
-          echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
@@ -71,8 +69,8 @@ jobs:
       ## ------------------------------------------------ ##
       ## see: https://github.com/marketplace/actions/wow-packager
       - uses: BigWigsMods/packager@v2
-        #with:
-        #  args:
+        with:
+          args: -r ${buildDir}
 
       ## ------------------------------------------------ ##
 #      - name: "Verify: Project script files exist"
@@ -95,8 +93,6 @@ jobs:
       ## ------------------------------------------------ ##
       ## Runs a set of commands using the runners shell ##
 #      - name: Packaging the addon
-#        env:
-#          hello: "there"
 #        run: |
 #          echo "Executing: package-addon.sh"
 #          ./package-addon.sh
