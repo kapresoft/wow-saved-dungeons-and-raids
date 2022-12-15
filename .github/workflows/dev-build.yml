@@ -61,6 +61,8 @@ jobs:
           echo buildBasePath=${buildBasePath}
           echo buildArtifactFilename=${buildArtifactFilename}
           echo buildArtifact=${buildArtifact}
+          echo "All other environments:"
+          echo "$(env|sort)"
       ## ------------------------------------------------ ##
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
