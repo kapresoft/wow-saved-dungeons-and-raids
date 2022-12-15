@@ -5,15 +5,15 @@ name: Release Build
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for tags
-  push:
-    tags: [ "0.**", "1.**" ]
+  #push:
+  #  tags: [ "0.**", "1.**" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 env:
   addonName: SavedDungeonsAndRaids
-  createDraftRelease: false
+  createDraftRelease: true
   uploadBuildArtifacts: false
   artifact_retentionDays: 7
 
@@ -69,44 +69,38 @@ jobs:
       - uses: actions/checkout@v3
 
       ## ------------------------------------------------ ##
-      ## see: https://github.com/marketplace/actions/wow-packager
-      - uses: BigWigsMods/packager@v2
-        #with:
-        #  args:
-
-      ## ------------------------------------------------ ##
-#      - name: "Verify: Project script files exist"
-#        uses: andstor/file-existence-action@v2
-#        with:
-#          files: "./package-addon.sh, ./dev/release.sh, ./dev/md5sum.sh"
-#          fail: true
+      - name: "Verify: Project script files exist"
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "./package-addon.sh, ./dev/release.sh, ./dev/md5sum.sh"
+          fail: true
 
       ## ------------------------------------------------ ##
       ## Runs a single command using the runners shell ##
-#      - name: "Setup Build Scripts"
-#        run: |
-#          echo "------------------------------------"
-#          echo Current working directory is: "$(pwd)"
-#          chmod a+x ./dev/release.sh ./dev/md5sum.sh ./package-addon.sh
-#          echo "------------------------------------"
-#          echo "Current working directory files are:"
-#          echo "$(ls -l)"
+      - name: "Setup Build Scripts"
+        run: |
+          echo "------------------------------------"
+          echo Current working directory is: "$(pwd)"
+          chmod a+x ./dev/release.sh ./dev/md5sum.sh ./package-addon.sh
+          echo "------------------------------------"
+          echo "Current working directory files are:"
+          echo "$(ls -l)"
 
       ## ------------------------------------------------ ##
       ## Runs a set of commands using the runners shell ##
-#      - name: Packaging the addon
-#        env:
-#          hello: "there"
-#        run: |
-#          echo "Executing: package-addon.sh"
-#          ./package-addon.sh
-#      - name: List the build artifacts
-#        run: |
-#          echo "Build Artifacts: $buildDir"
-#          echo "$(ls -l ${{ env.buildDir }})"
-#          echo "buildArtifact is $buildArtifact"
-#          echo "Build Artifact Exists:"
-#          echo "$(ls -l  $buildArtifact)"
+      - name: Packaging the addon
+        env:
+          hello: "there"
+        run: |
+          echo "Executing: package-addon.sh"
+          ./package-addon.sh
+      - name: List the build artifacts
+        run: |
+          echo "Build Artifacts: $buildDir" 
+          echo "$(ls -l ${{ env.buildDir }})"
+          echo "buildArtifact is $buildArtifact"
+          echo "Build Artifact Exists:"
+          echo "$(ls -l  $buildArtifact)"
       ## ------------------------------------------------ ##
       - name: Check Vars
         run: |
