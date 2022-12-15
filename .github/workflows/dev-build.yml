@@ -15,7 +15,6 @@ on:
 
 env:
   addonName: SavedDungeonsAndRaids
-  buildDir: .
   releaseDir: ./.release
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -47,18 +46,18 @@ jobs:
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
-          echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
+          echo buildBasePath="${release}/${addonName}" >> $GITHUB_ENV
           echo buildArtifactFilename="${addonName}-${GITHUB_SHA_SHORT}.zip"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildArtifact"
         run: |
-          echo buildArtifact="${buildDir}/${buildArtifactFilename}" >> $GITHUB_ENV
+          echo buildArtifact="${release}/${buildArtifactFilename}" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: Print Environment Variables
         run: |
           echo HOME=${HOME}
           echo addonName=${addonName}
-          echo buildDir=${buildDir}
+          echo release=${release}
           echo buildBasePath=${buildBasePath}
           echo buildArtifactFilename=${buildArtifactFilename}
           echo buildArtifact=${buildArtifact}
