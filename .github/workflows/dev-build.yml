@@ -15,7 +15,8 @@ on:
 
 env:
   addonName: SavedDungeonsAndRaids
-  releaseDir: .release
+  buildDir: ./
+  releaseDir: ./.release
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -43,10 +44,6 @@ jobs:
           script: |
             const sha = context.sha.substring(0, 7)
             core.exportVariable('GITHUB_SHA_SHORT', sha)
-      ## ------------------------------------------------ ##
-      - name: "Set ENV Variable: buildDir"
-        run: |
-          echo buildDir="$HOME/.wow-pre-release"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
