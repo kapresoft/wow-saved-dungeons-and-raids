@@ -76,24 +76,29 @@ jobs:
       - uses: BigWigsMods/packager@v2
         with:
           args: -r ${releaseDir}
-
       ## ------------------------------------------------ ##
-#      - name: "Verify: Project script files exist"
-#        uses: andstor/file-existence-action@v2
-#        with:
-#          files: "./package-addon.sh, ./dev/release.sh, ./dev/md5sum.sh"
-#          fail: true
+      - name: "Verify Build Artifact Exists: ${{ env.buildArtifact }}"
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "${{ env.buildArtifact }}"
+          fail: true
+      ## ------------------------------------------------ ##
+      - name: "Verify: Supporting Scripts Exists"
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "./dev/md5sum.sh"
+          fail: true
 
       ## ------------------------------------------------ ##
       ## Runs a single command using the runners shell ##
-#      - name: "Setup Build Scripts"
-#        run: |
-#          echo "------------------------------------"
-#          echo Current working directory is: "$(pwd)"
-#          chmod a+x ./dev/release.sh ./dev/md5sum.sh ./package-addon.sh
-#          echo "------------------------------------"
-#          echo "Current working directory files are:"
-#          echo "$(ls -l)"
+      - name: "Setup Build Scripts"
+        run: |
+          echo "------------------------------------"
+          echo Current working directory is: "$(pwd)"
+          chmod a+x ./dev/md5sum.sh
+          echo "------------------------------------"
+          echo "Current working directory files are:"
+          echo "$(ls -l)"
 
       ## ------------------------------------------------ ##
       ## Runs a set of commands using the runners shell ##
