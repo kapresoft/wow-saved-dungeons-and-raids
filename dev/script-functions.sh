@@ -15,7 +15,7 @@ release_script="./dev/release.sh"
 
 ADDON_NAME="${proj_dir}"
 EXT_LIB="Core/ExtLib"
-INTERFACE_LIB="Core/Interface"
+INTERFACE_LIB="${EXT_LIB}/_NotDeployed/Interface"
 EXT_UTIL_LIB_DIR="${EXT_LIB}/Kapresoft-LibUtil"
 WOW_ACE_LIB_DIR="${EXT_LIB}/WowAce"
 WOW_API_INTERFACE_LIB_DIR="${INTERFACE_LIB}/Kapresoft-Wow-Api-Interface"
