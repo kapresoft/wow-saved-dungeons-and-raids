@@ -15,14 +15,8 @@ New Instance
 -------------------------------------------------------------------------------]]
 ---@class MainEventHandlerMixin : BaseLibraryObject
 local L = LibStub:NewLibrary(M.MainEventHandlerMixin, 1)
+AceEvent:Embed(L)
 local p = L.logger
-
-AceEvent:RegisterMessage('AddonMessage_OnAfterInitialize', function(evt, ...)
-    ---@type SavedDungeonsAndRaid
-    local addon = ...
-    --p:log(0, 'RegisterMessage: %s called...', evt)
-    addon.mainEventHandler:RegisterEvents()
-end)
 
 --[[-----------------------------------------------------------------------------
 Methods
@@ -42,6 +36,8 @@ local function InstanceMethods(o)
 
     function o:RegisterEvents()
         p:log("RegisterEvents...")
+
+        --self:RegisterOnPlayerEnteringWorld()
     end
 
     ---@param eventFrame _Frame
@@ -63,3 +59,10 @@ local function InstanceMethods(o)
 end
 
 InstanceMethods(L)
+
+L:RegisterMessage('SDNR_AddonMessage_OnAfterInitialize', function(evt, ...)
+    ---@type SavedDungeonsAndRaid
+    local addon = ...
+    --p:log(0, 'RegisterMessage: %s called...', evt)
+    addon.mainEventHandler:RegisterEvents()
+end)

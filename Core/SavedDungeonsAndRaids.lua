@@ -34,7 +34,7 @@ local function Methods(o)
 
     function o:OnInitialize()
         p:log(10, "Initialized called..")
-        self:SendMessage('AddonMessage_OnAfterInitialize', self)
+        self:SendMessage('SDNR_AddonMessage_OnAfterInitialize', self)
     end
 end
 
