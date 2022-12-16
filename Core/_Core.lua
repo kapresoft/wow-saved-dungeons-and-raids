@@ -20,7 +20,7 @@ New Instance
 local L = LibStub:NewLibrary(M.Core, 1)
 local p = L.logger
 
-p:log("Loaded: %s", 'Core')
+--p:log("Loaded: %s", 'Core')
 
 --[[-----------------------------------------------------------------------------
 Methods

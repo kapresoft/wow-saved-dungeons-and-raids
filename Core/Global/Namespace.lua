@@ -29,14 +29,6 @@ local NamespaceObject = {
     ToStringFunction = {}
 }
 
----@class AceConsole
-local AceConsole_Interface = {
-    -- Embeds AceConsole into the target object making the functions from the mixins list available on target:..
-    ---@param self AceConsole
-    ---@param target any object to embed AceBucket in
-    Embed = function(self, target)  end
-}
-
 ---@type string
 local addonName
 ---@type Namespace
@@ -52,11 +44,8 @@ GlobalObjects
 local GlobalObjects = {
     ---@type AceConsole
     AceConsole = {},
-
-    ---@type GlobalConstants
-    GlobalConstants = {},
-    ---@type Logger
-    Logger = {},
+    ---@type AceEvent
+    AceEvent = {},
 
     ---@type fun(fmt:string, ...)|fun(val:string)
     pformat = {},
@@ -65,25 +54,29 @@ local GlobalObjects = {
 
     ---@type Kapresoft_LibUtil_Objects
     LU = {},
-    ---@type Kapresoft_LibUtil_PrettyPrint
-    PrettyPrint = {},
-    ---@type Kapresoft_LibUtil_Assert
-    Assert = {},
-    ---@type Kapresoft_LibUtil_Incrementer
-    Incrementer = {},
-    ---@type Kapresoft_LibUtil_LuaEvaluator
-    LuaEvaluator = {},
-    ---@type Kapresoft_LibUtil_Mixin
-    Mixin = {},
-    ---@type Kapresoft_LibUtil_String
-    String = {},
-    ---@type Kapresoft_LibUtil_Table
-    Table = {},
+    -----@type Kapresoft_LibUtil_PrettyPrint
+    --PrettyPrint = {},
+    -----@type Kapresoft_LibUtil_Assert
+    --Assert = {},
+    -----@type Kapresoft_LibUtil_Incrementer
+    --Incrementer = {},
+    -----@type Kapresoft_LibUtil_LuaEvaluator
+    --LuaEvaluator = {},
+    -----@type Kapresoft_LibUtil_Mixin
+    --Mixin = {},
+    -----@type Kapresoft_LibUtil_String
+    --String = {},
+    -----@type Kapresoft_LibUtil_Table
+    --Table = {},
 
     ---@type Core
     Core = {},
-    ---@type Wrapper
-    Wrapper = {},
+    ---@type GlobalConstants
+    GlobalConstants = {},
+    ---@type Logger
+    Logger = {},
+    ---@type MainEventHandlerMixin
+    MainEventHandlerMixin = {},
 }
 --[[-----------------------------------------------------------------------------
 Modules
@@ -94,17 +87,20 @@ local M = {
     LU = 'LU',
     pformat = 'pformat',
     sformat = 'sformat',
-    GlobalConstants = 'GlobalConstants',
-    Core = 'Core',
     AceConsole = 'AceConsole',
+    AceEvent = 'AceEvent',
+
+    Core = 'Core',
+    GlobalConstants = 'GlobalConstants',
     Logger = 'Logger',
-    Wrapper = 'Wrapper',
+    MainEventHandlerMixin = 'MainEventHandlerMixin',
 }
 
 local InitialModuleInstances = {
     LU = LibUtil,
     GlobalConstants = LibStub(LibName('GlobalConstants')),
     AceConsole = LibStub('AceConsole-3.0'),
+    AceEvent = LibStub('AceEvent-3.0'),
     pformat = PrettyPrint.pformat,
 }
 

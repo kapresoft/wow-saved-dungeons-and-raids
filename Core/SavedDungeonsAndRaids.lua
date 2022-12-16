@@ -9,6 +9,7 @@ Local Vars
 local ns = SDNR_Namespace(...)
 local O, LibStubLocal, M = ns:LibPack()
 local LibStub = LibStub
+local Mixin = O.LU.Mixin
 local Table = O.Table
 local toStringSorted = Table.toStringSorted
 local pformat = O.pformat
@@ -28,23 +29,20 @@ Methods
 -------------------------------------------------------------------------------]]
 ---@param o SavedDungeonsAndRaid
 local function Methods(o)
+    local mainEventHandler = Mixin:MixinAndInit(O.MainEventHandlerMixin, o)
+    o.mainEventHandler = mainEventHandler
 
-end
-
----@param o SavedDungeonsAndRaid
-local function RegisterEvents(o)
-
+    function o:OnInitialize()
+        p:log(10, "Initialized called..")
+        self:SendMessage('AddonMessage_OnAfterInitialize', self)
+    end
 end
 
 local function Constructor()
-
     Methods(A)
-    RegisterEvents(A)
-
     p:log('Loaded: %s', ns.name)
-    p:log('Namespace keys: %s', ns:ToStringNamespaceKeys())
-    p:log('Namespace Object keys: %s', ns:ToStringObjectKeys())
-
+    --p:log('Namespace keys: %s', ns:ToStringNamespaceKeys())
+    --p:log('Namespace Object keys: %s', ns:ToStringObjectKeys())
     SDNR = A
 end
 
