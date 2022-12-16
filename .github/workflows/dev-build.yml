@@ -16,6 +16,7 @@ on:
 env:
   addonName: SavedDungeonsAndRaids
   releaseDir: ./.release
+  curseForgeProjectId: 729609
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -96,7 +97,7 @@ jobs:
       ## see: https://github.com/marketplace/actions/wow-packager
       - uses: BigWigsMods/packager@v2
         with:
-          args: -du -r ${releaseDir}
+          args: -du -r ${releaseDir} -p ${curseForgeProjectId}
       ## ------------------------------------------------ ##
       - name: "Verify Build Artifact exists"
         uses: andstor/file-existence-action@v2
