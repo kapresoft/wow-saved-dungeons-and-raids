@@ -18,10 +18,9 @@ IncludeBase && Validate && InitDirs
 # --------------------------------------------
 # Vars / Support Functions
 # --------------------------------------------
-SRC="${WOW_LIB_UTIL_SANDBOX_HOME}/"
-DEST="./${EXT_UTIL_LIB_DIR}/"
+SRC="${WOW_API_INTERFACE_SANDBOX_HOME}/"
+DEST="./${WOW_API_INTERFACE_LIB_DIR}/"
 excludes="--exclude={'.idea','.*','*.sh','*.toc','*.md','dev','External','LICENSE'}"
-
 # --------------------------------------------
 # Main
 # --------------------------------------------

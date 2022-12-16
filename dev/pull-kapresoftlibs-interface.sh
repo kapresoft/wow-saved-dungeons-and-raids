@@ -20,18 +20,16 @@ IncludeBase && Validate && InitDirs
 # --------------------------------------------
 # Vars / Support Functions
 # --------------------------------------------
-# Use Common Release Dir
-RELEASE_DIR="${dev_release_dir}"
+# Source must be the same as where it is extracted in pkgmeta-kapresoftlibs-interface.yaml
+PKGMETA_EXTRACT_DIR="${EXT_LIB}/Kapresoft-LibUtil"
 
-# Source must be the same as where it is extracted in pkgmeta-kapresoftlibs.yaml
-PKGMETA_EXTRACT_DIR="Core/ExtLib/Kapresoft-LibUtil"
 SRC="${RELEASE_DIR}/${ADDON_NAME}/${PKGMETA_EXTRACT_DIR}"
 DEST="${EXT_LIB}/."
 
 API_SRC="${RELEASE_DIR}/${ADDON_NAME}/${WOW_API_INTERFACE_LIB_DIR}"
 API_DEST="${INTERFACE_LIB}/."
 
-PKGMETA="-m ${PKG_META_UTIL}"
+PKGMETA="-m ${PKG_META_INTERFACE}"
 
 Package() {
   local arg1=$1
@@ -57,9 +55,10 @@ Package() {
   echo "Executing: $rel_cmd"
   eval "$rel_cmd"
 }
-SyncUtil() {
-  SyncDir $SRC $DEST
+
+SyncInterfaceLib() {
+  SyncDir $API_SRC $API_DEST
 }
 #Package $*
 #SyncDir $SRC $DEST
-Package $* && SyncUtil
+Package $* && SyncInterfaceLib
