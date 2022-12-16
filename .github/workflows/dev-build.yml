@@ -18,27 +18,14 @@ env:
   releaseDir: ./.release
   curseForgeProjectId: 729609
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       ## ------------------------------------------------ ##
-#      - name: Install zsh
-#        run: sudo apt-get update && sudo apt-get install zsh
-#      ## ------------------------------------------------ ##
-#      - name: "Verify: /usr/bin/env & /usr/bin/zsh exists"
-#        uses: andstor/file-existence-action@v2
-#        with:
-#          files: "/usr/bin/env, /usr/bin/zsh"
-#          fail: true
-      ## ------------------------------------------------ ##
       ## See: https://github.com/actions/github-script
-      - name: Short hash
+      - name: "Set Env Variable: GITHUB_SHA_SHORT"
         uses: actions/github-script@v3
         with:
           script: |
@@ -62,37 +49,18 @@ jobs:
           echo buildBasePath=${buildBasePath}
           echo buildArtifactFilename=${buildArtifactFilename}
           echo buildArtifact=${buildArtifact}
-          echo "All other environments:"
+          echo "------------------------"
+          echo "All ENV Vars:"
           echo "$(env|sort)"
       ## ------------------------------------------------ ##
-
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      ## Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
       ## ------------------------------------------------ ##
-      - name: "Verify: /usr/bin/env & /usr/bin/zsh exists"
+      - name: "Verify Package Meta File Exists: ./pkgmeta.yaml"
         uses: andstor/file-existence-action@v2
         with:
           files: "pkgmeta.yaml"
           fail: true
-      ## ------------------------------------------------ ##
-      # Runs a single command using the runners shell
-#      - name: Setup Build Scripts
-#        run: |
-#          echo Verify zsh exists: "$(which zsh)"
-#          echo pwd is: "$(pwd)"
-#          chmod a+x ./dev/release.sh ./package-addon.sh
-#          echo "$(ls -l)"
-      ## ------------------------------------------------ ##
-      # Runs a set of commands using the runners shell
-      #      - name: Packaging the addon
-      #        run: |
-      #          echo "Executing: package-addon.sh"
-      #          ./package-addon.sh
-      #      - name: List the build artifacts
-      #        run: |
-      #          echo "Build Artifact (Addon): ${{ env.buildArtifact }}"
-      #          echo "$(ls -l ${{ env.buildArtifact }})"
       ## ------------------------------------------------ ##
       ## see: https://github.com/marketplace/actions/wow-packager
       - uses: BigWigsMods/packager@v2
