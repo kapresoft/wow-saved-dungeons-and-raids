@@ -20,7 +20,6 @@ env:
   releaseDir: ./.release
   curseForgeProjectId: 729609
 
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -74,6 +73,8 @@ jobs:
       ## ------------------------------------------------ ##
       ## see: https://github.com/marketplace/actions/wow-packager
       - uses: BigWigsMods/packager@v2
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
         with:
           args: -r ${releaseDir} -p ${curseForgeProjectId}
       ## ------------------------------------------------ ##
