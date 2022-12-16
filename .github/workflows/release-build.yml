@@ -1,14 +1,9 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Release Build
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for tags
   push:
     tags: [ "0.**", "1.**" ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 env:
@@ -16,29 +11,15 @@ env:
   createDraftRelease: true
   uploadBuildArtifacts: true
   artifact_retentionDays: 7
-  buildDir: ./.release
   releaseDir: ./.release
   curseForgeProjectId: 729609
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
     name: Build
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      ## ------------------------------------------------ ##
-#      - name: "Install: zsh"
-#        run: sudo apt-get update && sudo apt-get install zsh
-      ## ------------------------------------------------ ##
-#      - name: "Verify: /usr/bin/env & /usr/bin/zsh exists"
-#        uses: andstor/file-existence-action@v2
-#        with:
-#          files: "/usr/bin/env, /usr/bin/zsh"
-#          fail: true
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
@@ -69,7 +50,6 @@ jobs:
       ## ------------------------------------------------ ##
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
       ## ------------------------------------------------ ##
       ## see: https://github.com/marketplace/actions/wow-packager
       - uses: BigWigsMods/packager@v2
@@ -89,31 +69,21 @@ jobs:
         with:
           files: "./dev/md5sum.sh"
           fail: true
-
       ## ------------------------------------------------ ##
-      ## Runs a single command using the runners shell ##
+      - name: "Setup Build Scripts"
+        run: |
+          chmod a+x ./dev/md5sum.sh
+      ## ------------------------------------------------ ##
+      ## Show Directory contents
       - name: "Setup Build Scripts"
         run: |
           echo "------------------------------------"
           echo Current working directory is: "$(pwd)"
-          chmod a+x ./dev/md5sum.sh
           echo "------------------------------------"
-          echo "Current working directory files are:"
+          echo "Project Files:"
           echo "$(ls -l)"
-
-      ## ------------------------------------------------ ##
-      ## Runs a set of commands using the runners shell ##
-#      - name: Packaging the addon
-#        run: |
-#          echo "Executing: package-addon.sh"
-#          ./package-addon.sh
-#      - name: List the build artifacts
-#        run: |
-#          echo "Build Artifacts: $releaseDir"
-#          echo "$(ls -l ${{ env.releaseDir }})"
-#          echo "buildArtifact is $buildArtifact"
-#          echo "Build Artifact Exists:"
-#          echo "$(ls -l  $buildArtifact)"
+          echo "dev:"
+          echo "$(ls -l dev/*)"
       ## ------------------------------------------------ ##
       - name: Check Vars
         run: |
