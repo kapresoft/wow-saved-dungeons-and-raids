@@ -14,9 +14,11 @@ on:
 env:
   addonName: SavedDungeonsAndRaids
   createDraftRelease: false
-  uploadBuildArtifacts: false
+  uploadBuildArtifacts: true
   artifact_retentionDays: 7
   buildDir: ./.release
+  releaseDir: ./.release
+  curseForgeProjectId: 729609
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -30,31 +32,31 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       ## ------------------------------------------------ ##
-      - name: "Install: zsh"
-        run: sudo apt-get update && sudo apt-get install zsh
+#      - name: "Install: zsh"
+#        run: sudo apt-get update && sudo apt-get install zsh
       ## ------------------------------------------------ ##
-      - name: "Verify: /usr/bin/env & /usr/bin/zsh exists"
-        uses: andstor/file-existence-action@v2
-        with:
-          files: "/usr/bin/env, /usr/bin/zsh"
-          fail: true
+#      - name: "Verify: /usr/bin/env & /usr/bin/zsh exists"
+#        uses: andstor/file-existence-action@v2
+#        with:
+#          files: "/usr/bin/env, /usr/bin/zsh"
+#          fail: true
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
-          echo buildBasePath="${buildDir}/${addonName}" >> $GITHUB_ENV
+          echo buildBasePath="${releaseDir}/${addonName}" >> $GITHUB_ENV
           echo buildArtifactFilename="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
           echo buildArtifactChecksumFilename="${addonName}-${{ github.ref_name }}.zip.md5sum"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildArtifact"
         run: |
-          echo buildArtifact="${buildDir}/${buildArtifactFilename}" >> $GITHUB_ENV
-          echo buildArtifactChecksumFile="${buildDir}/${buildArtifactChecksumFilename}" >> $GITHUB_ENV
+          echo buildArtifact="${releaseDir}/${buildArtifactFilename}" >> $GITHUB_ENV
+          echo buildArtifactChecksumFile="${releaseDir}/${buildArtifactChecksumFilename}" >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: Print Environment Variables
         run: |
           echo HOME=${HOME}
           echo createDraftRelease=${createDraftRelease}
-          echo buildDir=${buildDir}
+          echo releaseDir=${releaseDir}
           echo addonName=${addonName}
           echo buildArtifact=${buildArtifact}
           echo buildArtifactChecksumFile=${buildArtifactChecksumFile}
@@ -62,6 +64,9 @@ jobs:
           echo buildArtifactFilename=${buildArtifactFilename}
           echo buildArtifactChecksumFilename=${buildArtifactChecksumFilename}
           echo artifact_retentionDays=${{ env.artifact_retentionDays }}
+          echo "------------------------"
+          echo "All ENV Vars:"
+          echo "$(env|sort)"
       ## ------------------------------------------------ ##
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -70,7 +75,7 @@ jobs:
       ## see: https://github.com/marketplace/actions/wow-packager
       - uses: BigWigsMods/packager@v2
         with:
-          args: -r ${buildDir}
+          args: -r ${releaseDir}
 
       ## ------------------------------------------------ ##
 #      - name: "Verify: Project script files exist"
@@ -98,8 +103,8 @@ jobs:
 #          ./package-addon.sh
 #      - name: List the build artifacts
 #        run: |
-#          echo "Build Artifacts: $buildDir"
-#          echo "$(ls -l ${{ env.buildDir }})"
+#          echo "Build Artifacts: $releaseDir"
+#          echo "$(ls -l ${{ env.releaseDir }})"
 #          echo "buildArtifact is $buildArtifact"
 #          echo "Build Artifact Exists:"
 #          echo "$(ls -l  $buildArtifact)"
