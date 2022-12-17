@@ -68,13 +68,45 @@ function S:GetLibrary(moduleName, optionalMinorVersion) return LibStub(LibName(m
 S.mt = { __call = function (_, ...) return S:GetLibrary(...) end }
 setmetatable(S, S.mt)
 
+--[[-----------------------------------------------------------------------------
+GlobalConstants
+-------------------------------------------------------------------------------]]
 ---@class GlobalConstants
 local L = LibStub:NewLibrary(LibName('GlobalConstants'), 1)
+
+---@param o GlobalConstants
+local function GlobalConstantProperties(o)
+    ---@class EventNames
+    local E = {
+        OnEnter = 'OnEnter',
+        OnEvent = 'OnEvent',
+        OnLeave = 'OnLeave',
+        OnModifierStateChanged = 'OnModifierStateChanged',
+        OnDragStart = 'OnDragStart',
+        OnDragStop = 'OnDragStop',
+        OnMouseUp = 'OnMouseUp',
+        OnMouseDown = 'OnMouseDown',
+        OnReceiveDrag = 'OnReceiveDrag',
+
+        PLAYER_ENTERING_WORLD = 'PLAYER_ENTERING_WORLD',
+    }
+    local function newMessage(name) return sformat('%s::' .. name, addonShortName)  end
+    ---@class MessageNames
+    local M = {
+        OnAfterInitialize = newMessage('OnAfterInitialize'),
+        OnAddonReady = newMessage('OnAddonReady'),
+    }
+
+    o.E = E
+    o.M = M
+end
 
 ---@param o GlobalConstants
 local function Methods(o)
     --  TODO
 end
+
+GlobalConstantProperties(L)
 Methods(L)
 
 ns.LibName = LibName

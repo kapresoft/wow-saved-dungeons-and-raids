@@ -9,7 +9,7 @@ Local Vars
 local ns = SDNR_Namespace(...)
 local O, LibStubLocal, M = ns:LibPack()
 local LibStub = LibStub
-local Mixin = O.LU.Mixin
+local GC, Mixin = O.GlobalConstants, O.LU.Mixin
 local Table = O.Table
 local toStringSorted = Table.toStringSorted
 local pformat = O.pformat
@@ -19,6 +19,7 @@ local A = LibStub("AceAddon-3.0"):NewAddon(ns.name, "AceConsole-3.0", "AceEvent-
 local mt = getmetatable(A) or {}
 mt.__tostring = ns.ToStringFunction()
 local p = O.Logger:NewLogger()
+A.logger = p
 
 --setmetatable(A, mt)
 ns['addon'] = A
@@ -29,20 +30,18 @@ Methods
 -------------------------------------------------------------------------------]]
 ---@param o SavedDungeonsAndRaid
 local function Methods(o)
+    ---@type MainEventHandlerMixin
     local mainEventHandler = Mixin:MixinAndInit(O.MainEventHandlerMixin, o)
     o.mainEventHandler = mainEventHandler
 
     function o:OnInitialize()
         p:log(10, "Initialized called..")
-        self:SendMessage('SDNR_AddonMessage_OnAfterInitialize', self)
+        self:SendMessage(GC.M.OnAfterInitialize, self)
     end
 end
 
 local function Constructor()
     Methods(A)
-    p:log('Loaded: %s', ns.name)
-    --p:log('Namespace keys: %s', ns:ToStringNamespaceKeys())
-    --p:log('Namespace Object keys: %s', ns:ToStringObjectKeys())
     SDNR = A
 end
 

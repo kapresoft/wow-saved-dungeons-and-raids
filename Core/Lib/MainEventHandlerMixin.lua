@@ -1,14 +1,16 @@
 --[[-----------------------------------------------------------------------------
 Blizzard Vars
 -------------------------------------------------------------------------------]]
-local CreateFrame = CreateFrame
+local CreateFrame, FrameUtil = CreateFrame, FrameUtil
+local RegisterFrameForEvents, RegisterFrameForUnitEvents = FrameUtil.RegisterFrameForEvents, FrameUtil.RegisterFrameForUnitEvents
 
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
 local ns = SDNR_Namespace(...)
 local O, LibStub, M = ns:LibPack()
-local AceEvent = O.AceEvent
+local AceEvent, GC = O.AceEvent, O.GlobalConstants
+local E, MSG = GC.E, GC.M
 
 --[[-----------------------------------------------------------------------------
 New Instance
@@ -19,9 +21,25 @@ AceEvent:Embed(L)
 local p = L.logger
 
 --[[-----------------------------------------------------------------------------
+Support Functions
+-------------------------------------------------------------------------------]]
+---@param f MainEventHandlerFrame
+local function OnPlayerEnteringWorld(f, event, ...)
+    --p:log('[%s] called...', event)
+    local addon = f.ctx.addon
+    addon.logger:log('Loaded...')
+    --p:log('Namespace keys: %s', ns:ToStringNamespaceKeys())
+    --p:log('Namespace Object keys: %s', ns:ToStringObjectKeys())
+
+    ---Other addons can listen to message
+    ---AceEvent:RegisterMessage(MSG.OnAddonReady, function(evt, ...) end
+    L:SendMessage(MSG.OnAddonReady, addon)
+end
+
+--[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
----@param o MainEventHandlerFrame
+---@param o MainEventHandlerMixin
 local function InstanceMethods(o)
 
     ---Init Method: Called by Mixin
@@ -36,8 +54,13 @@ local function InstanceMethods(o)
 
     function o:RegisterEvents()
         p:log("RegisterEvents...")
+        self:RegisterOnPlayerEnteringWorld()
+    end
 
-        --self:RegisterOnPlayerEnteringWorld()
+    function L:RegisterOnPlayerEnteringWorld()
+        local f = self:CreateEventFrame()
+        f:SetScript(E.OnEvent, OnPlayerEnteringWorld)
+        RegisterFrameForEvents(f, { E.PLAYER_ENTERING_WORLD })
     end
 
     ---@param eventFrame _Frame
@@ -52,17 +75,22 @@ local function InstanceMethods(o)
 
     ---@return MainEventHandlerFrame
     function o:CreateEventFrame()
+        ---@type MainEventHandlerFrame
         local f = CreateFrame("Frame", nil, self.addon.frame)
-        f.widget = self:CreateWidget(f)
+        f.ctx = self:CreateWidget(f)
         return f
     end
 end
 
-InstanceMethods(L)
+---Registers a listener to a message event
+local function RegisterMessageHandler(o)
+    o:RegisterMessage(MSG.OnAfterInitialize, function(evt, ...)
+        ---@type SavedDungeonsAndRaid
+        local addon = ...
+        p:log(10, 'RegisterMessage[%s]: called...', evt)
+        addon.mainEventHandler:RegisterEvents()
+    end)
+end
 
-L:RegisterMessage('SDNR_AddonMessage_OnAfterInitialize', function(evt, ...)
-    ---@type SavedDungeonsAndRaid
-    local addon = ...
-    --p:log(0, 'RegisterMessage: %s called...', evt)
-    addon.mainEventHandler:RegisterEvents()
-end)
+InstanceMethods(L)
+RegisterMessageHandler(L)
