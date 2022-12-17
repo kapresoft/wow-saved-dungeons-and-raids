@@ -15,8 +15,8 @@ local E, MSG = GC.E, GC.M
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
----@class MainEventHandlerMixin : BaseLibraryObject
-local L = LibStub:NewLibrary(M.MainEventHandlerMixin, 1)
+---@class MainEventHandler : BaseLibraryObject
+local L = LibStub:NewLibrary(M.MainEventHandler, 1)
 AceEvent:Embed(L)
 local p = L.logger
 
@@ -39,7 +39,7 @@ end
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
----@param o MainEventHandlerMixin
+---@param o MainEventHandler
 local function InstanceMethods(o)
 
     ---Init Method: Called by Mixin
@@ -50,6 +50,12 @@ local function InstanceMethods(o)
     ---@param addon SavedDungeonsAndRaid
     function o:Init(addon)
         self.addon = addon
+
+        self:RegisterMessage(MSG.OnAfterInitialize, function(evt, ...)
+            ---@type SavedDungeonsAndRaid
+            p:log(10, 'RegisterMessage[%s]: called...', evt)
+            self:RegisterEvents()
+        end)
     end
 
     function o:RegisterEvents()
@@ -83,14 +89,14 @@ local function InstanceMethods(o)
 end
 
 ---Registers a listener to a message event
+---@param o MainEventHandler
 local function RegisterMessageHandler(o)
     o:RegisterMessage(MSG.OnAfterInitialize, function(evt, ...)
         ---@type SavedDungeonsAndRaid
         local addon = ...
         p:log(10, 'RegisterMessage[%s]: called...', evt)
-        addon.mainEventHandler:RegisterEvents()
+        o:RegisterEvents()
     end)
 end
 
 InstanceMethods(L)
-RegisterMessageHandler(L)

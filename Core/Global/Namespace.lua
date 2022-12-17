@@ -75,8 +75,8 @@ local GlobalObjects = {
     GlobalConstants = {},
     ---@type Logger
     Logger = {},
-    ---@type MainEventHandlerMixin
-    MainEventHandlerMixin = {},
+    ---@type MainEventHandler
+    MainEventHandler = {},
 }
 --[[-----------------------------------------------------------------------------
 Modules
@@ -93,7 +93,7 @@ local M = {
     Core = 'Core',
     GlobalConstants = 'GlobalConstants',
     Logger = 'Logger',
-    MainEventHandlerMixin = 'MainEventHandlerMixin',
+    MainEventHandler = 'MainEventHandler',
 }
 
 local InitialModuleInstances = {

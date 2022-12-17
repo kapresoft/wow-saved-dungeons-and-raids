@@ -7,12 +7,11 @@ local sformat = string.format
 Local Vars
 -------------------------------------------------------------------------------]]
 local ns = SDNR_Namespace(...)
-local O, LibStubLocal, M = ns:LibPack()
 local LibStub = LibStub
-local GC, Mixin = O.GlobalConstants, O.LU.Mixin
+local O, LibStubLocal, M = ns:LibPack()
+local GC = O.GlobalConstants
 local Table = O.Table
-local toStringSorted = Table.toStringSorted
-local pformat = O.pformat
+local toStringSorted, pformat = Table.toStringSorted, O.pformat
 
 ---@class SavedDungeonsAndRaid
 local A = LibStub("AceAddon-3.0"):NewAddon(ns.name, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
@@ -30,9 +29,8 @@ Methods
 -------------------------------------------------------------------------------]]
 ---@param o SavedDungeonsAndRaid
 local function Methods(o)
-    ---@type MainEventHandlerMixin
-    local mainEventHandler = Mixin:MixinAndInit(O.MainEventHandlerMixin, o)
-    o.mainEventHandler = mainEventHandler
+
+    O.MainEventHandler:Init(o)
 
     function o:OnInitialize()
         p:log(10, "Initialized called..")
