@@ -1,3 +1,11 @@
+--[[-----------------------------------------------------------------------------
+Lua Vars
+-------------------------------------------------------------------------------]]
+local unpack = unpack
+
+--[[-----------------------------------------------------------------------------
+Local Vars
+-------------------------------------------------------------------------------]]
 local ns = SDNR_Namespace(...)
 ---The original LibStub
 local LibStub = ns.O.AceLibStub
@@ -7,13 +15,34 @@ local sformat, pformat = string.format, ns.pformat
 local tableUnpack = O.Table.tableUnpack
 local C = O.AceConsole
 
-local logPrefix = '|cfdffffff{{|r|cfd2db9fb' .. ns.nameShort .. '|r|cfdfbeb2d%s|r|cfdffffff}}|r'
+---Colors are in hex
+local consoleColors = {
+    primary   = '3fc7d1',
+    secondary = 'fbeb2d',
+    tertiary = 'ffffff'
+}
 
+--[[-----------------------------------------------------------------------------
+New Instance
+-------------------------------------------------------------------------------]]
 ---@class Logger
 local L = LibStub:NewLibrary(ns.LibName(M.Logger), 1)
 ns:Register(M.Logger, L)
 
--- ## Functions ------------------------------------------------
+--[[-----------------------------------------------------------------------------
+Support Functions
+-------------------------------------------------------------------------------]]
+local function formatColor(color, text) return sformat('|cfd%s%s|r', color, text) end
+local function getFormattedLogPrefix()
+    local bracketsLeft = formatColor(consoleColors.tertiary, '{{')
+    local bracketsRight = formatColor(consoleColors.tertiary, '}}')
+    local logName = formatColor(consoleColors.primary, ns.nameShort)
+    return bracketsLeft .. logName .. bracketsRight
+end
+
+--[[-----------------------------------------------------------------------------
+LogUtil
+-------------------------------------------------------------------------------]]
 ---@class LogUtil
 local _U = { }
 
@@ -92,6 +121,8 @@ local TABLE_FORMATTER = { format = function(o) return _U.format(o, false) end }
 ---@param optionalLogName string The optional logger name
 local function _EmbedLogger(obj, optionalLogName)
     local prefix = ''
+    local logPrefix = getFormattedLogPrefix()
+
     if type(optionalLogName) == 'string' then prefix = '::' .. optionalLogName end
     if type(obj.mt) ~= 'table' then obj.mt = {} end
     obj.mt = { __tostring = function() return sformat(logPrefix, prefix)  end }
@@ -119,10 +150,16 @@ local function _EmbedLogger(obj, optionalLogName)
     ---```
     function obj:D() formatter = DEFAULT_FORMATTER; return self end
 
-    -- 1: log('String') or log(N, 'String')
-    -- 2: log('String', obj) or log(N, 'String', obj)
-    -- 3: log('String', arg1, arg2, etc...) or log(N, 'String', arg1, arg2, etc...)
-    -- Where N = 1 to 100
+    ---```
+    ---level=10 LOG_LEVEL=5  --> Don't log
+    --- level=10 LOG_LEVEL=10  --> Do Log
+    --- level=10 LOG_LEVEL=11  --> Do Log
+    ---if LOG_LEVEL >= level then log it end
+    --- 1: log('String') or log(N, 'String')
+    --- 2: log('String', obj) or log(N, 'String', obj)
+    --- 3: log('String', arg1, arg2, etc...) or log(N, 'String', arg1, arg2, etc...)
+    --- Where N = 1 to 100
+    ---```
     function obj:log(...)
         local args = _U.t_pack(...)
         local level = 0
@@ -135,11 +172,6 @@ local function _EmbedLogger(obj, optionalLogName)
             len = len - 1
         end
         if len <= 0 then return end
-
-        -- level=10 LOG_LEVEL=5  --> Don't log
-        -- level=10 LOG_LEVEL=10  --> Do Log
-        -- level=10 LOG_LEVEL=11  --> Do Log
-        --if LOG_LEVEL >= level then log it end
 
         if not ShouldLog(level) then return end
 
@@ -157,13 +189,6 @@ local function _EmbedLogger(obj, optionalLogName)
             error(sformat('Argument #%s requires a string.format text', startIndex))
         end
 
-        --if len == 2 then
-        --    local textFormat = args[startIndex]
-        --    local o = args[startIndex + 1]
-        --    self:Printf(format(textFormat, self:format(o)))
-        --    return
-        --end
-
         args = _U.t_sliceAndPack({...}, startIndex)
         local newArgs = {}
         for i=1,args.len do
@@ -171,32 +196,6 @@ local function _EmbedLogger(obj, optionalLogName)
             newArgs[i] = self:ArgToString(args[i], formatSafe)
         end
         self:Printf(sformat(_U.t_unpack(newArgs)))
-    end
-
-    function obj:logOrig(...)
-        local args = _U.t_pack(...)
-        if args.len == 1 then
-            self:Print(self:ArgToString(args[1]))
-            return
-        end
-        local level = 0
-        local startIndex = 1
-        if type(args[1]) == 'number' then
-            level = args[1]
-            startIndex = 2
-        end
-        if type(args[startIndex]) ~= 'string' then
-            error(sformat('Argument #%s requires a string.format text', startIndex))
-        end
-        if not ShouldLog(level) then return end
-
-        args = _U.t_sliceAndPack({...}, startIndex)
-        local newArgs = {}
-        for i=1,args.len do
-            local formatSafe = i > 1
-            newArgs[i] = self:ArgToString(args[i], formatSafe)
-        end
-        self:Printf(format(_U.t_unpack(newArgs)))
     end
 
     ---Convert arguments to string

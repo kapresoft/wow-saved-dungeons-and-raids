@@ -2,11 +2,16 @@ if type(SDNR_DB) ~= "table" then SDNR_DB = {} end
 if type(SDNR_LOG_LEVEL) ~= "number" then SDNR_LOG_LEVEL = 1 end
 if type(SDNR_DEBUG_MODE) ~= "boolean" then SDNR_DEBUG_MODE = false end
 
-
 --[[-----------------------------------------------------------------------------
 Lua Vars
 -------------------------------------------------------------------------------]]
 local sformat = string.format
+
+--[[-----------------------------------------------------------------------------
+Blizzard Vars
+-------------------------------------------------------------------------------]]
+local GetAddOnMetadata = GetAddOnMetadata
+local date = date
 
 --[[-----------------------------------------------------------------------------
 Local Vars
@@ -24,6 +29,7 @@ local useShortName = true
 
 local LibStub = LibStub
 
+local ADDON_INFO_FMT = '%s|cfdeab676: %s|r'
 local TOSTRING_ADDON_FMT = '|cfdfefefe{{|r|cfdeab676%s|r|cfdfefefe}}|r'
 local TOSTRING_SUBMODULE_FMT = '|cfdfefefe{{|r|cfdeab676%s|r|cfdfefefe::|r|cfdfbeb2d%s|r|cfdfefefe}}|r'
 
@@ -132,6 +138,39 @@ local function Methods(o)
         local logName = addon
         if useShortName then logName = addonShortName end
         return logName
+    end
+
+    ---@return string, string, string, string, string, string
+    function o:GetAddonInfo()
+        local versionText, lastUpdate
+        --@non-debug@
+        versionText = GetAddOnMetadata(ns.name, 'Version')
+        lastUpdate = GetAddOnMetadata(ns.name, 'X-Github-Project-Last-Changed-Date')
+        --@end-non-debug@
+        --@debug@
+        versionText = '1.0.x.dev'
+        lastUpdate = date("%m/%d/%y %H:%M:%S")
+        --@end-debug@
+        local wowInterfaceVersion = GetBuildInfo() .. sformat(' (%s)', select(4, GetBuildInfo()))
+
+        return versionText, GetAddOnMetadata(ns.name, 'X-CurseForge'),
+        GetAddOnMetadata(ns.name, 'X-Github-Issues'),
+        GetAddOnMetadata(ns.name, 'X-Github-Repo'),
+        lastUpdate, wowInterfaceVersion, wowInterfaceVersion
+    end
+
+    function o:GetAddonInfoFormatted()
+        local version, curseForge, issues, repo, lastUpdate, wowInterfaceVersion = self:GetAddonInfo()
+        --p:log("Addon Info:\n  Version: %s\n  Curse-Forge: %s\n  File-Bugs-At: %s\n  Last-Changed-Date: %s\n  WoW-Interface-Version: %s\n",
+        --        version, curseForge, issues, lastChanged, wowInterfaceVersion)
+        return sformat("Addon Info:\n%s\n%s\n%s\n%s\n%s\n%s",
+                sformat(ADDON_INFO_FMT, 'Version', version),
+                sformat(ADDON_INFO_FMT, 'Curse-Forge', curseForge),
+                sformat(ADDON_INFO_FMT, 'Bugs', issues),
+                sformat(ADDON_INFO_FMT, 'Repo', repo),
+                sformat(ADDON_INFO_FMT, 'Last-Update', lastUpdate),
+                sformat(ADDON_INFO_FMT, 'Interface-Version', wowInterfaceVersion)
+        )
     end
 end
 

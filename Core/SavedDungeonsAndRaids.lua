@@ -1,7 +1,12 @@
 --[[-----------------------------------------------------------------------------
 Lua Vars
 -------------------------------------------------------------------------------]]
-local sformat = string.format
+local sformat, unpack = string.format, unpack
+
+--[[-----------------------------------------------------------------------------
+Blizzard Vars
+-------------------------------------------------------------------------------]]
+local GetBuildInfo, GetAddOnMetadata = GetBuildInfo, GetAddOnMetadata
 
 --[[-----------------------------------------------------------------------------
 Local Vars
@@ -47,25 +52,25 @@ local function Methods(o)
     ---@param spaceSeparatedArgs string
     function o:SlashCommands(spaceSeparatedArgs)
         local args = Table.parseSpaceSeparatedVar(spaceSeparatedArgs)
-        if IsEmptyTable(args) or IsAnyOf('config', unpack(args)) then
+        if IsEmptyTable(args) then
+            self:SlashCommand_Help_Handler()
+            return
+        end
+
+        if IsAnyOf('config', unpack(args)) then
+            p:log('TODO: Open Configuration')
             -- self:OpenConfig()
             return
         end
         if IsAnyOf('info', unpack(args)) then
-            self:SlashCommand_InfoHandler(spaceSeparatedArgs)
+            self:SlashCommand_InfoHandler()
             return
         end
         -- Otherwise, show help
         self:SlashCommand_Help_Handler()
     end
 
-    function o:SlashCommand_InfoHandler(spaceSeparatedArgs)
-        local wowInterfaceVersion = select(4, GetBuildInfo())
-        local lastChanged = GetAddOnMetadata(ns.name, 'X-Github-Project-Last-Changed-Date')
-        --local version, curseForge, issues, repo = GC:GetAddonInfo()
-        local version, curseForge, issues, repo = '', '', '', ''
-        p:log("Addon Info:\n  Version: %s\n  Curse-Forge: %s\n  File-Bugs-At: %s\n  Last-Changed-Date: %s\n  WoW-Interface-Version: %s\n",
-                version, curseForge, issues, lastChanged, wowInterfaceVersion)
+    function o:SlashCommand_InfoHandler() p:log(GC:GetAddonInfoFormatted())
     end
 
     function o:SlashCommand_Help_Handler()
@@ -81,7 +86,6 @@ local function Methods(o)
         local USAGE_LABEL = sformat("usage: %s [%s]", GC.C.CONSOLE_PLAIN, OPTIONS_LABEL)
         p:log(USAGE_LABEL)
         p:log(OPTIONS_LABEL .. ":")
-        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, '<none>', COMMAND_NONE_TEXT)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'config', COMMAND_NONE_TEXT)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'info', COMMAND_INFO_TEXT)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'help', COMMAND_HELP_TEXT)
