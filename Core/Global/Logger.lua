@@ -1,8 +1,13 @@
 local ns = SDNR_Namespace(...)
-local O, LibStubLocal, M = ns:LibPack()
-local LibStub, sformat, pformat = LibStub, string.format, Kapresoft_LibUtil.PrettyPrint.pformat
+---The original LibStub
+local LibStub = ns.O.AceLibStub
+
+local O, _, M = ns:LibPack()
+local sformat, pformat = string.format, ns.pformat
 local tableUnpack = O.Table.tableUnpack
 local C = O.AceConsole
+
+local logPrefix = '|cfdffffff{{|r|cfd2db9fb' .. ns.nameShort .. '|r|cfdfbeb2d%s|r|cfdffffff}}|r'
 
 ---@class Logger
 local L = LibStub:NewLibrary(ns.LibName(M.Logger), 1)
@@ -82,7 +87,6 @@ local DEFAULT_FORMATTER = {
     end
 }
 local TABLE_FORMATTER = { format = function(o) return _U.format(o, false) end }
-local logPrefix = '|cfdffffff{{|r|cfd2db9fb' .. ns.name .. '|r|cfdfbeb2d%s|r|cfdffffff}}|r'
 
 ---@param obj table
 ---@param optionalLogName string The optional logger name
@@ -95,7 +99,7 @@ local function _EmbedLogger(obj, optionalLogName)
 
     local formatter = DEFAULT_FORMATTER
 
-    function obj:format(obj) return formatter.format(obj) end
+    function obj:format() return formatter.format(self) end
     ---### Usage
     ---Log with table key-value output.
     ---```
@@ -193,27 +197,6 @@ local function _EmbedLogger(obj, optionalLogName)
             newArgs[i] = self:ArgToString(args[i], formatSafe)
         end
         self:Printf(format(_U.t_unpack(newArgs)))
-    end
-
-    -- Log a Pretty Formatted Object
-    -- self:logp(itemInfo)
-    -- self:logp("itemInfo", itemInfo)
-    function obj:logp(...)
-        local count = select('#', ...)
-        if count == 1 then
-            self:log(pformat(select(1, ...)))
-            return
-        end
-        local label, obj = select(1, ...)
-        self:log(label .. ': %s', pformat(obj))
-    end
-
-    -- Backwards compat
-    function obj:logf(...) self:log(...) end
-    -- Backwards compat
-    -- Example print('String value')
-    function obj:print(...)
-        self:Print(...)
     end
 
     ---Convert arguments to string

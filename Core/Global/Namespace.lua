@@ -1,8 +1,10 @@
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
----@class LibStub
+
+---@type LibStub
 local LibStub = LibStub
+
 ---@type Kapresoft_LibUtil_Objects
 local LibUtil = Kapresoft_LibUtil
 
@@ -42,6 +44,9 @@ GlobalObjects
 -------------------------------------------------------------------------------]]
 ---@class GlobalObjects
 local GlobalObjects = {
+    ---@type LibStub
+    AceLibStub = {},
+
     ---@type AceConsole
     AceConsole = {},
     ---@type AceEvent
@@ -84,6 +89,7 @@ Modules
 
 ---@class Modules
 local M = {
+    AceLibStub = 'AceLibStub',
     LU = 'LU',
     pformat = 'pformat',
     sformat = 'sformat',
@@ -97,12 +103,16 @@ local M = {
 }
 
 local InitialModuleInstances = {
+    AceLibStub = LibStub,
     LU = LibUtil,
     GlobalConstants = LibStub(LibName('GlobalConstants')),
     AceConsole = LibStub('AceConsole-3.0'),
     AceEvent = LibStub('AceEvent-3.0'),
     pformat = PrettyPrint.pformat,
 }
+
+---@type GlobalConstants
+local GC = LibStub(LibName(M.GlobalConstants))
 
 ---Usage:
 ---```
@@ -122,6 +132,8 @@ function SDNR_Namespace(...)
     namespace.O = namespace.O or {}
     ---@type string
     namespace.name = addon
+    ---@type string
+    namespace.nameShort = GC:GetLogName()
 
     if 'table' ~= type(namespace.O) then namespace.O = {} end
 

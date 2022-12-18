@@ -7,8 +7,9 @@ local sformat = string.format
 Local Vars
 -------------------------------------------------------------------------------]]
 local ns = SDNR_Namespace(...)
-local LibStub = LibStub
 local O, LibStubLocal, M = ns:LibPack()
+local LibStub = O.AceLibStub
+
 local GC = O.GlobalConstants
 local Table, String = O.LU.Table, O.LU.String
 local toStringSorted, pformat = Table.toStringSorted, O.pformat

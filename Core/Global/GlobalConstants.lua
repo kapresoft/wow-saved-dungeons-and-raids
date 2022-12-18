@@ -43,7 +43,7 @@ local function ToStringFunction(moduleName)
     return function() return string.format(TOSTRING_ADDON_FMT, name) end
 end
 
----@class LocalLibStub
+---@class LocalLibStub : LibStub
 local S = {}
 
 ---@param moduleName string
@@ -121,11 +121,18 @@ local function GlobalConstantProperties(o)
     o.C = C
     o.E = E
     o.M = M
+
 end
 
 ---@param o GlobalConstants
 local function Methods(o)
     --  TODO
+
+    function o:GetLogName()
+        local logName = addon
+        if useShortName then logName = addonShortName end
+        return logName
+    end
 end
 
 GlobalConstantProperties(L)
@@ -133,4 +140,5 @@ Methods(L)
 
 ns.LibName = LibName
 ns.ToStringFunction = ToStringFunction
+---@type LocalLibStub
 ns.LibStub = S
