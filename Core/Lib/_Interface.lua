@@ -3,18 +3,9 @@ BaseLibraryObject
 -------------------------------------------------------------------------------]]
 
 ---@class BaseLibraryObject
-local BaseLibrary = {}
----@param o BaseLibraryObject
-local function BaseLibraryMethods(o)
+local BaseLibrary = {
     ---@type table
-    o.mt = { __tostring = function()  end }
-
+    mt = { __tostring = function() end },
     ---@type LoggerInterface
-    o.logger = {}
-end
-BaseLibraryMethods(BaseLibrary)
-
-
-
-
-
+    logger = {}
+}

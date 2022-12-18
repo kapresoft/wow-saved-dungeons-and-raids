@@ -1,4 +1,9 @@
 --[[-----------------------------------------------------------------------------
+Lua Vars
+-------------------------------------------------------------------------------]]
+local sformat = string.format
+
+--[[-----------------------------------------------------------------------------
 Blizzard Vars
 -------------------------------------------------------------------------------]]
 local CreateFrame, FrameUtil = CreateFrame, FrameUtil
@@ -11,6 +16,8 @@ local ns = SDNR_Namespace(...)
 local O, LibStub, M = ns:LibPack()
 local AceEvent, GC = O.AceEvent, O.GlobalConstants
 local E, MSG = GC.E, GC.M
+--TODO next localize
+local commandTextFormat = 'Type %s on the console to open config dialog or %s for more info'
 
 --[[-----------------------------------------------------------------------------
 New Instance
@@ -27,7 +34,8 @@ Support Functions
 local function OnPlayerEnteringWorld(f, event, ...)
     --p:log('[%s] called...', event)
     local addon = f.ctx.addon
-    addon.logger:log('Loaded...')
+    addon.logger:log('0.0.1-alpha Initialized')
+    addon.logger:log(sformat(commandTextFormat, GC.C.COMMAND, GC.C.HELP_COMMAND))
     --p:log('Namespace keys: %s', ns:ToStringNamespaceKeys())
     --p:log('Namespace Object keys: %s', ns:ToStringObjectKeys())
 

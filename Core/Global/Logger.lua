@@ -4,11 +4,6 @@ local LibStub, sformat, pformat = LibStub, string.format, Kapresoft_LibUtil.Pret
 local tableUnpack = O.Table.tableUnpack
 local C = O.AceConsole
 
----@class LoggerInterface
-local LoggerInterface = {}
----@param format string The string format. Example: logger:log('hello: %s', 'world')
-function LoggerInterface:log(format, ...)  end
-
 ---@class Logger
 local L = LibStub:NewLibrary(ns.LibName(M.Logger), 1)
 ns:Register(M.Logger, L)

@@ -19,6 +19,7 @@ addon, ns = ...
 
 local pformat = Kapresoft_LibUtil.PrettyPrint.pformat
 local addonShortName = 'SavedDNR'
+local consoleCommand = "sdnr"
 local useShortName = true
 
 local LibStub = LibStub
@@ -48,7 +49,8 @@ local S = {}
 ---@param moduleName string
 ---@param optionalMinorVersion number
 function S:NewLibrary(moduleName, optionalMinorVersion)
-    --use Ace3 LibStub here
+    ---use Ace3 LibStub here
+    ---@type BaseLibraryObject
     local o = LibStub:NewLibrary(LibName(moduleName), optionalMinorVersion or 1)
     assert(o, sformat("Module not found: %s", tostring(moduleName)))
     o.mt = getmetatable(o) or {}
@@ -76,6 +78,25 @@ local L = LibStub:NewLibrary(LibName('GlobalConstants'), 1)
 
 ---@param o GlobalConstants
 local function GlobalConstantProperties(o)
+
+    local consoleCommandTextFormat = '|cfd2db9fb%s|r'
+    local consoleKeyValueTextFormat = '|cfdfbeb2d%s|r: %s'
+    local command = sformat("/%s", consoleCommand)
+
+    ---@class GlobalAttributes
+    local C = {
+        CHECK_VAR_SYNTAX_FORMAT = '|cfdeab676%s ::|r %s',
+        CONSOLE_HEADER_FORMAT = '|cfdeab676### %s ###|r',
+        CONSOLE_OPTIONS_FORMAT = '  - %-8s|cfdeab676:: %s|r',
+
+        CONSOLE_COMMAND_TEXT_FORMAT = consoleCommandTextFormat,
+        CONSOLE_KEY_VALUE_TEXT_FORMAT = consoleKeyValueTextFormat,
+
+        CONSOLE_PLAIN = command,
+        COMMAND      = sformat(consoleCommandTextFormat, command),
+        HELP_COMMAND = sformat(consoleCommandTextFormat, command .. ' help'),
+    }
+
     ---@class EventNames
     local E = {
         OnEnter = 'OnEnter',
@@ -97,6 +118,7 @@ local function GlobalConstantProperties(o)
         OnAddonReady = newMessage('OnAddonReady'),
     }
 
+    o.C = C
     o.E = E
     o.M = M
 end

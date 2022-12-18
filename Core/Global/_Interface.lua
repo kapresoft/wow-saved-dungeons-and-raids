@@ -1,6 +1,12 @@
 --[[-----------------------------------------------------------------------------
 Interface
 -------------------------------------------------------------------------------]]
+
+---@class LoggerInterface
+local LoggerInterface = {}
+---@param format string The string format. Example: logger:log('hello: %s', 'world')
+function LoggerInterface:log(format, ...)  end
+
 ---@class MainEventHandlerFrame : _Frame
 local MainEventHandlerFrame = {
     ---@type MainEventContext
