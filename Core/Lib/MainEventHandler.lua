@@ -66,7 +66,7 @@ local function InstanceMethods(o)
     end
 
     function o:RegisterEvents()
-        p:log("RegisterEvents...")
+        p:log(100, "RegisterEvents called.")
         self:RegisterOnPlayerEnteringWorld()
     end
 

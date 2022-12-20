@@ -10,7 +10,6 @@ New Instance
 ---@class AceDbInitializerMixin : BaseLibraryObject
 local L = LibStub:NewLibrary(M.AceDbInitializerMixin)
 local p = L.logger;
-p:log("Loaded: %s", M.AceDbInitializerMixin)
 
 --- Called by Mixin Automatically
 --- @param addon SavedDungeonsAndRaid
