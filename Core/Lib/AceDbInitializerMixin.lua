@@ -12,7 +12,8 @@ local L = LibStub:NewLibrary(M.AceDbInitializerMixin)
 local p = L.logger;
 p:log("Loaded: %s", M.AceDbInitializerMixin)
 
----@param addon SavedDungeonsAndRaid
+--- Called by Mixin Automatically
+--- @param addon SavedDungeonsAndRaid
 function L:Init(addon)
     self.addon = addon
     self.addon.db = AceDB:New(GC.C.DB_NAME)
@@ -39,13 +40,19 @@ end
 ---@param o AceDbInitializerMixin
 local function Methods(o)
 
+    --- Usage:  local instance = AceDbInitializerMixin:New(addon)
+    --- @param addon SavedDungeonsAndRaid
+    --- @return AceDbInitializerMixin
+    function o:New(addon)
+        return K_CreateAndInitFromMixin(o, addon)
+    end
+
     ---@return AceDB
     function o:GetDB() return self.addon.db end
 
     function o:Initialize()
-        p:log('InitializeDb called...')
+        p:log(100, 'Initialize called...')
         AddonCallbackMethods(self.addon)
-
         self.db.RegisterCallback(self.addon, "OnProfileChanged", "OnProfileChanged")
         self.db.RegisterCallback(self.addon, "OnProfileReset", "OnProfileChanged")
         self.db.RegisterCallback(self.addon, "OnProfileCopied", "OnProfileChanged")

@@ -17,7 +17,6 @@ New Instance
 ---@class OptionsMixin : BaseLibraryObject
 local L = LibStub:NewLibrary(M.OptionsMixin)
 local p = L.logger;
-p:log("Loaded: %s", M.OptionsMixin)
 
 ---@param addon SavedDungeonsAndRaid
 function L:Init(addon)
@@ -27,8 +26,6 @@ end
 local function Methods(o)
 
     function o:CreateOptions()
-
-
         AceConfig:RegisterOptionsTable(ADDON_NAME, options, { "abp_options" })
         AceConfigDialog:AddToBlizOptions(ADDON_NAME, ADDON_NAME)
     end

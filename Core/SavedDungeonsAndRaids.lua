@@ -46,9 +46,7 @@ local function Methods(o)
         self:RegisterSlashCommands()
         self:SendMessage(GC.M.OnAfterInitialize, self)
 
-        ---@type AceDbInitializerMixin
-        local dbInit = K_CreateAndInitFromMixin(O.AceDbInitializerMixin, self)
-        --local dbInit = O.LU.Mixin:MixinAndInit(O.ConfigInitializerMixin, self)
+        local dbInit = O.AceDbInitializerMixin:New(self)
         dbInit:Initialize()
     end
 
