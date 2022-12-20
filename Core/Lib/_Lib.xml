@@ -3,5 +3,7 @@
 ..\FrameXML\UI.xsd">
 
     <Script file="MainEventHandler.lua" />
+    <Script file="AceDbInitializerMixin.lua" />
+    <Script file="OptionsMixin.lua" />
 
 </Ui>

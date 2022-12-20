@@ -23,6 +23,14 @@ local consoleColors = {
 }
 
 --[[-----------------------------------------------------------------------------
+Interface
+-------------------------------------------------------------------------------]]
+---@class LoggerInterface
+local LoggerInterface = {}
+---@param format string The string format. Example: logger:log('hello: %s', 'world')
+function LoggerInterface:log(format, ...)  end
+
+--[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
 ---@class Logger
@@ -33,10 +41,15 @@ ns:Register(M.Logger, L)
 Support Functions
 -------------------------------------------------------------------------------]]
 local function formatColor(color, text) return sformat('|cfd%s%s|r', color, text) end
-local function getFormattedLogPrefix()
+---@param prefix string
+local function getFormattedLogPrefix(prefix)
     local bracketsLeft = formatColor(consoleColors.tertiary, '{{')
     local bracketsRight = formatColor(consoleColors.tertiary, '}}')
     local logName = formatColor(consoleColors.primary, ns.nameShort)
+    if prefix then
+        local prefixC= formatColor(consoleColors.secondary, prefix)
+        return bracketsLeft .. logName .. prefixC .. bracketsRight
+    end
     return bracketsLeft .. logName .. bracketsRight
 end
 
@@ -121,9 +134,9 @@ local TABLE_FORMATTER = { format = function(o) return _U.format(o, false) end }
 ---@param optionalLogName string The optional logger name
 local function _EmbedLogger(obj, optionalLogName)
     local prefix = ''
-    local logPrefix = getFormattedLogPrefix()
 
     if type(optionalLogName) == 'string' then prefix = '::' .. optionalLogName end
+    local logPrefix = getFormattedLogPrefix(prefix)
     if type(obj.mt) ~= 'table' then obj.mt = {} end
     obj.mt = { __tostring = function() return sformat(logPrefix, prefix)  end }
     setmetatable(obj, obj.mt)

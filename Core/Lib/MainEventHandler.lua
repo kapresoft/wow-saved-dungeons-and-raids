@@ -38,8 +38,7 @@ local function OnPlayerEnteringWorld(f, event, ...)
     addon.logger:log(sformat(commandTextFormat, GC.C.COMMAND, GC.C.HELP_COMMAND))
     --p:log('Namespace keys: %s', ns:ToStringNamespaceKeys())
     --p:log('Namespace Object keys: %s', ns:ToStringObjectKeys())
-
-    ---Other addons can listen to message
+    ---Other modules can listen to message
     ---AceEvent:RegisterMessage(MSG.OnAddonReady, function(evt, ...) end
     L:SendMessage(MSG.OnAddonReady, addon)
 end

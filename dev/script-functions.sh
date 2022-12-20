@@ -64,21 +64,27 @@ SyncDir() {
   eval "${cmd}"
 }
 
-InitDirs() {
-  if [[ ! -d "./${INTERFACE_LIB}" ]]; then
-    mkdir -p ./${INTERFACE_LIB}
-    echo "Creating dir: ./${INTERFACE_LIB}"
-  fi
+InitExtDir() {
   if [[ ! -d "./${EXT_UTIL_LIB_DIR}" ]]; then
     mkdir -p ./${EXT_UTIL_LIB_DIR}
     echo "Creating dir: ./${EXT_UTIL_LIB_DIR}"
   fi
-  if [[ ! -d "./${WOW_ACE_LIB_DIR}" ]]; then
-    mkdir -p ./${WOW_ACE_LIB_DIR}
-    echo "Creating dir: ./${WOW_ACE_LIB_DIR}"
-  fi
+}
+
+InitInterfaceDir() {
   if [[ ! -d "./${WOW_API_INTERFACE_LIB_DIR}" ]]; then
     mkdir -p ./${WOW_API_INTERFACE_LIB_DIR}
     echo "Creating dir: ./${WOW_API_INTERFACE_LIB_DIR}"
   fi
+}
+
+InitWowAceDir() {
+  if [[ ! -d "./${WOW_ACE_LIB_DIR}" ]]; then
+    mkdir -p ./${WOW_ACE_LIB_DIR}
+    echo "Creating dir: ./${WOW_ACE_LIB_DIR}"
+  fi
+}
+
+InitDirs() {
+  InitExtDir && InitWowAceDir && InitInterfaceDir
 }

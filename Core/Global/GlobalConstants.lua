@@ -91,6 +91,7 @@ local function GlobalConstantProperties(o)
 
     ---@class GlobalAttributes
     local C = {
+        DB_NAME = 'SDNR_DB',
         CHECK_VAR_SYNTAX_FORMAT = '|cfdeab676%s ::|r %s',
         CONSOLE_HEADER_FORMAT = '|cfdeab676### %s ###|r',
         CONSOLE_OPTIONS_FORMAT = '  - %-8s|cfdeab676:: %s|r',

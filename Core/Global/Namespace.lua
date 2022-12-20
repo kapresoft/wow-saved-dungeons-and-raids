@@ -1,7 +1,6 @@
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-
 ---@type LibStub
 local LibStub = LibStub
 
@@ -42,13 +41,58 @@ local LibName = ns.LibName
 --[[-----------------------------------------------------------------------------
 GlobalObjects
 -------------------------------------------------------------------------------]]
----@class GlobalObjects
-local GlobalObjects = {
-    ---@type LibStub
-    AceLibStub = {},
+local AceModule = {
+    AceAddon = "AceAddon-3.0",
+    AceConsole = 'AceConsole-3.0',
+    AceConfig = 'AceConfig-3.0',
+    AceConfigDialog = 'AceConfigDialog-3.0',
+    AceDB = 'AceDB-3.0',
+    AceDBOptions = 'AceDBOptions-3.0',
+    AceEvent = 'AceEvent-3.0',
+    AceHook = 'AceHook-3.0',
+    AceGUI = 'AceGUI-3.0',
+    AceLibSharedMedia = 'LibSharedMedia-3.0'
+}
 
+---@class AceObjects
+local AceObjects = {
+
+    ---@type AceAddon
+    AceAddon = {},
     ---@type AceConsole
     AceConsole = {},
+    ---@type AceConfig
+    AceConfig = {},
+    ---@type AceConfigDialog
+    AceConfigDialog = {},
+    ---@type AceDB
+    AceDB = {},
+    ---@type AceDBOptions
+    AceDBOptions = {},
+    ---@type AceEvent
+    AceEvent = {},
+    ---@type AceHook
+    AceHook = {},
+    ---@type AceGUI
+    AceGUI = {},
+    ---@type AceLibSharedMedia
+    AceLibSharedMedia = {},
+
+}
+
+---@class GlobalObjects
+local GlobalObjects = {
+    --AceLib = AceObjects,
+    ---@type Kapresoft_LibUtil_AceLibraryObjects
+    AceLibrary = {},
+    ---@type LibStub
+    AceLibStub = {},
+    ---@type AceConfig
+    AceConfig = AceObjects.AceConfig,
+    ---@type AceConsole
+    AceConsole = {},
+    ---@type AceDB
+    AceDB = {},
     ---@type AceEvent
     AceEvent = {},
 
@@ -76,12 +120,16 @@ local GlobalObjects = {
 
     ---@type Core
     Core = {},
+    ---@type AceDbInitializerMixin
+    AceDbInitializerMixin = {},
     ---@type GlobalConstants
     GlobalConstants = {},
     ---@type Logger
     Logger = {},
     ---@type MainEventHandler
     MainEventHandler = {},
+    ---@type OptionsMixin
+    OptionsMixin = {},
 }
 --[[-----------------------------------------------------------------------------
 Modules
@@ -93,21 +141,37 @@ local M = {
     LU = 'LU',
     pformat = 'pformat',
     sformat = 'sformat',
+    AceLibrary = 'AceLibrary',
+    AceConfig = 'AceConfig',
     AceConsole = 'AceConsole',
+    AceDB = 'AceDB',
     AceEvent = 'AceEvent',
 
     Core = 'Core',
+    AceDbInitializerMixin = 'AceDbInitializerMixin',
     GlobalConstants = 'GlobalConstants',
     Logger = 'Logger',
     MainEventHandler = 'MainEventHandler',
+    OptionsMixin = 'OptionsMixin',
 }
 
 local InitialModuleInstances = {
-    AceLibStub = LibStub,
+    -- External Libs --
     LU = LibUtil,
-    GlobalConstants = LibStub(LibName('GlobalConstants')),
-    AceConsole = LibStub('AceConsole-3.0'),
-    AceEvent = LibStub('AceEvent-3.0'),
+    AceLibrary = LibUtil.AceLibrary.O,
+    AceLibStub = LibStub,
+    -- Internal Libs --
+    GlobalConstants = LibStub(LibName(M.GlobalConstants)),
+    AceAddon = LibStub(AceModule.AceAddon),
+    AceConsole = LibStub(AceModule.AceConsole),
+    AceConfig = LibStub(AceModule.AceConfig),
+    AceConfigDialog = LibStub(AceModule.AceConfigDialog),
+    AceDB = LibStub(AceModule.AceDB),
+    AceDBOptions = LibStub(AceModule.AceDBOptions),
+    AceEvent = LibStub(AceModule.AceEvent),
+    AceHook = LibStub(AceModule.AceHook),
+    AceGUI = LibStub(AceModule.AceGUI),
+    AceLibSharedMedia = LibStub(AceModule.AceLibSharedMedia),
     pformat = PrettyPrint.pformat,
 }
 
@@ -150,8 +214,13 @@ function SDNR_Namespace(...)
     local pformat = namespace.pformat
     local getSortedKeys = namespace.O.Table.getSortedKeys
 
-    ---@return GlobalObjects, LocalLibStub, Modules
-    function namespace:LibPack() return self.O, ns.LibStub, M end
+    ---Example:
+    ---```
+    ---local O, LibStub, M, ns = SDNR_Namespace(...):LibPack()
+    ---```
+    ---@return GlobalObjects, LocalLibStub, Modules, Namespace
+    function namespace:LibPack() return self.O, ns.LibStub, M, self end
+
     ---@param libName string The library name. Ex: 'GlobalConstants'
     ---@param o table The library object instance
     function namespace:Register(libName, o)
@@ -166,7 +235,8 @@ function SDNR_Namespace(...)
 
     return namespace
 end
-
+---@return GlobalObjects, LocalLibStub, Modules, Namespace
+function SDNR_LibPack(...) return SDNR_Namespace(...):LibPack() end
 
 ---@type Modules
 SDNR_Modules = M

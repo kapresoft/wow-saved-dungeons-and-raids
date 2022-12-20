@@ -30,13 +30,14 @@ A.logger = p
 --setmetatable(A, mt)
 ns['addon'] = A
 
+---@type AceDB
+A.db = nil
 
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
 ---@param o SavedDungeonsAndRaid
 local function Methods(o)
-
     O.MainEventHandler:Init(o)
 
     function o:OnInitialize()
@@ -44,6 +45,11 @@ local function Methods(o)
 
         self:RegisterSlashCommands()
         self:SendMessage(GC.M.OnAfterInitialize, self)
+
+        ---@type AceDbInitializerMixin
+        local dbInit = K_CreateAndInitFromMixin(O.AceDbInitializerMixin, self)
+        --local dbInit = O.LU.Mixin:MixinAndInit(O.ConfigInitializerMixin, self)
+        dbInit:Initialize()
     end
 
     function o:RegisterSlashCommands()
