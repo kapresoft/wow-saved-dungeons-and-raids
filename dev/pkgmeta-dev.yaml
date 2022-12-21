@@ -1,11 +1,8 @@
-package-as: SavedDungeonsAndRaids
+package-as: Dev
 # --------------------------
-license-output: LICENSE
-enable-nolib-creation: no
-#enable-toc-creation: yes
-#manual-changelog:
-#  filename: CHANGELOG.txt
-#  markup-type: markdown
+manual-changelog:
+  filename: CHANGELOG.txt
+  markup-type: markdown
 
 # Declaring the following dependencies will make curse forge app install these 3rd-party
 # libraries. Need to figure out which is best (embedded or external).
@@ -62,7 +59,12 @@ ignore:
   - Core/ExtLib/WowAce/Ace3/Ace3_Wrath.toc
   - Core/ExtLib/WowAce/Ace3/Bindings.xml
   - Core/ExtLib/WowAce/Ace3/Bindings.xml
-  - Dev.toc
+  - "*.toc"
 
 ## Potentially helpful libraries
 ## - https://www.wowace.com/projects/libactionbutton-1-0
+
+move-folders:
+  Dev/Core/ExtLib/Kapresoft-LibUtil: ../Core/ExtLib/Kapresoft-LibUtil
+  Dev/Core/ExtLib/WowAce/Ace3: ../Core/ExtLib/WowAce/Ace3
+  Dev/Core/ExtLib/WowAce/LibQTip/LibQTip-1.0: ../Core/ExtLib/WowAce/LibQTip/LibQTip-1.0
