@@ -17,7 +17,6 @@ New Instance
 ---@class SavedInstances : BaseLibraryObject
 local L = LibStub:NewLibrary(M.SavedInstances)
 local p = L.logger;
-p:log("Loaded: %s", M.SavedInstances)
 
 local colors = {
     header = 'ffffff',

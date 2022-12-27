@@ -44,8 +44,7 @@ local function OnPlayerEnteringWorld(f, event, ...)
     --p:log('[%s] called...', event)
     local version = GC:GetAddonInfo()
     local addon = f.ctx.addon
-    addon.logger:log('%s Initialized', version)
-    addon.logger:log(sformat(commandTextFormat, GC.C.COMMAND, GC.C.HELP_COMMAND))
+    addon.logger:log('%s Initialized. %s', version, sformat(commandTextFormat, GC.C.COMMAND, GC.C.HELP_COMMAND))
     addon:RegisterHooks()
     SendAddonReadyMessage()
 end

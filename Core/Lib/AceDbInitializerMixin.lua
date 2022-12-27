@@ -65,7 +65,7 @@ local function Methods(o)
         local wowDB = _G[GC.C.DB_NAME]
         if IsEmptyTable(wowDB.profiles[profileName]) then wowDB.profiles[profileName] = defaultProfile end
         self.addon.profile.enable = false
-        p:log(1, 'Profile: %s', self.db:GetCurrentProfile())
+        p:log(5, 'Profile: %s', self.db:GetCurrentProfile())
     end
 end
 
