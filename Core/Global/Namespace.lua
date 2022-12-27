@@ -41,19 +41,6 @@ local LibName = ns.LibName
 --[[-----------------------------------------------------------------------------
 GlobalObjects
 -------------------------------------------------------------------------------]]
-local AceModule = {
-    AceAddon = "AceAddon-3.0",
-    AceConsole = 'AceConsole-3.0',
-    AceConfig = 'AceConfig-3.0',
-    AceConfigDialog = 'AceConfigDialog-3.0',
-    AceDB = 'AceDB-3.0',
-    AceDBOptions = 'AceDBOptions-3.0',
-    AceEvent = 'AceEvent-3.0',
-    AceHook = 'AceHook-3.0',
-    AceGUI = 'AceGUI-3.0',
-    AceLibSharedMedia = 'LibSharedMedia-3.0'
-}
-
 ---@class GlobalObjects
 local GlobalObjects = {
     --AceLib = AceObjects,
