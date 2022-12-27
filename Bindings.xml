@@ -1,0 +1,5 @@
+<Bindings>
+    <Binding name="SDNR_OPTIONS_DLG" category="AddOns/SavedDungeonsAndRaids" header="SDNR_OPTIONS">
+        SDNR:BINDING_SDNR_OPTIONS_DLG();
+    </Binding>
+</Bindings>
