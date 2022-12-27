@@ -58,9 +58,7 @@ local function Methods(o)
 
     function o:InitDbDefaults()
         local profileName = self.addon.db:GetCurrentProfile()
-        local defaultProfile = {
-            enable= true
-        }
+        local defaultProfile = {}
         local defaults = { profile = defaultProfile }
         self.db:RegisterDefaults(defaults)
         self.addon.profile = self.db.profile
