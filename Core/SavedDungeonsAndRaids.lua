@@ -14,7 +14,9 @@ Local Vars
 local ns = SDNR_Namespace(...)
 local O, LibStubLocal, M = ns:LibPack()
 local LibStub = O.AceLibStub
-local GC, SavedInstances = O.GlobalConstants, O.SavedInstances
+local GC, SavedInstances, ACE = O.GlobalConstants, O.SavedInstances, O.AceLibrary
+local AceConfig, AceConfigDialog = ACE.AceConfig, ACE.AceConfigDialog
+
 local Table, String = O.LU.Table, O.LU.String
 local toStringSorted, pformat = Table.toStringSorted, O.pformat
 local IsBlank, IsAnyOf, IsEmptyTable = String.IsBlank, String.IsAnyOf, Table.isEmpty
@@ -50,9 +52,11 @@ local function Methods(o)
         self:RegisterSlashCommands()
         self:SendMessage(GC.M.OnAfterInitialize, self)
 
-        local dbInit = O.AceDbInitializerMixin:New(self)
-        dbInit:Initialize()
+        O.AceDbInitializerMixin:New(self):InitDb()
+        O.OptionsMixin:New(self):InitOptions()
     end
+
+    function o:BINDING_SDNR_OPTIONS_DLG() self:OpenConfig() end
 
     function o:RegisterHooks()
         local f = _G['LFGParentFrame']
@@ -68,26 +72,22 @@ local function Methods(o)
     function o:SlashCommands(spaceSeparatedArgs)
         local args = Table.parseSpaceSeparatedVar(spaceSeparatedArgs)
         if IsEmptyTable(args) then
-            self:SlashCommand_Help_Handler()
-            return
+            self:SlashCommand_Help_Handler(); return
         end
-
-        if IsAnyOf('config', unpack(args)) then
-            p:log('TODO: Open Configuration')
-            -- self:OpenConfig()
-            return
+        if IsAnyOf('config', unpack(args)) or IsAnyOf('conf', unpack(args)) then
+            self:SlashCommand_OpenConfig(); return
         end
         if IsAnyOf('info', unpack(args)) then
-            self:SlashCommand_InfoHandler()
-            return
+            self:SlashCommand_InfoHandler(); return
         end
         if IsAnyOf('list', unpack(args)) then
-            self:SlashCommand_ListSavedInstances()
-            return
+            self:SlashCommand_ListSavedInstances(); return
         end
         -- Otherwise, show help
         self:SlashCommand_Help_Handler()
     end
+
+    function o:SlashCommand_OpenConfig() o:OpenConfig() end
 
     function o:SlashCommand_ListSavedInstances()
         SavedInstances:ReportSavedInstances(A.logger)
@@ -114,6 +114,18 @@ local function Methods(o)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'config', COMMAND_CONFIG_TEXT)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'info', COMMAND_INFO_TEXT)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'help', COMMAND_HELP_TEXT)
+    end
+
+    function o:OpenConfig()
+        AceConfigDialog:Open(ns.name)
+        self.onHideHooked = self.onHideHooked or false
+        self.configDialogWidget = AceConfigDialog.OpenFrames[ns.name]
+
+        PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)
+        if not self.onHideHooked then
+            --self:HookScript(self.configDialogWidget.frame, 'OnHide', 'OnHide_Config_WithSound')
+            --self.onHideHooked = true
+        end
     end
 end
 

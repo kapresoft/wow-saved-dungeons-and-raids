@@ -42,14 +42,12 @@ local function Methods(o)
     --- Usage:  local instance = AceDbInitializerMixin:New(addon)
     --- @param addon SavedDungeonsAndRaid
     --- @return AceDbInitializerMixin
-    function o:New(addon)
-        return K_CreateAndInitFromMixin(o, addon)
-    end
+    function o:New(addon) return K_CreateAndInitFromMixin(o, addon) end
 
     ---@return AceDB
     function o:GetDB() return self.addon.db end
 
-    function o:Initialize()
+    function o:InitDb()
         p:log(100, 'Initialize called...')
         AddonCallbackMethods(self.addon)
         self.db.RegisterCallback(self.addon, "OnProfileChanged", "OnProfileChanged")
