@@ -40,7 +40,7 @@ local function Methods(o)
         end
         -- Temporary
 
-        if true then
+        if false then
             local name = 'Naxxramas (10)'
             local difficultyName = 'Heroic'
             local str = string.format('%s (%s)', name, tostring(difficultyName))
