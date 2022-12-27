@@ -15,6 +15,9 @@ This is a small add-on that provides information about the player's saved dungeo
 
 ![LFG-Frame-SavedDNR-3](https://user-images.githubusercontent.com/1599306/209703511-274dbed0-9b3f-48e7-82e0-3af345c873c8.png)
 
+## Docs
+- [Getting Started](https://github.com/kapresoft/wow-saved-dungeons-and-raids/wiki)
+
 ## Curse Forge
 - https://www.curseforge.com/wow/addons/saved-dungeons-raids
 
