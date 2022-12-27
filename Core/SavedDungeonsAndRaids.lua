@@ -14,7 +14,6 @@ Local Vars
 local ns = SDNR_Namespace(...)
 local O, LibStubLocal, M = ns:LibPack()
 local LibStub = O.AceLibStub
-
 local GC, SavedInstances = O.GlobalConstants, O.SavedInstances
 local Table, String = O.LU.Table, O.LU.String
 local toStringSorted, pformat = Table.toStringSorted, O.pformat

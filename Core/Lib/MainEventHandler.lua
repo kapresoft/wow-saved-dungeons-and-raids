@@ -14,7 +14,7 @@ Local Vars
 -------------------------------------------------------------------------------]]
 local ns = SDNR_Namespace(...)
 local O, LibStub, M = ns:LibPack()
-local AceEvent, GC = O.AceEvent, O.GlobalConstants
+local AceEvent, GC = O.AceLibrary.AceEvent, O.GlobalConstants
 local E, MSG = GC.E, GC.M
 --TODO next localize
 local commandTextFormat = 'Type %s on the console for available commands.'

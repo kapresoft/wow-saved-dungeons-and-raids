@@ -54,32 +54,6 @@ local AceModule = {
     AceLibSharedMedia = 'LibSharedMedia-3.0'
 }
 
----@class AceObjects
-local AceObjects = {
-
-    ---@type AceAddon
-    AceAddon = {},
-    ---@type AceConsole
-    AceConsole = {},
-    ---@type AceConfig
-    AceConfig = {},
-    ---@type AceConfigDialog
-    AceConfigDialog = {},
-    ---@type AceDB
-    AceDB = {},
-    ---@type AceDBOptions
-    AceDBOptions = {},
-    ---@type AceEvent
-    AceEvent = {},
-    ---@type AceHook
-    AceHook = {},
-    ---@type AceGUI
-    AceGUI = {},
-    ---@type AceLibSharedMedia
-    AceLibSharedMedia = {},
-
-}
-
 ---@class GlobalObjects
 local GlobalObjects = {
     --AceLib = AceObjects,
@@ -87,14 +61,6 @@ local GlobalObjects = {
     AceLibrary = {},
     ---@type LibStub
     AceLibStub = {},
-    ---@type AceConfig
-    AceConfig = AceObjects.AceConfig,
-    ---@type AceConsole
-    AceConsole = {},
-    ---@type AceDB
-    AceDB = {},
-    ---@type AceEvent
-    AceEvent = {},
 
     ---@type fun(fmt:string, ...)|fun(val:string)
     pformat = {},
@@ -146,10 +112,6 @@ local M = {
     pformat = 'pformat',
     sformat = 'sformat',
     AceLibrary = 'AceLibrary',
-    AceConfig = 'AceConfig',
-    AceConsole = 'AceConsole',
-    AceDB = 'AceDB',
-    AceEvent = 'AceEvent',
 
     AceDbInitializerMixin = 'AceDbInitializerMixin',
     API = 'API',
@@ -168,16 +130,6 @@ local InitialModuleInstances = {
     AceLibStub = LibStub,
     -- Internal Libs --
     GlobalConstants = LibStub(LibName(M.GlobalConstants)),
-    AceAddon = LibStub(AceModule.AceAddon),
-    AceConsole = LibStub(AceModule.AceConsole),
-    AceConfig = LibStub(AceModule.AceConfig),
-    AceConfigDialog = LibStub(AceModule.AceConfigDialog),
-    AceDB = LibStub(AceModule.AceDB),
-    AceDBOptions = LibStub(AceModule.AceDBOptions),
-    AceEvent = LibStub(AceModule.AceEvent),
-    AceHook = LibStub(AceModule.AceHook),
-    AceGUI = LibStub(AceModule.AceGUI),
-    AceLibSharedMedia = LibStub(AceModule.AceLibSharedMedia),
     pformat = PrettyPrint.pformat,
 }
 

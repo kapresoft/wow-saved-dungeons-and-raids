@@ -13,7 +13,7 @@ local LibStub = ns.O.AceLibStub
 local O, _, M = ns:LibPack()
 local sformat, pformat = string.format, ns.pformat
 local tableUnpack = O.Table.tableUnpack
-local C = O.AceConsole
+local C = LibStub('AceConsole-3.0')
 
 ---Colors are in hex
 local consoleColors = {

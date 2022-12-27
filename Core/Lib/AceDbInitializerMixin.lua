@@ -2,7 +2,7 @@
 Local Vars
 -------------------------------------------------------------------------------]]
 local O, LibStub, M = SDNR_LibPack(...)
-local GC, AceDB = O.GlobalConstants, O.AceDB
+local GC, AceDB = O.GlobalConstants, O.AceLibrary.AceDB
 local IsEmptyTable = O.LU.Table.isEmpty
 --[[-----------------------------------------------------------------------------
 New Instance
