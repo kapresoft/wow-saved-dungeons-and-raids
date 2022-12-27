@@ -141,6 +141,10 @@ local function Methods(o)
         return logName
     end
 
+    ---#### Example
+    ---```
+    ---local version, curseForge, issues, repo, lastUpdate, wowInterfaceVersion = GC:GetAddonInfo()
+    ---```
     ---@return string, string, string, string, string, string
     function o:GetAddonInfo()
         local versionText, lastUpdate
@@ -152,12 +156,12 @@ local function Methods(o)
         versionText = '1.0.x.dev'
         lastUpdate = date("%m/%d/%y %H:%M:%S")
         --@end-debug@
-        local wowInterfaceVersion = GetBuildInfo() .. sformat(' (%s)', select(4, GetBuildInfo()))
+        local wowInterfaceVersion = select(4, GetBuildInfo())
 
         return versionText, GetAddOnMetadata(ns.name, 'X-CurseForge'),
-        GetAddOnMetadata(ns.name, 'X-Github-Issues'),
-        GetAddOnMetadata(ns.name, 'X-Github-Repo'),
-        lastUpdate, wowInterfaceVersion, wowInterfaceVersion
+            GetAddOnMetadata(ns.name, 'X-Github-Issues'),
+            GetAddOnMetadata(ns.name, 'X-Github-Repo'),
+            lastUpdate, wowInterfaceVersion
     end
 
     function o:GetAddonInfoFormatted()
@@ -173,6 +177,7 @@ local function Methods(o)
                 sformat(ADDON_INFO_FMT, 'Interface-Version', wowInterfaceVersion)
         )
     end
+
 end
 
 GlobalConstantProperties(L)

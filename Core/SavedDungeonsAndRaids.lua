@@ -101,8 +101,7 @@ local function Methods(o)
         SavedInstances:ReportSavedInstances(A.logger)
     end
 
-    function o:SlashCommand_InfoHandler() p:log(GC:GetAddonInfoFormatted())
-    end
+    function o:SlashCommand_InfoHandler() p:log(GC:GetAddonInfoFormatted()) p:log(GC:GetAddonInfoFormatted()) end
 
     function o:SlashCommand_Help_Handler()
         p:log('')
