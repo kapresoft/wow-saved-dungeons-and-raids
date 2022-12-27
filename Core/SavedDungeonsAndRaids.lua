@@ -59,10 +59,18 @@ local function Methods(o)
     function o:BINDING_SDNR_OPTIONS_DLG() self:OpenConfig() end
 
     function o:RegisterHooks()
+        self:RegisterPVEFrameHook()
+
         local f = _G['LFGParentFrame']
         if not f then return end
         local success = f:HookScript('OnShow', function () SavedInstances:ReportSavedInstances(A.logger) end)
         assert(success, 'Failed to RegisterHooks() in LFGParentFrame.')
+    end
+    function o:RegisterPVEFrameHook()
+        local f = _G['PVEFrame']
+        if not f then return end
+        local success = f:HookScript('OnShow', function () SavedInstances:ReportSavedInstances(A.logger) end)
+        assert(success, 'Failed to RegisterHooks() in PVEFrame.')
     end
 
     function o:RegisterSlashCommands()
@@ -74,9 +82,9 @@ local function Methods(o)
         if IsEmptyTable(args) then
             self:SlashCommand_Help_Handler(); return
         end
-        if IsAnyOf('config', unpack(args)) or IsAnyOf('conf', unpack(args)) then
-            self:SlashCommand_OpenConfig(); return
-        end
+        --if IsAnyOf('config', unpack(args)) or IsAnyOf('conf', unpack(args)) then
+        --    self:SlashCommand_OpenConfig(); return
+        --end
         if IsAnyOf('info', unpack(args)) then
             self:SlashCommand_InfoHandler(); return
         end
@@ -111,7 +119,7 @@ local function Methods(o)
         p:log(USAGE_LABEL)
         p:log(OPTIONS_LABEL .. ":")
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'list', COMMAND_LIST_TEXT)
-        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'config', COMMAND_CONFIG_TEXT)
+        --p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'config', COMMAND_CONFIG_TEXT)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'info', COMMAND_INFO_TEXT)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'help', COMMAND_HELP_TEXT)
     end
