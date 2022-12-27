@@ -17,7 +17,7 @@ local O, LibStub, M = ns:LibPack()
 local AceEvent, GC = O.AceEvent, O.GlobalConstants
 local E, MSG = GC.E, GC.M
 --TODO next localize
-local commandTextFormat = 'Type %s on the console to open config dialog or %s for more info'
+local commandTextFormat = 'Type %s on the console for available commands.'
 
 --[[-----------------------------------------------------------------------------
 New Instance
@@ -30,17 +30,23 @@ local p = L.logger
 --[[-----------------------------------------------------------------------------
 Support Functions
 -------------------------------------------------------------------------------]]
+
+---Other modules can listen to message
+---```Usage:
+---AceEvent:RegisterMessage(MSG.OnAddonReady, function(evt, ...) end
+---```
+local function SendAddonReadyMessage()
+    L:SendMessage(MSG.OnAddonReady, addon)
+end
+
 ---@param f MainEventHandlerFrame
 local function OnPlayerEnteringWorld(f, event, ...)
     --p:log('[%s] called...', event)
     local addon = f.ctx.addon
     addon.logger:log('0.0.1-alpha Initialized')
     addon.logger:log(sformat(commandTextFormat, GC.C.COMMAND, GC.C.HELP_COMMAND))
-    --p:log('Namespace keys: %s', ns:ToStringNamespaceKeys())
-    --p:log('Namespace Object keys: %s', ns:ToStringObjectKeys())
-    ---Other modules can listen to message
-    ---AceEvent:RegisterMessage(MSG.OnAddonReady, function(evt, ...) end
-    L:SendMessage(MSG.OnAddonReady, addon)
+    addon:RegisterHooks()
+    SendAddonReadyMessage()
 end
 
 --[[-----------------------------------------------------------------------------
@@ -57,12 +63,11 @@ local function InstanceMethods(o)
     ---@param addon SavedDungeonsAndRaid
     function o:Init(addon)
         self.addon = addon
+        self:RegisterMessage(MSG.OnAfterInitialize, function(evt, ...) self:OnAfterInitialize() end)
+    end
 
-        self:RegisterMessage(MSG.OnAfterInitialize, function(evt, ...)
-            ---@type SavedDungeonsAndRaid
-            p:log(10, 'RegisterMessage[%s]: called...', evt)
-            self:RegisterEvents()
-        end)
+    function o:OnAfterInitialize()
+        self:RegisterEvents()
     end
 
     function o:RegisterEvents()
@@ -93,17 +98,6 @@ local function InstanceMethods(o)
         f.ctx = self:CreateWidget(f)
         return f
     end
-end
-
----Registers a listener to a message event
----@param o MainEventHandler
-local function RegisterMessageHandler(o)
-    o:RegisterMessage(MSG.OnAfterInitialize, function(evt, ...)
-        ---@type SavedDungeonsAndRaid
-        local addon = ...
-        p:log(10, 'RegisterMessage[%s]: called...', evt)
-        o:RegisterEvents()
-    end)
 end
 
 InstanceMethods(L)

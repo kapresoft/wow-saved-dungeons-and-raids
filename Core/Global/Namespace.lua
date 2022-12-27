@@ -118,10 +118,12 @@ local GlobalObjects = {
     -----@type Kapresoft_LibUtil_Table
     --Table = {},
 
-    ---@type Core
-    Core = {},
     ---@type AceDbInitializerMixin
     AceDbInitializerMixin = {},
+    ---@type API
+    API = {},
+    ---@type Core
+    Core = {},
     ---@type GlobalConstants
     GlobalConstants = {},
     ---@type Logger
@@ -130,6 +132,8 @@ local GlobalObjects = {
     MainEventHandler = {},
     ---@type OptionsMixin
     OptionsMixin = {},
+    ---@type SavedInstances
+    SavedInstances = {},
 }
 --[[-----------------------------------------------------------------------------
 Modules
@@ -147,12 +151,14 @@ local M = {
     AceDB = 'AceDB',
     AceEvent = 'AceEvent',
 
-    Core = 'Core',
     AceDbInitializerMixin = 'AceDbInitializerMixin',
+    API = 'API',
+    Core = 'Core',
     GlobalConstants = 'GlobalConstants',
     Logger = 'Logger',
     MainEventHandler = 'MainEventHandler',
     OptionsMixin = 'OptionsMixin',
+    SavedInstances = 'SavedInstances',
 }
 
 local InitialModuleInstances = {

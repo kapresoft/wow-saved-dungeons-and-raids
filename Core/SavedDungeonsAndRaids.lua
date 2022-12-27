@@ -15,7 +15,7 @@ local ns = SDNR_Namespace(...)
 local O, LibStubLocal, M = ns:LibPack()
 local LibStub = O.AceLibStub
 
-local GC = O.GlobalConstants
+local GC, SavedInstances = O.GlobalConstants, O.SavedInstances
 local Table, String = O.LU.Table, O.LU.String
 local toStringSorted, pformat = Table.toStringSorted, O.pformat
 local IsBlank, IsAnyOf, IsEmptyTable = String.IsBlank, String.IsAnyOf, Table.isEmpty
@@ -33,6 +33,11 @@ ns['addon'] = A
 ---@type AceDB
 A.db = nil
 
+
+--[[-----------------------------------------------------------------------------
+Support Functions
+-------------------------------------------------------------------------------]]
+
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
@@ -48,6 +53,13 @@ local function Methods(o)
 
         local dbInit = O.AceDbInitializerMixin:New(self)
         dbInit:Initialize()
+    end
+
+    function o:RegisterHooks()
+        local f = _G['LFGParentFrame']
+        if not f then return end
+        local success = f:HookScript('OnShow', function () SavedInstances:ReportSavedInstances(A.logger) end)
+        assert(success, 'Failed to RegisterHooks() in LFGParentFrame.')
     end
 
     function o:RegisterSlashCommands()
@@ -70,8 +82,16 @@ local function Methods(o)
             self:SlashCommand_InfoHandler()
             return
         end
+        if IsAnyOf('list', unpack(args)) then
+            self:SlashCommand_ListSavedInstances()
+            return
+        end
         -- Otherwise, show help
         self:SlashCommand_Help_Handler()
+    end
+
+    function o:SlashCommand_ListSavedInstances()
+        SavedInstances:ReportSavedInstances(A.logger)
     end
 
     function o:SlashCommand_InfoHandler() p:log(GC:GetAddonInfoFormatted())
@@ -83,14 +103,16 @@ local function Methods(o)
         --p:log(USAGE_LABEL)
         --p:log(OPTIONS_LABEL)
         --TODO next localize
-        local COMMAND_NONE_TEXT = ":: Shows the config UI (default)"
         local COMMAND_INFO_TEXT = ":: Prints additional addon info"
+        local COMMAND_LIST_TEXT = ":: Prints the saved dungeons and raids on the console"
+        local COMMAND_CONFIG_TEXT = ":: Shows the config UI"
         local COMMAND_HELP_TEXT = ":: Shows this help"
         local OPTIONS_LABEL = "options"
         local USAGE_LABEL = sformat("usage: %s [%s]", GC.C.CONSOLE_PLAIN, OPTIONS_LABEL)
         p:log(USAGE_LABEL)
         p:log(OPTIONS_LABEL .. ":")
-        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'config', COMMAND_NONE_TEXT)
+        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'list', COMMAND_LIST_TEXT)
+        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'config', COMMAND_CONFIG_TEXT)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'info', COMMAND_INFO_TEXT)
         p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'help', COMMAND_HELP_TEXT)
     end
