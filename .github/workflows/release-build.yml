@@ -8,11 +8,12 @@ on:
 
 env:
   addonName: SavedDungeonsAndRaids
+  curseForgeProjectId: 729609
   createDraftRelease: true
   uploadBuildArtifacts: true
   artifact_retentionDays: 7
   releaseDir: ./.release
-  curseForgeProjectId: 729609
+  refName: ${{ github.ref_name }}
 
 jobs:
   build:
@@ -21,11 +22,25 @@ jobs:
 
     steps:
       ## ------------------------------------------------ ##
+      ## See: https://github.com/actions/github-script
+      - name: "Set Env Variable: GITHUB_SHA_SHORT"
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const sha = context.sha.substring(0, 7)
+            core.exportVariable('GITHUB_SHA_SHORT', sha)
+      ## ------------------------------------------------ ##
+      - name: "Set ENV Var Option to Skip Uploads on Branch Builds and refName"
+        if: ${{ github.ref_type == 'branch' }}
+        run: |
+          echo packagerOptions="-d" >> $GITHUB_ENV
+          echo refName="${GITHUB_SHA_SHORT}" >> $GITHUB_ENV
+      ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildBasePath & buildArtifactFilename"
         run: |
           echo buildBasePath="${releaseDir}/${addonName}" >> $GITHUB_ENV
-          echo buildArtifactFilename="${addonName}-${{ github.ref_name }}.zip"  >> $GITHUB_ENV
-          echo buildArtifactChecksumFilename="${addonName}-${{ github.ref_name }}.zip.md5sum"  >> $GITHUB_ENV
+          echo buildArtifactFilename="${addonName}-${refName}.zip"  >> $GITHUB_ENV
+          echo buildArtifactChecksumFilename="${addonName}-${refName}.zip.md5sum"  >> $GITHUB_ENV
       ## ------------------------------------------------ ##
       - name: "Set ENV Variable: buildArtifact"
         run: |
@@ -37,6 +52,8 @@ jobs:
           echo HOME=${HOME}
           echo createDraftRelease=${createDraftRelease}
           echo releaseDir=${releaseDir}
+          echo refName=${refName}
+          echo packagerOptions=${packagerOptions}
           echo addonName=${addonName}
           echo buildArtifact=${buildArtifact}
           echo buildArtifactChecksumFile=${buildArtifactChecksumFile}
@@ -56,7 +73,7 @@ jobs:
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
         with:
-          args: -r ${releaseDir} -p ${curseForgeProjectId}
+          args: -r ${releaseDir} -p ${curseForgeProjectId} ${packagerOptions}
       ## ------------------------------------------------ ##
       - name: "Verify Build Artifact Exists: ${{ env.buildArtifact }}"
         uses: andstor/file-existence-action@v2
@@ -107,9 +124,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
-          version: ${{ github.ref_name }}
+          tag: ${{ env.refName }}
+          name: ${{ env.refName }}
+          version: ${{ env.refName }}
           prerelease: false
           footer: |
             

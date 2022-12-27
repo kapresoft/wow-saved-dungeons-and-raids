@@ -11,8 +11,8 @@ on:
 
 env:
   addonName: SavedDungeonsAndRaids
-  releaseDir: ./.release
   curseForgeProjectId: 729609
+  releaseDir: ./.release
 
 jobs:
   build:
