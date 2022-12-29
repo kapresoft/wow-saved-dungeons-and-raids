@@ -1,6 +1,15 @@
-|     |     |
-|-----|-----|
-|[![Branch Build](https://github.com/kapresoft/wow-saved-dungeons-and-raids/actions/workflows/dev-build.yml/badge.svg)](https://github.com/kapresoft/wow-saved-dungeons-and-raids/actions/workflows/dev-build.yml)|[![Release Build](https://github.com/kapresoft/wow-saved-dungeons-and-raids/actions/workflows/release-build.yml/badge.svg)](https://github.com/kapresoft/wow-saved-dungeons-and-raids/actions/workflows/release-build.yml)|
+
+<table border="0" align="right" style="float:right">
+    <tr>
+      <td style="vertical-align: middle">
+        <a href="https://github.com/kapresoft/wow-saved-dungeons-and-raids/actions/workflows/dev-build.yml"
+           ><img src="https://github.com/kapresoft/wow-saved-dungeons-and-raids/actions/workflows/dev-build.yml/badge.svg"/></a>
+      </td>
+      <td style="vertical-align: middle">
+        <a href="https://github.com/kapresoft/wow-saved-dungeons-and-raids/actions/workflows/release-build.yml"
+           ><img src="https://github.com/kapresoft/wow-saved-dungeons-and-raids/actions/workflows/release-build.yml/badge.svg"/></a>
+      </td></tr>
+</table>
 
 # Saved Dungeons & Raids
 > A small addon that displays a log or a popup UI of a player's saved dungeons and raids
