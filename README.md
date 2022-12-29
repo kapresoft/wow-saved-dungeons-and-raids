@@ -36,7 +36,7 @@ A new option to display a frame containing the saved instance information side-b
 ## Curse Forge
 - https://www.curseforge.com/wow/addons/saved-dungeons-raids
 
-## Please download my other addons
+## Try My Other Addons
 - [ActionbarPlus](https://www.curseforge.com/wow/addons/actionbarplus)
 - [MacrobarPlus](https://www.curseforge.com/wow/addons/macrobarplus)
 - [Addon Template](https://www.curseforge.com/wow/addons/addon-template)
