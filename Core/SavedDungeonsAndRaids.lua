@@ -56,21 +56,13 @@ local function Methods(o)
         O.OptionsMixin:New(self):InitOptions()
     end
 
+    ---@param level number
+    function o:LogLevel(level) SDNR_LOG_LEVEL = level or 0 end
+
     function o:BINDING_SDNR_OPTIONS_DLG() self:OpenConfig() end
 
     function o:RegisterHooks()
-        self:RegisterPVEFrameHook()
-
-        local f = _G['LFGParentFrame']
-        if not f then return end
-        local success = f:HookScript('OnShow', function () SavedInstances:ReportSavedInstances(A.logger) end)
-        assert(success, 'Failed to RegisterHooks() in LFGParentFrame.')
-    end
-    function o:RegisterPVEFrameHook()
-        local f = _G['PVEFrame']
-        if not f then return end
-        local success = f:HookScript('OnShow', function () SavedInstances:ReportSavedInstances(A.logger) end)
-        assert(success, 'Failed to RegisterHooks() in PVEFrame.')
+        SavedInstances:RegisterConsoleHooks()
     end
 
     function o:RegisterSlashCommands()
@@ -98,7 +90,7 @@ local function Methods(o)
     function o:SlashCommand_OpenConfig() o:OpenConfig() end
 
     function o:SlashCommand_ListSavedInstances()
-        SavedInstances:ReportSavedInstances(A.logger)
+        SavedInstances:ReportSavedInstances()
     end
 
     function o:SlashCommand_InfoHandler() p:log(GC:GetAddonInfoFormatted()) p:log(GC:GetAddonInfoFormatted()) end
@@ -139,9 +131,7 @@ end
 local function Constructor()
     Methods(A)
     SDNR = A
+    _G[ns.name] = A
 end
 
 Constructor()
-
-
-
