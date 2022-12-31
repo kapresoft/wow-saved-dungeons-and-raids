@@ -39,12 +39,13 @@ local function Methods(o)
     ---@param index number
     ---@return SavedInstanceInfo
     function o:GetSavedInstanceInfoByIndex(index)
-        local name, id, _, difficulty, isLocked, _, _, isRaid, _, difficultyName = GetSavedInstanceInfo(index)
+        local name, id, _, difficulty, isLocked, _, _, isRaid, maxPlayers, difficultyName = GetSavedInstanceInfo(index)
         if String.IsBlank(name) then return nil end
         ---@type SavedInstanceInfo
         local d = {
             name = name,
             instanceLockId = id,
+            maxPlayers = maxPlayers,
             difficulty = difficulty,
             difficultyName = difficultyName,
             isLocked = isLocked,
@@ -66,23 +67,37 @@ local function Methods(o)
     ---@param predicateFn fun(savedInstanceInfo:SavedInstanceInfo)
     ---@return table<string, DataProviderElement>
     function o:GetSavedInstanceByFilter(predicateFn)
+        local C_LFGList = _G['C_LFGList']
+        if not C_LFGList then return end
+
         ---@type LFGListingFrameActivityViewScrollBox
         local view = _G['LFGListingFrameActivityViewScrollBox']
         if not (view and view:GetDataProvider()) then return end
+
         local dataProvider = view:GetDataProvider()
 
         ---@type table<string, DataProviderElement>
         local results = {}
 
-        for i=1, 25 do
+        ---@param info SavedInstanceInfo
+        local createMainPredicate = function(info)
+            return function(elem)
+                if not (elem and elem.data) then return false end
+                local iName = info.name
+                local data = elem.data
+                if data.activityID then
+                    local ai = C_LFGList.GetActivityInfoTable(data.activityID)
+                    return ai and ai.maxNumPlayers and (iName == data.name and info.maxPlayers == ai.maxNumPlayers)
+                end
+                return iName == data.name
+            end
+        end
+
+        for i=1,25 do
             local info = self:GetSavedInstanceInfoByIndex(i)
             if info and info.name then
-                local instanceName = info.name
-                local savedElem = dataProvider:FindElementDataByPredicate(function(elem)
-                    if not (elem and elem.data) then return false end
-                    return instanceName == elem.data.name
-                end)
-                if savedElem and predicateFn(info) then results[instanceName] = savedElem end
+                local savedElem = dataProvider:FindElementDataByPredicate(createMainPredicate(info))
+                if savedElem and predicateFn(info) then results[info.name] = savedElem end
             end
         end
 
@@ -109,5 +124,3 @@ local function Methods(o)
 end
 
 Methods(L)
-
-SDNR_API = L

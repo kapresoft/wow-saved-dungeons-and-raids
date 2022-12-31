@@ -127,6 +127,7 @@ local function Methods(o)
             local data = elem:GetData()
             if elem.data then
                 elem.data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, elem.data.name)
+                --p:log('%s: %s', name, pformat(elem.data))
             end
         end
         view:GetView():Rebuild()
@@ -142,6 +143,7 @@ local function Methods(o)
             local data = elem:GetData()
             if elem.data then
                 elem.data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, elem.data.name)
+                --p:log('%s: %s', name, pformat(elem.data))
             end
         end
         view:GetView():Rebuild()
@@ -190,4 +192,3 @@ local function Methods(o)
 end
 
 Methods(L)
-

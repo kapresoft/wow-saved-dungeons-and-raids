@@ -57,9 +57,7 @@ local function Methods(o)
     end
 
     ---@param level number
-    function o:LogLevel(level)
-        SDNR_LOG_LEVEL = level or 0
-    end
+    function o:LogLevel(level) SDNR_LOG_LEVEL = level or 0 end
 
     function o:BINDING_SDNR_OPTIONS_DLG() self:OpenConfig() end
 
@@ -137,6 +135,3 @@ local function Constructor()
 end
 
 Constructor()
-
-
-
