@@ -6,10 +6,11 @@ local sformat = string.format
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, LibStub, M = SDNR_LibPack(...)
-local GC = O.GlobalConstants
+local O, LibStub, M, ns = SDNR_LibPack(...)
+local GC, API = O.GlobalConstants, O.API
 local IsEmptyTable = O.LU.Table.isEmpty
 local KC = Kapresoft_LibUtil_Constants
+local SAVED_INSTANCE_COLOR = 'fc1605'
 
 --[[-----------------------------------------------------------------------------
 New Instance
@@ -35,42 +36,158 @@ local function subh(text) return KC:FormatColor(colors.subh, text) end
 ---@param o SavedInstances
 local function Methods(o)
 
-    ---@param logger LoggerInterface
-    function o:ReportSavedInstances(logger)
-        local dungeons, raids = O.API:GetSavedInstances()
-        print('\n')
-        self:ReportSavedDungeons(dungeons, logger)
-        self:ReportSavedRaid(raids, logger)
+    ---Should only be called once
+    function o:RegisterConsoleHooks()
+        --TODO next: If profile.showReportInConsole
+        self:RegisterPreRetailFrameHook()
+        self:RegisterRetailFrameHook()
     end
 
-    ---@param pp LoggerInterface
-    function o:ReportSavedDungeons(dungeons, pp)
+    --TODO next: If profile.showSavedInLFGFrame
+    function o:RegisterLFGFrameHooks()
+        local LFGListingFrame = _G['LFGListingFrame']
+        if not LFGListingFrame then return end
+
+        local categoryButtons = LFGListingFrame.CategoryView.CategoryButtons
+        if self.Dungeon_OnClick_Hooked ~= true then
+            if #categoryButtons <= 0 then return end
+            local dungeonButton = categoryButtons[1]
+            if not dungeonButton then return end
+            local success = dungeonButton:HookScript('OnClick', function()
+                p:log(10, 'ApplyLFGFrameHooks::Dungeon::OnClick called...%s', GetTime())
+                self:HandleSavedInstances()
+            end)
+            self.Dungeon_OnClick_Hooked = success
+        end
+        if self.Raid_OnClick_Hooked ~= true then
+            if #categoryButtons <= 0 then return end
+            local button = categoryButtons[2]
+            if not button then return end
+            local success = button:HookScript('OnClick', function()
+                p:log(10, 'ApplyLFGFrameHooks::Raid::OnClick called...%s', GetTime())
+                self:HandleSavedInstances()
+            end)
+            self.Raid_OnClick_Hooked = success
+        end
+
+        if self.LFGListingFrame_OnShow_Hooked ~= true then
+            local success = LFGListingFrame:HookScript('OnShow', function()
+                p:log(10, 'ApplyLFGFrameHooks::LFGListingFrame:OnShow called...%s', GetTime())
+                self:HandleSavedInstances()
+            end)
+            self.LFGListingFrame_OnShow_Hooked = success
+        end
+    end
+    function o:RegisterLFGFrameHooksDelayed() C_Timer.After(0.5, function() self:RegisterLFGFrameHooks() end) end
+
+    function o:RegisterRetailFrameHook()
+        local f = _G['PVEFrame']
+        if not f then return end
+        local success = f:HookScript('OnShow', function ()
+            self:RegisterLFGFrameHooksDelayed()
+            self:ReportSavedInstances()
+        end)
+        assert(success, 'Failed to RegisterHooks() in PVEFrame.')
+    end
+    function o:RegisterPreRetailFrameHook()
+        local LFGParentFrame = _G['LFGParentFrame']
+        if not LFGParentFrame then return end
+        local success = LFGParentFrame:HookScript('OnShow', function ()
+            self:RegisterLFGFrameHooksDelayed()
+            self:ReportSavedInstances()
+        end)
+        assert(success, 'Failed to RegisterHooks() in LFGParentFrame.')
+    end
+
+    function o:ReportSavedInstances()
+        local dungeons, raids = O.API:GetSavedInstances()
+        print('\n')
+        self:ReportSavedDungeons(dungeons)
+        self:ReportSavedRaid(raids)
+    end
+
+    function o:HandleSavedInstances()
+        local selectedCategory = self:GetSelectedCategory()
+        p:log(10, 'HandleSavedDungeons::Category: %s', selectedCategory or 'none')
+        if not selectedCategory then return end
+        if 'Dungeons' == selectedCategory then
+            self:UpdateSavedDungeonsInLFGFrame()
+        elseif 'Raids' == selectedCategory then
+            self:UpdateSavedRaidsInLFGFrame()
+        end
+    end
+
+    function o:UpdateSavedDungeonsInLFGFrame()
+        local view = _G['LFGListingFrameActivityViewScrollBox']
+        if not view then return end
+        local dungeons = API:GetSavedDungeonsElement()
+        if IsEmptyTable(dungeons) then return end
+
+        for name, elem in pairs(dungeons) do
+            local data = elem:GetData()
+            if elem.data then
+                elem.data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, elem.data.name)
+            end
+        end
+        view:GetView():Rebuild()
+    end
+
+    function o:UpdateSavedRaidsInLFGFrame()
+        local view = _G['LFGListingFrameActivityViewScrollBox']
+        if not view then return end
+        local raids = API:GetSavedRaidsElement()
+        if IsEmptyTable(raids) then return end
+
+        for name, elem in pairs(raids) do
+            local data = elem:GetData()
+            if elem.data then
+                elem.data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, elem.data.name)
+            end
+        end
+        view:GetView():Rebuild()
+    end
+
+    function o:GetSelectedCategory()
+        local LFGListingFrame = _G['LFGListingFrame']
+        local C_LFGList = _G['C_LFGList']
+        if not (LFGListingFrame and C_LFGList) then return nil end
+        local catID = LFGListingFrame:GetCategorySelection()
+        return catID and C_LFGList.GetCategoryInfo(catID)
+    end
+
+    ---@param dungeons table<string,SavedInstanceInfo>
+    function o:ReportSavedDungeons(dungeons)
+        local pp = ns:GetAddonLogger()
         pp:log(header('Saved Dungeons'))
         pp:log('')
         pp:log(subh('Dungeons'))
-
-        if #dungeons == 0 then
+        if IsEmptyTable(dungeons) then
             pp:log("  - No saved instances found.")
-        else
-            for i=1, #dungeons do pp:log('  - %s', dungeons[i]) end
-            pp:log('')
+            return
         end
+
+        for name, d in pairs(dungeons) do
+            pp:log('  - %s (%s)', name, tostring(d.difficultyName))
+        end
+        pp:log('')
     end
 
     ---@param pp LoggerInterface
-    function o:ReportSavedRaid(raids, pp)
+    function o:ReportSavedRaid(raids)
+        local pp = ns:GetAddonLogger()
         pp:log(subh('Raids'))
-        if #raids == 0 then
+        if IsEmptyTable(raids) then
             pp:log("- No saved raids found.")
-        else
-            if #raids == 0 then return end
-            for i=1, #raids do
-                pp:log('  - %s', raids[i])
-            end
-            print('\n')
+            return
         end
+
+        for name, r in pairs(raids) do
+            pp:log('  - %s (%s)', name, tostring(r.difficultyName))
+        end
+        print('\n')
     end
 
 end
 
 Methods(L)
+

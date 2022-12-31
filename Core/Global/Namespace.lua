@@ -43,7 +43,6 @@ GlobalObjects
 -------------------------------------------------------------------------------]]
 ---@class GlobalObjects
 local GlobalObjects = {
-    --AceLib = AceObjects,
     ---@type Kapresoft_LibUtil_AceLibraryObjects
     AceLibrary = {},
     ---@type LibStub
@@ -56,20 +55,6 @@ local GlobalObjects = {
 
     ---@type Kapresoft_LibUtil_Objects
     LU = {},
-    -----@type Kapresoft_LibUtil_PrettyPrint
-    --PrettyPrint = {},
-    -----@type Kapresoft_LibUtil_Assert
-    --Assert = {},
-    -----@type Kapresoft_LibUtil_Incrementer
-    --Incrementer = {},
-    -----@type Kapresoft_LibUtil_LuaEvaluator
-    --LuaEvaluator = {},
-    -----@type Kapresoft_LibUtil_Mixin
-    --Mixin = {},
-    -----@type Kapresoft_LibUtil_String
-    --String = {},
-    -----@type Kapresoft_LibUtil_Table
-    --Table = {},
 
     ---@type AceDbInitializerMixin
     AceDbInitializerMixin = {},
@@ -177,7 +162,8 @@ function SDNR_Namespace(...)
     function namespace:NewLogger(libName) return self.O.Logger:NewLogger(libName) end
     function namespace:ToStringNamespaceKeys() return pformat(getSortedKeys(ns)) end
     function namespace:ToStringObjectKeys() return pformat(getSortedKeys(ns.O)) end
-
+    ---@return LoggerInterface
+    function namespace:GetAddonLogger() return _G[self.name].logger end
     return namespace
 end
 ---@return GlobalObjects, LocalLibStub, Modules, Namespace
