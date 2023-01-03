@@ -104,18 +104,26 @@ local function Methods(o)
         return results
     end
 
+    ---@param savedInstanceInfo SavedInstanceInfo
+    local function IsInstanceSaved(savedInstanceInfo)
+        if not (savedInstanceInfo and savedInstanceInfo.name) then return false end
+        return savedInstanceInfo.isLocked
+    end
+
     ---@return table<string, SavedInstanceInfo>, table<string, SavedInstanceInfo>
     function o:GetSavedInstances()
         ---@type SavedInstanceInfo
         local dungeons = {}
         ---@type SavedInstanceInfo
         local raids = {}
-        for i=1, 25 do
-            local d = self:GetSavedInstanceInfoByIndex(i)
-            if d and d.name then
+
+        local count = GetNumSavedInstances()
+        for i=1, count do
+            local savedInfo = self:GetSavedInstanceInfoByIndex(i)
+            if IsInstanceSaved(savedInfo) then
                 local tbl = dungeons
-                if d.isRaid == true then tbl = raids end
-                tbl[d.name] = d
+                if savedInfo.isRaid == true then tbl = raids end
+                tbl[savedInfo.name] = savedInfo
             end
         end
         return dungeons, raids
