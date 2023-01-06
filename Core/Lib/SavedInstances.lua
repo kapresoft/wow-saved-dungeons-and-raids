@@ -160,11 +160,11 @@ local function Methods(o)
     ---@param dungeons table<string,SavedInstanceInfo>
     function o:ReportSavedDungeons(dungeons)
         local pp = ns:GetAddonLogger()
-        pp:log(header('Saved Dungeons'))
+        pp:log(header(sformat('%s %s', SDNR_SAVED, SDNR_INSTANCES)))
         pp:log('')
-        pp:log(subh('Dungeons'))
+        pp:log(subh(SDNR_DUNGEONS))
         if IsEmptyTable(dungeons) then
-            pp:log("  - No saved instances found.")
+            pp:log("  - %s", SDNR_NO_SAVED_INSTANCES_FOUND)
             return
         end
 
@@ -177,9 +177,9 @@ local function Methods(o)
     ---@param pp LoggerInterface
     function o:ReportSavedRaid(raids)
         local pp = ns:GetAddonLogger()
-        pp:log(subh('Raids'))
+        pp:log(subh(SDNR_RAIDS))
         if IsEmptyTable(raids) then
-            pp:log("- No saved raids found.")
+            pp:log("  - %s", SDNR_NO_SAVED_RAID_FOUND)
             return
         end
 

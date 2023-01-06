@@ -8,3 +8,10 @@ local addonName = ...
 local L = LibStub("AceLocale-3.0"):NewLocale(addonName, "enUS", true);
 
 L["BINDING_NAME_SDNR_OPTIONS_DLG"]                  = 'Options Dialog'
+
+L['SAVED']                                          = 'Saved'
+L['INSTANCES']                                      = 'Instances'
+L['DUNGEONS']                                       = 'Dungeons'
+L['RAIDS']                                          = 'Raids'
+L['NO_SAVED_INSTANCES_FOUND']                       = 'No saved instance found'
+L['NO_SAVED_RAID_FOUND']                            = 'No saved raid found'
