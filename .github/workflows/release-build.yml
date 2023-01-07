@@ -24,7 +24,7 @@ on:
 env:
   addonName: SavedDungeonsAndRaids
   curseForgeProjectId: 729609
-  wowInterfaceProjectId:
+  wowInterfaceProjectId: 26523
   uploadBuildArtifacts: true
   artifact_retentionDays: 7
   releaseDir: ./.release
