@@ -1,4 +1,5 @@
 
+<!--suppress HtmlDeprecatedAttribute -->
 <table border="0" align="right" style="float:right">
     <tr>
       <td style="vertical-align: middle">
@@ -58,8 +59,14 @@ A new option to display a frame containing the saved instance information side-b
 ## Curse Forge
 - https://www.curseforge.com/wow/addons/saved-dungeons-raids
 
-## Try My Other Addons
+## Donations
+
+As a software engineer, I am passionate about this project and have dedicated a significant amount of time and effort to creating a high-quality product. If you enjoy using this World of Warcraft add-on, please consider supporting me through a donation via [Paypal&trade;](https://www.paypal.com/donate/?hosted_button_id=AX58YP3GSGXVU) or the Bitcoin Address provided below. Your support is greatly appreciated. Thank you in advance for your generosity.
+
+- **[Paypal&trade; Donation](https://www.paypal.com/donate/?hosted_button_id=AX58YP3GSGXVU)**
+- **[Bitcoin Donation](https://www.blockchain.com/btc/address/3QQVAwJGkKHMM2oq6CLVWYgfx83TFVwp39)**
+
+## Try My Other AddOns
 - [ActionbarPlus](https://www.curseforge.com/wow/addons/actionbarplus)
 - [MacrobarPlus](https://www.curseforge.com/wow/addons/macrobarplus)
 - [Addon Template](https://www.curseforge.com/wow/addons/addon-template)
-
