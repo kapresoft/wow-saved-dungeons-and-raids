@@ -5,6 +5,13 @@ local BaseLibrary = {
     ---@type LoggerInterface
     logger = {}
 }
+---@class BaseLibraryObject_WithAceEvent : AceEvent
+local BaseLibraryWithAceEvent = {
+    ---@type table
+    mt = { __tostring = function() end },
+    ---@type LoggerInterface
+    logger = {}
+}
 
 ---@class MainEventHandlerFrame : _Frame
 local MainEventHandlerFrame = {

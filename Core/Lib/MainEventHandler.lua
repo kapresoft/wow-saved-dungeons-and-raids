@@ -24,6 +24,7 @@ New Instance
 -------------------------------------------------------------------------------]]
 ---@class MainEventHandler : BaseLibraryObject
 local L = LibStub:NewLibrary(M.MainEventHandler, 1)
+L.skipCount = 0
 AceEvent:Embed(L)
 local p = L.logger
 
@@ -39,7 +40,8 @@ local function SendAddonReadyMessage()
     L:SendMessage(MSG.OnAddonReady, addon)
 end
 
----@param f MainEventHandlerFrame
+--- @param f MainEventHandlerFrame
+--- @param event string The event name
 local function OnPlayerEnteringWorld(f, event, ...)
     --p:log('[%s] called...', event)
     local version = GC:GetAddonInfo()
@@ -47,6 +49,13 @@ local function OnPlayerEnteringWorld(f, event, ...)
     addon.logger:log('%s Initialized. %s', version, sformat(commandTextFormat, GC.C.COMMAND, GC.C.HELP_COMMAND))
     addon:RegisterHooks()
     SendAddonReadyMessage()
+end
+
+--- @param f MainEventHandlerFrame
+--- @param event string The event name
+local function OnRequestRaidInfo(f, event)
+    if L.skipCount <= 0 then L.skipCount = 1; return end
+    O.SavedInstances:ReportSavedInstances()
 end
 
 --[[-----------------------------------------------------------------------------
@@ -65,14 +74,11 @@ local function InstanceMethods(o)
         self.addon = addon
         self:RegisterMessage(MSG.OnAfterInitialize, function(evt, ...) self:OnAfterInitialize() end)
     end
-
-    function o:OnAfterInitialize()
-        self:RegisterEvents()
-    end
-
+    function o:OnAfterInitialize() self:RegisterEvents() end
     function o:RegisterEvents()
         p:log(100, "RegisterEvents called.")
         self:RegisterOnPlayerEnteringWorld()
+        self:RegisterOnRequestRaidInfo()
     end
 
     function L:RegisterOnPlayerEnteringWorld()
@@ -81,21 +87,27 @@ local function InstanceMethods(o)
         RegisterFrameForEvents(f, { E.PLAYER_ENTERING_WORLD })
     end
 
+    function L:RegisterOnRequestRaidInfo()
+        local f = self:CreateEventFrame()
+        f:SetScript(E.OnEvent, OnRequestRaidInfo)
+        RegisterFrameForEvents(f, { 'UPDATE_INSTANCE_INFO' })
+    end
+
     ---@param eventFrame _Frame
     ---@return MainEventHandlerFrame
-    function o:CreateWidget(eventFrame)
-        local widget = {
+    function o:CreateContext(eventFrame)
+        local ctx = {
             frame = eventFrame,
             addon = self.addon,
         }
-        return widget
+        return ctx
     end
 
     ---@return MainEventHandlerFrame
     function o:CreateEventFrame()
         ---@type MainEventHandlerFrame
         local f = CreateFrame("Frame", nil, self.addon.frame)
-        f.ctx = self:CreateWidget(f)
+        f.ctx = self:CreateContext(f)
         return f
     end
 end

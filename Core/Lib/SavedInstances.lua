@@ -15,9 +15,9 @@ local SAVED_INSTANCE_COLOR = 'fc1605'
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
----@class SavedInstances : BaseLibraryObject
+--- @class SavedInstances : BaseLibraryObject
 local L = LibStub:NewLibrary(M.SavedInstances)
-local p = L.logger;
+local p = L.logger
 
 local colors = {
     header = 'ffffff',
@@ -85,7 +85,8 @@ local function Methods(o)
         if not f then return end
         local success = f:HookScript('OnShow', function ()
             self:RegisterLFGFrameHooksDelayed()
-            self:ReportSavedInstances()
+            -- self:ReportSavedInstances()
+            RequestRaidInfo()
         end)
         assert(success, 'Failed to RegisterHooks() in PVEFrame.')
     end
@@ -93,8 +94,8 @@ local function Methods(o)
         local LFGParentFrame = _G['LFGParentFrame']
         if not LFGParentFrame then return end
         local success = LFGParentFrame:HookScript('OnShow', function ()
-            self:RegisterLFGFrameHooksDelayed()
-            self:ReportSavedInstances()
+             self:RegisterLFGFrameHooksDelayed()
+             -- self:ReportSavedInstances()
         end)
         assert(success, 'Failed to RegisterHooks() in LFGParentFrame.')
     end
@@ -157,7 +158,7 @@ local function Methods(o)
         return catID and C_LFGList.GetCategoryInfo(catID)
     end
 
-    ---@param dungeons table<string,SavedInstanceInfo>
+    --- @param dungeons table<string,SavedInstanceInfo>
     function o:ReportSavedDungeons(dungeons)
         local pp = ns:GetAddonLogger()
         pp:log(header(sformat('%s %s', SDNR_SAVED, SDNR_INSTANCES)))
@@ -174,7 +175,7 @@ local function Methods(o)
         pp:log('')
     end
 
-    ---@param pp LoggerInterface
+    --- @param raids table<string, SavedInstanceInfo>
     function o:ReportSavedRaid(raids)
         local pp = ns:GetAddonLogger()
         pp:log(subh(SDNR_RAIDS))
