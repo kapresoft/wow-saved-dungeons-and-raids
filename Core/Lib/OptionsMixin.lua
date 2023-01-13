@@ -6,12 +6,10 @@ local sformat = string.format
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local ns = SDNR_Namespace(...)
-local O, LibStub, M = ns.O, ns.LibStub, ns.M
+local O, LibStub, M, ns = SDNR_LibPack(...)
 
-local GC, ACE = O.GlobalConstants, O.AceLibrary
+local ACE = O.AceLibrary
 local AceConfig, AceConfigDialog = ACE.AceConfig, ACE.AceConfigDialog
-local IsEmptyTable = O.LU.Table.isEmpty
 
 
 --[[-----------------------------------------------------------------------------

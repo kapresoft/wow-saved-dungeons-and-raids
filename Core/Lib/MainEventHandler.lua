@@ -12,8 +12,7 @@ local RegisterFrameForEvents, RegisterFrameForUnitEvents = FrameUtil.RegisterFra
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local ns = SDNR_Namespace(...)
-local O, LibStub, M = ns:LibPack()
+local O, LibStub, M = SDNR_LibPack(...)
 local AceEvent, GC = O.AceLibrary.AceEvent, O.GlobalConstants
 local E, MSG = GC.E, GC.M
 --TODO next localize
@@ -22,7 +21,7 @@ local commandTextFormat = 'Type %s on the console for available commands.'
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
----@class MainEventHandler : BaseLibraryObject
+--- @class MainEventHandler : BaseLibraryObject
 local L = LibStub:NewLibrary(M.MainEventHandler, 1)
 L.skipCount = 0
 AceEvent:Embed(L)
@@ -43,7 +42,6 @@ end
 --- @param f MainEventHandlerFrame
 --- @param event string The event name
 local function OnPlayerEnteringWorld(f, event, ...)
-    --p:log('[%s] called...', event)
     local version = GC:GetAddonInfo()
     local addon = f.ctx.addon
     addon.logger:log('%s Initialized. %s', version, sformat(commandTextFormat, GC.C.COMMAND, GC.C.HELP_COMMAND))
@@ -61,7 +59,7 @@ end
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
----@param o MainEventHandler
+--- @param o MainEventHandler
 local function InstanceMethods(o)
 
     ---Init Method: Called by Mixin
@@ -69,7 +67,7 @@ local function InstanceMethods(o)
     ---```
     ---local newInstance = Mixin:MixinAndInit(O.MainEventHandlerMixin, addon)
     ---```
-    ---@param addon SavedDungeonsAndRaid
+    --- @param addon SavedDungeonsAndRaid
     function o:Init(addon)
         self.addon = addon
         self:RegisterMessage(MSG.OnAfterInitialize, function(evt, ...) self:OnAfterInitialize() end)
@@ -90,11 +88,11 @@ local function InstanceMethods(o)
     function L:RegisterOnRequestRaidInfo()
         local f = self:CreateEventFrame()
         f:SetScript(E.OnEvent, OnRequestRaidInfo)
-        RegisterFrameForEvents(f, { 'UPDATE_INSTANCE_INFO' })
+        RegisterFrameForEvents(f, { E.UPDATE_INSTANCE_INFO })
     end
 
-    ---@param eventFrame _Frame
-    ---@return MainEventHandlerFrame
+    --- @param eventFrame _Frame
+    --- @return MainEventHandlerFrame
     function o:CreateContext(eventFrame)
         local ctx = {
             frame = eventFrame,
@@ -103,9 +101,9 @@ local function InstanceMethods(o)
         return ctx
     end
 
-    ---@return MainEventHandlerFrame
+    --- @return MainEventHandlerFrame
     function o:CreateEventFrame()
-        ---@type MainEventHandlerFrame
+        --- @type MainEventHandlerFrame
         local f = CreateFrame("Frame", nil, self.addon.frame)
         f.ctx = self:CreateContext(f)
         return f
