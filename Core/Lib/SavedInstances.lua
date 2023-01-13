@@ -96,6 +96,7 @@ local function Methods(o)
         local success = LFGParentFrame:HookScript('OnShow', function ()
              self:RegisterLFGFrameHooksDelayed()
              -- self:ReportSavedInstances()
+            RequestRaidInfo()
         end)
         assert(success, 'Failed to RegisterHooks() in LFGParentFrame.')
     end
