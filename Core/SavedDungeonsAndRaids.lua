@@ -4,24 +4,23 @@ Lua Vars
 local sformat, unpack = string.format, unpack
 
 --[[-----------------------------------------------------------------------------
-Blizzard Vars
--------------------------------------------------------------------------------]]
-local GetBuildInfo, GetAddOnMetadata = GetBuildInfo, GetAddOnMetadata
-
---[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local ns = SDNR_Namespace(...)
-local O, LibStubLocal, M = ns:LibPack()
-local LibStub = O.AceLibStub
-local GC, SavedInstances, ACE = O.GlobalConstants, O.SavedInstances, O.AceLibrary
+local O, GC, ns = SDNR_LibPack2(...)
+--- Use the original LibStub
+local LibStub = ns.LibStubAce
+
+local SavedInstances, ACE = O.SavedInstances, O.AceLibrary
 local AceConfig, AceConfigDialog = ACE.AceConfig, ACE.AceConfigDialog
 
 local Table, String = O.LU.Table, O.LU.String
 local toStringSorted, pformat = Table.toStringSorted, O.pformat
 local IsBlank, IsAnyOf, IsEmptyTable = String.IsBlank, String.IsAnyOf, Table.isEmpty
 
----@class SavedDungeonsAndRaid
+--[[-----------------------------------------------------------------------------
+New Instance
+-------------------------------------------------------------------------------]]
+--- @class SavedDungeonsAndRaid
 local A = LibStub("AceAddon-3.0"):NewAddon(ns.name, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
 local mt = getmetatable(A) or {}
 mt.__tostring = ns.ToStringFunction()
@@ -31,18 +30,13 @@ A.logger = p
 --setmetatable(A, mt)
 ns['addon'] = A
 
----@type AceDB
+--- @type AceDB
 A.db = nil
-
-
---[[-----------------------------------------------------------------------------
-Support Functions
--------------------------------------------------------------------------------]]
 
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
----@param o SavedDungeonsAndRaid
+--- @param o SavedDungeonsAndRaid
 local function Methods(o)
     O.MainEventHandler:Init(o)
 
@@ -56,7 +50,7 @@ local function Methods(o)
         O.OptionsMixin:New(self):InitOptions()
     end
 
-    ---@param level number
+    --- @param level number
     function o:LogLevel(level) SDNR_LOG_LEVEL = level or 0 end
 
     function o:BINDING_SDNR_OPTIONS_DLG() self:OpenConfig() end
@@ -68,7 +62,7 @@ local function Methods(o)
     function o:RegisterSlashCommands()
         self:RegisterChatCommand("sdnr", "SlashCommands")
     end
-    ---@param spaceSeparatedArgs string
+    --- @param spaceSeparatedArgs string
     function o:SlashCommands(spaceSeparatedArgs)
         local args = Table.parseSpaceSeparatedVar(spaceSeparatedArgs)
         if IsEmptyTable(args) then

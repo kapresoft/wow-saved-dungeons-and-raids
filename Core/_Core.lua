@@ -15,7 +15,7 @@ Support Functions
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
----@class Core
+--- @class Core
 local L = LibStub:NewLibrary(M.Core, 1)
 local p = L.logger
 

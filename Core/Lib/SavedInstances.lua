@@ -1,4 +1,9 @@
 --[[-----------------------------------------------------------------------------
+Blizzard Vars
+-------------------------------------------------------------------------------]]
+local RequestRaidInfo = RequestRaidInfo
+
+--[[-----------------------------------------------------------------------------
 Lua Vars
 -------------------------------------------------------------------------------]]
 local sformat = string.format
@@ -8,16 +13,16 @@ Local Vars
 -------------------------------------------------------------------------------]]
 local O, LibStub, M, ns = SDNR_LibPack(...)
 local GC, API = O.GlobalConstants, O.API
-local IsEmptyTable = O.LU.Table.isEmpty
+local IsEmptyTable, GetSortedKeys = O.LU.Table.isEmpty, O.LU.Table.getSortedKeys
 local KC = Kapresoft_LibUtil_Constants
 local SAVED_INSTANCE_COLOR = 'fc1605'
 
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
----@class SavedInstances : BaseLibraryObject
+--- @class SavedInstances : BaseLibraryObject
 local L = LibStub:NewLibrary(M.SavedInstances)
-local p = L.logger;
+local p = L.logger
 
 local colors = {
     header = 'ffffff',
@@ -85,7 +90,10 @@ local function Methods(o)
         if not f then return end
         local success = f:HookScript('OnShow', function ()
             self:RegisterLFGFrameHooksDelayed()
-            self:ReportSavedInstances()
+            -- self:ReportSavedInstances()
+            --- Callback function is in MainEventHandler for Event UPDATE_INSTANCE_INFO
+            --- @see MainEventHandler#RegisterOnRequestRaidInfo
+            RequestRaidInfo()
         end)
         assert(success, 'Failed to RegisterHooks() in PVEFrame.')
     end
@@ -93,8 +101,10 @@ local function Methods(o)
         local LFGParentFrame = _G['LFGParentFrame']
         if not LFGParentFrame then return end
         local success = LFGParentFrame:HookScript('OnShow', function ()
-            self:RegisterLFGFrameHooksDelayed()
-            self:ReportSavedInstances()
+             self:RegisterLFGFrameHooksDelayed()
+            --- Callback function is in MainEventHandler for Event UPDATE_INSTANCE_INFO
+            --- @see MainEventHandler#RegisterOnRequestRaidInfo
+            RequestRaidInfo()
         end)
         assert(success, 'Failed to RegisterHooks() in LFGParentFrame.')
     end
@@ -157,7 +167,7 @@ local function Methods(o)
         return catID and C_LFGList.GetCategoryInfo(catID)
     end
 
-    ---@param dungeons table<string,SavedInstanceInfo>
+    --- @param dungeons table<string,SavedInstanceInfo>
     function o:ReportSavedDungeons(dungeons)
         local pp = ns:GetAddonLogger()
         pp:log(header(sformat('%s %s', SDNR_SAVED, SDNR_INSTANCES)))
@@ -167,14 +177,11 @@ local function Methods(o)
             pp:log("  - %s", SDNR_NO_SAVED_INSTANCES_FOUND)
             return
         end
-
-        for name, d in pairs(dungeons) do
-            pp:log('  - %s (%s)', name, tostring(d.difficultyName))
-        end
+        for _, name in pairs(GetSortedKeys(dungeons)) do pp:log("  - %s", name) end
         pp:log('')
     end
 
-    ---@param pp LoggerInterface
+    --- @param raids table<string, SavedInstanceInfo>
     function o:ReportSavedRaid(raids)
         local pp = ns:GetAddonLogger()
         pp:log(subh(SDNR_RAIDS))
@@ -183,9 +190,7 @@ local function Methods(o)
             return
         end
 
-        for name, r in pairs(raids) do
-            pp:log('  - %s (%s)', name, tostring(r.difficultyName))
-        end
+        for _, name in pairs(GetSortedKeys(raids)) do pp:log("  - %s", name) end
         print('\n')
     end
 

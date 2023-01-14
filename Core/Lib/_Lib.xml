@@ -10,4 +10,8 @@
     <Script file="OptionsMixin.lua" />
     <Script file="SavedInstances.lua" />
 
+    <!--@debug@-->
+    <Include file="Developer\_Developer.xml"/>
+    <!--@end-debug@-->
+
 </Ui>

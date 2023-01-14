@@ -16,9 +16,9 @@ local date = date
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
----@type string
+--- @type string
 local addon
----@type Namespace
+--- @type Namespace
 local ns
 addon, ns = ...
 
@@ -33,15 +33,15 @@ local ADDON_INFO_FMT = '%s|cfdeab676: %s|r'
 local TOSTRING_ADDON_FMT = '|cfdfefefe{{|r|cfdeab676%s|r|cfdfefefe}}|r'
 local TOSTRING_SUBMODULE_FMT = '|cfdfefefe{{|r|cfdeab676%s|r|cfdfefefe::|r|cfdfbeb2d%s|r|cfdfefefe}}|r'
 
----@param moduleName string
----@param optionalMajorVersion number|string
+--- @param moduleName string
+--- @param optionalMajorVersion number|string
 local function LibName(moduleName, optionalMajorVersion)
     assert(moduleName, "Module name is required for LibName(moduleName)")
     local majorVersion = optionalMajorVersion or '1.0'
     local v = sformat("%s-%s-%s", addon, moduleName, majorVersion)
     return v
 end
----@param moduleName string
+--- @param moduleName string
 local function ToStringFunction(moduleName)
     local name = addon
     if useShortName then name = addonShortName end
@@ -49,28 +49,28 @@ local function ToStringFunction(moduleName)
     return function() return string.format(TOSTRING_ADDON_FMT, name) end
 end
 
----@class LocalLibStub : LibStub
+--- @class LocalLibStub : LibStub
 local S = {}
 
----@param moduleName string
----@param optionalMinorVersion number
+--- @param moduleName string
+--- @param optionalMinorVersion number
 function S:NewLibrary(moduleName, optionalMinorVersion)
     ---use Ace3 LibStub here
-    ---@type BaseLibraryObject
+    --- @type BaseLibraryObject
     local o = LibStub:NewLibrary(LibName(moduleName), optionalMinorVersion or 1)
     assert(o, sformat("Module not found: %s", tostring(moduleName)))
     o.mt = getmetatable(o) or {}
     o.mt.__tostring = ns.ToStringFunction(moduleName)
     setmetatable(o, o.mt)
     ns:Register(moduleName, o)
-    ---@type Logger
+    --- @type Logger
     local loggerLib = LibStub(LibName(ns.M.Logger), 1)
     o.logger = loggerLib:NewLogger(moduleName)
     return o
 end
 
----@param moduleName string
----@param optionalMinorVersion number
+--- @param moduleName string
+--- @param optionalMinorVersion number
 function S:GetLibrary(moduleName, optionalMinorVersion) return LibStub(LibName(moduleName), optionalMinorVersion or 1) end
 
 S.mt = { __call = function (_, ...) return S:GetLibrary(...) end }
@@ -79,17 +79,17 @@ setmetatable(S, S.mt)
 --[[-----------------------------------------------------------------------------
 GlobalConstants
 -------------------------------------------------------------------------------]]
----@class GlobalConstants
+--- @class GlobalConstants
 local L = LibStub:NewLibrary(LibName('GlobalConstants'), 1)
 
----@param o GlobalConstants
+--- @param o GlobalConstants
 local function GlobalConstantProperties(o)
 
     local consoleCommandTextFormat = '|cfd2db9fb%s|r'
     local consoleKeyValueTextFormat = '|cfdfbeb2d%s|r: %s'
     local command = sformat("/%s", consoleCommand)
 
-    ---@class GlobalAttributes
+    --- @class GlobalAttributes
     local C = {
         DB_NAME = 'SDNR_DB',
         CHECK_VAR_SYNTAX_FORMAT = '|cfdeab676%s ::|r %s',
@@ -104,7 +104,7 @@ local function GlobalConstantProperties(o)
         HELP_COMMAND = sformat(consoleCommandTextFormat, command .. ' help'),
     }
 
-    ---@class EventNames
+    --- @class EventNames
     local E = {
         OnEnter = 'OnEnter',
         OnEvent = 'OnEvent',
@@ -116,10 +116,12 @@ local function GlobalConstantProperties(o)
         OnMouseDown = 'OnMouseDown',
         OnReceiveDrag = 'OnReceiveDrag',
 
+        -- Blizzard Events
         PLAYER_ENTERING_WORLD = 'PLAYER_ENTERING_WORLD',
+        UPDATE_INSTANCE_INFO = 'UPDATE_INSTANCE_INFO',
     }
     local function newMessage(name) return sformat('%s::' .. name, addonShortName)  end
-    ---@class MessageNames
+    --- @class MessageNames
     local M = {
         OnAfterInitialize = newMessage('OnAfterInitialize'),
         OnAddonReady = newMessage('OnAddonReady'),
@@ -131,7 +133,7 @@ local function GlobalConstantProperties(o)
 
 end
 
----@param o GlobalConstants
+--- @param o GlobalConstants
 local function Methods(o)
     --  TODO
 
@@ -145,7 +147,7 @@ local function Methods(o)
     ---```
     ---local version, curseForge, issues, repo, lastUpdate, wowInterfaceVersion = GC:GetAddonInfo()
     ---```
-    ---@return string, string, string, string, string, string
+    --- @return string, string, string, string, string, string
     function o:GetAddonInfo()
         local versionText, lastUpdate
         --@non-debug@
@@ -185,5 +187,5 @@ Methods(L)
 
 ns.LibName = LibName
 ns.ToStringFunction = ToStringFunction
----@type LocalLibStub
+--- @type LocalLibStub
 ns.LibStub = S
