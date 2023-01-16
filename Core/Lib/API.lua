@@ -11,11 +11,13 @@ local GetNumSavedInstances, GetSavedInstanceInfo = GetNumSavedInstances, GetSave
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, LibStub, M = SDNR_LibPack(...)
+local O, LibStub, M, ns = SDNR_LibPack(...)
 local GC, String = O.GlobalConstants, O.LU.String
-local ContainsIgnoreCase = String.ContainsIgnoreCase
+local IsBlank,ContainsIgnoreCase = String.IsBlank, String.ContainsIgnoreCase
 local IsEmptyTable = O.LU.Table.isEmpty
-local INSTANCE_COUNT
+local MixinAndInit = K_CreateAndInitFromMixin
+local pformat = ns.pformat
+
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
@@ -25,6 +27,7 @@ local p = L.logger;
 
 --- @class SavedInstanceInfo
 local _SavedInstance = {
+    id = -1,
     name = 'The Nexus',
     nameId = 'The Nexus (Heroic)',
     instanceLockId = 123456789,
@@ -33,7 +36,24 @@ local _SavedInstance = {
     difficultyName = 'Normal|Heroic|Mythic',
     isRaid = false,
     isLocked = false,
+    instanceIDMostSig = -1,
 }
+local CategoryID = { Dungeon = 2, Raid = 114 }
+--- @class CategoryInfo
+local CategoryInfoMixin = {
+    --- @param self CategoryInfo
+    --- @param id number Category ID
+    --- @param name string Category Name, i.e. Dungeons, Raids
+    Init = function(self, id, name)
+        self.id = id
+        self.name = name
+    end,
+    --- @param self CategoryInfo
+    IsDungeon = function(self) return self.id == CategoryID.Dungeon end,
+    --- @param self CategoryInfo
+    IsRaid = function(self) return self.id == CategoryID.Raid end,
+}
+
 --[[-----------------------------------------------------------------------------
 Support Functions
 -------------------------------------------------------------------------------]]
@@ -69,15 +89,31 @@ Methods
 --- @param o API
 local function Methods(o)
 
+    --- @return CategoryInfo
+    function o:GetSelectedCategory()
+        if not _G['LFGListingFrame'] then return nil end
+        local catID = _G['LFGListingFrame']:GetCategorySelection()
+        if not catID then return nil end
+
+        --- @type CategoryInfo
+        local name, parentCatID, flags = C_LFGList.GetCategoryInfo(catID)
+        p:log(10, 'C_LFGList.GetCategoryInfo: %s', pformat({ name=name, parentCatID=parentCatID, flags=flags }))
+        if not name then return nil end
+        --- @type CategoryInfo
+        local c = MixinAndInit(CategoryInfoMixin, catID, name)
+        return c
+    end
+
     --- @param index number
     --- @return SavedInstanceInfo
     function o:GetSavedInstanceInfoByIndex(index)
-        local name, id, _, difficulty, isLocked, _, _, isRaid,
+        local name, id, _, difficulty, isLocked, _, instanceIDMostSig, isRaid,
             maxPlayers, difficultyName = GetSavedInstanceInfo(index)
-        if String.IsBlank(name) then return nil end
+        if IsBlank(name) then return nil end
         --- @type SavedInstanceInfo
         local d = {
             name = name,
+            id = id,
             nameId = {},
             instanceLockId = id,
             maxPlayers = maxPlayers,
@@ -85,6 +121,7 @@ local function Methods(o)
             difficultyName = difficultyName,
             isLocked = isLocked,
             isRaid = isRaid,
+            instanceIDMostSig = instanceIDMostSig
         }
         return d
     end

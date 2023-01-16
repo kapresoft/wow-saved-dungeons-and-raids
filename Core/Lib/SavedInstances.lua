@@ -12,6 +12,7 @@ local sformat = string.format
 Local Vars
 -------------------------------------------------------------------------------]]
 local O, LibStub, M, ns = SDNR_LibPack(...)
+local pformat = ns.pformat
 local GC, API = O.GlobalConstants, O.API
 local IsEmptyTable, GetSortedKeys = O.LU.Table.isEmpty, O.LU.Table.getSortedKeys
 local KC = Kapresoft_LibUtil_Constants
@@ -29,16 +30,16 @@ local colors = {
     headerSides = 'ffffff',
     subh = 'fbeb2d',
 }
----@param text string
+--- @param text string
 local function header(text)
     local sides = sformat("|cfd%s%s|r", colors.headerSides, ':::')
     local fmth = sides .. " |cfd" .. colors.header .. "%s|r " .. sides
     return sformat(fmth, text)
 end
----@param text string
+--- @param text string
 local function subh(text) return KC:FormatColor(colors.subh, text) end
 
----@param o SavedInstances
+--- @param o SavedInstances
 local function Methods(o)
 
     ---Should only be called once
@@ -117,12 +118,12 @@ local function Methods(o)
     end
 
     function o:HandleSavedInstances()
-        local selectedCategory = self:GetSelectedCategory()
-        p:log(10, 'HandleSavedDungeons::Category: %s', selectedCategory or 'none')
+        local selectedCategory = API:GetSelectedCategory()
         if not selectedCategory then return end
-        if 'Dungeons' == selectedCategory then
+        p:log(10, 'HandleSavedDungeons::Category: %s', pformat({ selectedCategory.id, selectedCategory.name }))
+        if selectedCategory:IsDungeon() then
             self:UpdateSavedDungeonsInLFGFrame()
-        elseif 'Raids' == selectedCategory then
+        elseif selectedCategory:IsRaid() then
             self:UpdateSavedRaidsInLFGFrame()
         end
     end
@@ -133,12 +134,9 @@ local function Methods(o)
         local dungeons = API:GetSavedDungeonsElement()
         if IsEmptyTable(dungeons) then return end
 
-        for name, elem in pairs(dungeons) do
+        for _, elem in pairs(dungeons) do
             local data = elem:GetData()
-            if elem.data then
-                elem.data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, elem.data.name)
-                --p:log('%s: %s', name, pformat(elem.data))
-            end
+            if data then data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, data.name) end
         end
         view:GetView():Rebuild()
     end
@@ -157,14 +155,6 @@ local function Methods(o)
             end
         end
         view:GetView():Rebuild()
-    end
-
-    function o:GetSelectedCategory()
-        local LFGListingFrame = _G['LFGListingFrame']
-        local C_LFGList = _G['C_LFGList']
-        if not (LFGListingFrame and C_LFGList) then return nil end
-        local catID = LFGListingFrame:GetCategorySelection()
-        return catID and C_LFGList.GetCategoryInfo(catID)
     end
 
     --- @param dungeons table<string,SavedInstanceInfo>

@@ -32,6 +32,15 @@ function L:GetAllSavedInstances()
     local dungeons, raids = API:GetAllSavedInstances()
     return { dungeons = dungeons, raids = raids }
 end
+--- @param level number
+function L:LogLevel(level)
+    if not level then
+        p:log('SDNR_LOG_LEVEL: %s', SDNR_LOG_LEVEL)
+        return
+    end
+    SDNR_LOG_LEVEL = level or 0
+    p:log('New SDNR_LOG_LEVEL is: %s', SDNR_LOG_LEVEL)
+end
 
 
 ----[[-----------------------------------------------------------------------------
