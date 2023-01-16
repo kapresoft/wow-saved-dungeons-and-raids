@@ -23,7 +23,8 @@ local Namespace = {
     ---```
     --- @type fun(moduleName:string)
     ToStringFunction = {},
-
+    --- @type fun(o:any, ...) : void
+    pformat = {}
 }
 --[[-----------------------------------------------------------------------------
 Others
