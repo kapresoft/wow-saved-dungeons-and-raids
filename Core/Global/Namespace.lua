@@ -1,22 +1,26 @@
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
---- @type LibStub
-local LibStub = LibStub
-
---- @type Kapresoft_LibUtil_Objects
-local LibUtil = Kapresoft_LibUtil
-
---- @type Kapresoft_LibUtil_PrettyPrint
-local PrettyPrint = Kapresoft_LibUtil.PrettyPrint
-PrettyPrint.setup({ show_function = true, show_metatable = true, indent_size = 2, depth_limit = 3 })
-
-
 --- @type string
 local addonName
 --- @type Namespace
 local _ns
 addonName, _ns = ...
+
+
+--- @type LibStub
+local LibStub = LibStub
+
+--- @type Kapresoft_LibUtil
+local LibUtil = _ns.Kapresoft_LibUtil
+
+local pformat = LibUtil.pformat
+
+--- @type Kapresoft_LibUtil_PrettyPrint
+local PrettyPrint = _ns.pformat.pprint
+PrettyPrint.setup({ show_function = true, show_metatable = true, indent_size = 2, depth_limit = 3 })
+
+
 
 local LibName = _ns.LibName
 
@@ -77,14 +81,17 @@ local M = {
     SavedInstances = 'SavedInstances',
 }
 
+local LibUtilObjects = LibUtil.Objects
+local AceLibraryObjects = LibUtilObjects.AceLibrary.O
+
 local InitialModuleInstances = {
     -- External Libs --
-    LU = LibUtil,
-    AceLibrary = LibUtil.AceLibrary.O,
+    LU = LibUtilObjects,
+    AceLibrary = AceLibraryObjects,
     LibStubAce = LibStub,
     -- Internal Libs --
     GlobalConstants = LibStub(LibName(M.GlobalConstants)),
-    pformat = PrettyPrint.pformat,
+    pformat = pformat,
 }
 
 --- @type GlobalConstants
@@ -131,7 +138,7 @@ local function SDNR_Namespace(...)
     if 'table' ~= type(ns.O) then ns.O = {} end
 
     for key, val in pairs(LibUtil) do ns.O[key] = val end
-    for key, _ in pairs(M) do
+    for key, _ in pairs(InitialModuleInstances) do
         local lib = InitialModuleInstances[key]
         if lib then ns.O[key] = lib end
     end
@@ -144,8 +151,7 @@ local function SDNR_Namespace(...)
 
     K_Mixin(ns, LibPackMixin)
 
-    local pformat = ns.pformat
-    local getSortedKeys = ns.O.Table.getSortedKeys
+    local getSortedKeys = ns.O.LU.Table.getSortedKeys
 
     --- @param libName string The library name. Ex: 'GlobalConstants'
     --- @param o table The library object instance
@@ -163,6 +169,8 @@ local function SDNR_Namespace(...)
     return ns
 end
 
+if _ns.name then return end
+
 local namespace = SDNR_Namespace(...)
 
 ---```
@@ -177,3 +185,4 @@ function SDNR_LibPack(...) return namespace:LibPack() end
 ---```
 --- @return GlobalObjects, GlobalConstants, Namespace
 function SDNR_LibPack2(...) return namespace:LibPack2() end
+

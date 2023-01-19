@@ -22,7 +22,6 @@ local addon
 local ns
 addon, ns = ...
 
-local pformat = Kapresoft_LibUtil.PrettyPrint.pformat
 local addonShortName = 'SavedDNR'
 local consoleCommand = "sdnr"
 local useShortName = true

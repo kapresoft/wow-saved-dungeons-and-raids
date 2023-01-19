@@ -12,7 +12,7 @@ local RegisterFrameForEvents, RegisterFrameForUnitEvents = FrameUtil.RegisterFra
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, LibStub, M = SDNR_LibPack(...)
+local O, LibStub, M, ns = SDNR_LibPack(...)
 local AceEvent, GC = O.AceLibrary.AceEvent, O.GlobalConstants
 local E, MSG = GC.E, GC.M
 --TODO next localize

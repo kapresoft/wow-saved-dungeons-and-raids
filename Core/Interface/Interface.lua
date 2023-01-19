@@ -3,6 +3,15 @@ Namespace
 -------------------------------------------------------------------------------]]
 --- @class Namespace : LibPackMixin
 local Namespace = {
+    --- @type Kapresoft_LibUtil_ConsoleColor
+    consoleColors = {
+        primary   = 'hex:6-char',
+        secondary = 'hex:6-char',
+        tertiary = 'hex:6-char'
+    },
+    --- @type Kapresoft_LibUtil
+    Kapresoft_LibUtil = {},
+
     ---Usage:
     ---```
     ---local GC = LibStub(LibName('GlobalConstants'), 1)
@@ -23,6 +32,7 @@ local Namespace = {
     ---```
     --- @type fun(moduleName:string)
     ToStringFunction = {},
+
     --- @type fun(o:any, ...) : void
     pformat = {}
 }

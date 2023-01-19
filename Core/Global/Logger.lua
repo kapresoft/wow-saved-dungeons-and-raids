@@ -11,11 +11,12 @@ local O, GC, ns = SDNR_LibPack2(...)
 local LibStub = ns.LibStubAce
 
 local sformat, pformat = string.format, ns.pformat
-local tableUnpack = O.Table.tableUnpack
+local tableUnpack = O.LU.Table.tableUnpack
 local C = LibStub('AceConsole-3.0')
 
----Colors are in hex
-local consoleColors = {
+--- Colors are in hex:6-char
+--- @type Kapresoft_LibUtil_ConsoleColor
+local consoleColors = ns.consoleColors or {
     primary   = '3fc7d1',
     secondary = 'fbeb2d',
     tertiary = 'ffffff'
