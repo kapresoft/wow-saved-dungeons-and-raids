@@ -11,11 +11,13 @@ local sformat = string.format
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, LibStub, M, ns = SDNR_LibPack(...)
-local pformat = ns.pformat
-local GC, API = O.GlobalConstants, O.API
+--- @type Namespace
+local _, ns = ...
+local O, LibStub, M = ns.O, ns.LibStub, ns.M
+
+local API, pformat = O.API, ns.pformat
 local IsEmptyTable, GetSortedKeys = O.LU.Table.isEmpty, O.LU.Table.getSortedKeys
-local KC = Kapresoft_LibUtil_Constants
+local KC = ns.Kapresoft_LibUtil.H
 local SAVED_INSTANCE_COLOR = 'fc1605'
 
 --[[-----------------------------------------------------------------------------

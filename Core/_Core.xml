@@ -4,6 +4,8 @@
 
     <!-- External Libs -->
 
+    <Script file="_CoreInit.lua"/>
+
     <Include file='_ExtLib.xml'/>
 
     <!-- Global Lib for the Addon   -->

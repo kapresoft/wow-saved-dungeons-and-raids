@@ -6,9 +6,9 @@ local format = string.format
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-
-
-local O, GC, ns = SDNR_LibPack2(...)
+--- @type Namespace
+local _, ns = ...
+local O = ns.O
 local AceEvent = O.AceLibrary.AceEvent
 local API = O.API
 

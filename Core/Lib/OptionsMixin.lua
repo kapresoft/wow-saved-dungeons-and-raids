@@ -6,11 +6,13 @@ local sformat = string.format
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, LibStub, M, ns = SDNR_LibPack(...)
+--- @type Namespace
+local _, ns = ...
+local O, LibStub, M = ns.O, ns.LibStub, ns.M
+local LibUtil = ns.Kapresoft_LibUtil
 
 local ACE = O.AceLibrary
 local AceConfig, AceConfigDialog = ACE.AceConfig, ACE.AceConfigDialog
-
 
 --[[-----------------------------------------------------------------------------
 New Instance
@@ -30,7 +32,7 @@ local function Methods(o)
     --- Usage:  local instance = OptionsMixin:New(addon)
     --- @param addon SavedDungeonsAndRaid
     --- @return OptionsMixin
-    function o:New(addon) return K_CreateAndInitFromMixin(o, addon) end
+    function o:New(addon) return LibUtil:CreateAndInitFromMixin(o, addon) end
 
     function o:CreateOptions()
         local options = {

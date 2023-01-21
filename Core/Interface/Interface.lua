@@ -1,8 +1,20 @@
 --[[-----------------------------------------------------------------------------
 Namespace
 -------------------------------------------------------------------------------]]
+--- @class LocalLibStub : Kapresoft_LibUtil_LibStubMixin
+local LocalLibStub = {}
+
 --- @class Namespace : LibPackMixin
 local Namespace = {
+    --- @type Kapresoft_LibUtil_ConsoleColor
+    consoleColors = {
+        primary   = 'hex:6-char',
+        secondary = 'hex:6-char',
+        tertiary = 'hex:6-char'
+    },
+    --- @type Kapresoft_LibUtil
+    Kapresoft_LibUtil = {},
+
     ---Usage:
     ---```
     ---local GC = LibStub(LibName('GlobalConstants'), 1)
@@ -23,26 +35,29 @@ local Namespace = {
     ---```
     --- @type fun(moduleName:string)
     ToStringFunction = {},
+
     --- @type fun(o:any, ...) : void
     pformat = {}
 }
+
 --[[-----------------------------------------------------------------------------
 Others
 -------------------------------------------------------------------------------]]
 --- @class BaseLibraryObject
-local BaseLibrary = {
+local BaseLibraryObject = {
     --- @type table
     mt = { __tostring = function() end },
-    --- @type LoggerInterface
-    logger = {}
 }
+--- @type Logger
+BaseLibraryObject.logger = {}
+
 --- @class BaseLibraryObject_WithAceEvent : AceEvent
-local BaseLibraryWithAceEvent = {
+local BaseLibraryObject_WithAceEvent = {
     --- @type table
     mt = { __tostring = function() end },
-    --- @type LoggerInterface
-    logger = {}
 }
+--- @type Logger
+BaseLibraryObject_WithAceEvent.logger = {}
 
 --- @class MainEventHandlerFrame : _Frame
 local MainEventHandlerFrame = {

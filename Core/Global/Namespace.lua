@@ -1,22 +1,25 @@
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
---- @type LibStub
-local LibStub = LibStub
-
---- @type Kapresoft_LibUtil_Objects
-local LibUtil = Kapresoft_LibUtil
-
---- @type Kapresoft_LibUtil_PrettyPrint
-local PrettyPrint = Kapresoft_LibUtil.PrettyPrint
-PrettyPrint.setup({ show_function = true, show_metatable = true, indent_size = 2, depth_limit = 3 })
-
-
 --- @type string
 local addonName
 --- @type Namespace
 local _ns
 addonName, _ns = ...
+
+--- @type LibStub
+local LibStub = LibStub
+
+--- @type Kapresoft_LibUtil
+local LibUtil = _ns.Kapresoft_LibUtil
+
+local pformat = LibUtil.pformat
+
+--- @type Kapresoft_LibUtil_PrettyPrint
+local PrettyPrint = _ns.pformat.pprint
+PrettyPrint.setup({ show_function = true, show_metatable = true, indent_size = 2, depth_limit = 3 })
+
+
 
 local LibName = _ns.LibName
 
@@ -77,14 +80,17 @@ local M = {
     SavedInstances = 'SavedInstances',
 }
 
+local LibUtilObjects = LibUtil.Objects
+local AceLibraryObjects = LibUtilObjects.AceLibrary.O
+
 local InitialModuleInstances = {
     -- External Libs --
-    LU = LibUtil,
-    AceLibrary = LibUtil.AceLibrary.O,
+    LU = LibUtilObjects,
+    AceLibrary = AceLibraryObjects,
     LibStubAce = LibStub,
     -- Internal Libs --
     GlobalConstants = LibStub(LibName(M.GlobalConstants)),
-    pformat = PrettyPrint.pformat,
+    pformat = pformat,
 }
 
 --- @type GlobalConstants
@@ -112,14 +118,9 @@ local LibPackMixin = {
 ---local AceConsole = O.AceConsole
 ---```
 --- @return Namespace
-local function SDNR_Namespace(...)
-    --- @type string
-    local addon
-    --- @type Namespace
-    local ns
-
-    addon, ns = ...
-
+---@param addon string The addon name
+---@param ns Namespace
+local function CreatNameSpace(addon, ns)
 
     --- @type GlobalObjects
     ns.O = ns.O or {}
@@ -131,7 +132,7 @@ local function SDNR_Namespace(...)
     if 'table' ~= type(ns.O) then ns.O = {} end
 
     for key, val in pairs(LibUtil) do ns.O[key] = val end
-    for key, _ in pairs(M) do
+    for key, _ in pairs(InitialModuleInstances) do
         local lib = InitialModuleInstances[key]
         if lib then ns.O[key] = lib end
     end
@@ -142,10 +143,7 @@ local function SDNR_Namespace(...)
     ns.GC = ns.O.GlobalConstants
     ns.LibStubAce = ns.O.LibStubAce
 
-    K_Mixin(ns, LibPackMixin)
-
-    local pformat = ns.pformat
-    local getSortedKeys = ns.O.Table.getSortedKeys
+    local getSortedKeys = ns.O.LU.Table.getSortedKeys
 
     --- @param libName string The library name. Ex: 'GlobalConstants'
     --- @param o table The library object instance
@@ -158,22 +156,41 @@ local function SDNR_Namespace(...)
     function ns:NewLogger(libName) return self.O.Logger:NewLogger(libName) end
     function ns:ToStringNamespaceKeys() return pformat(getSortedKeys(ns)) end
     function ns:ToStringObjectKeys() return pformat(getSortedKeys(ns.O)) end
-    --- @return LoggerInterface
+    --- @return Logger
     function ns:GetAddonLogger() return _G[self.name].logger end
+
+    ---```
+    --- @type Namespace
+    --- local _, ns = ...
+    --- local O, LibStub, M = ns.O, ns.LibStub, ns.M
+    ---```
+    --- @return GlobalObjects, LocalLibStub, Modules
+    function ns:LibPack() return self.O, self.LibStub, self.M end
+
+    ---Example:
+    ---```
+    --- @type Namespace
+    --- local _, ns = ...
+    --- local O, GC = ns.O, ns.O.GlobalConstants
+    ---```
+    --- @return GlobalObjects, GlobalConstants, Namespace
+    function ns:LibPack2() return self.O, self.GC end
+
+    local LocalLibStub = LibUtil.Objects.LibStubMixin:New(ns.name, 1.0,
+            function(name, newLibInstance)
+                --- @type Logger
+                local loggerLib = LibStub(ns.LibName(M.Logger))
+                if loggerLib then
+                    newLibInstance.logger = loggerLib:NewLogger(name)
+                    newLibInstance.logger:log(30, 'New Lib: %s', newLibInstance.major)
+                end
+                ns:Register(name, newLibInstance)
+            end)
+    ns.LibStub = LocalLibStub
+
     return ns
 end
 
-local namespace = SDNR_Namespace(...)
+if _ns.name then return end
 
----```
----local O, LibStub, M, ns = SDNR_LibPack(...)
----```
---- @return GlobalObjects, LocalLibStub, Modules, Namespace
-function SDNR_LibPack(...) return namespace:LibPack() end
-
----Example:
----```
----local O, GC, ns = SDNR_Namespace(...):SDNR_LibPack2()
----```
---- @return GlobalObjects, GlobalConstants, Namespace
-function SDNR_LibPack2(...) return namespace:LibPack2() end
+CreatNameSpace(addonName, _ns)
