@@ -1,8 +1,11 @@
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, LibStub, M = SDNR_LibPack(...)
-local GC, AceDB = O.GlobalConstants, O.AceLibrary.AceDB
+--- @type Namespace
+local _, ns = ...
+local O, LibStub, M, GC = ns.O, ns.LibStub, ns.M, ns.O.GlobalConstants
+local LibUtil = ns.Kapresoft_LibUtil
+local AceDB = O.AceLibrary.AceDB
 local IsEmptyTable = O.LU.Table.isEmpty
 --[[-----------------------------------------------------------------------------
 New Instance
@@ -42,7 +45,7 @@ local function Methods(o)
     --- Usage:  local instance = AceDbInitializerMixin:New(addon)
     --- @param addon SavedDungeonsAndRaid
     --- @return AceDbInitializerMixin
-    function o:New(addon) return K_CreateAndInitFromMixin(o, addon) end
+    function o:New(addon) return LibUtil:CreateAndInitFromMixin(o, addon) end
 
     ---@return AceDB
     function o:GetDB() return self.addon.db end

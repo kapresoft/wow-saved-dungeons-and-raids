@@ -6,7 +6,10 @@ local unpack = unpack
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, GC, ns = SDNR_LibPack2(...)
+--- @type Namespace
+local _, ns = ...
+local O = ns.O
+
 ---The original LibStub
 local LibStub = ns.LibStubAce
 
@@ -23,17 +26,9 @@ local consoleColors = ns.consoleColors or {
 }
 
 --[[-----------------------------------------------------------------------------
-Interface
--------------------------------------------------------------------------------]]
---- @class LoggerInterface
-local LoggerInterface = {}
---- @param format string The string format. Example: logger:log('hello: %s', 'world')
-function LoggerInterface:log(format, ...)  end
-
---[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
---- @class Logger
+--- @type Logger
 local L = LibStub:NewLibrary(ns.LibName(ns.M.Logger), 1)
 ns:Register(ns.M.Logger, L)
 
@@ -233,7 +228,7 @@ function L:Embed(obj, optionalLogName)
     return obj
 end
 
---- @return LoggerInterface
+--- @return Logger
 function L:NewLogger(optionalLogName)
     local o = {}
     C:Embed(o)

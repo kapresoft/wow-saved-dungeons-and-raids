@@ -12,9 +12,12 @@ local RegisterFrameForEvents, RegisterFrameForUnitEvents = FrameUtil.RegisterFra
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, LibStub, M, ns = SDNR_LibPack(...)
-local AceEvent, GC = O.AceLibrary.AceEvent, O.GlobalConstants
+--- @type Namespace
+local _, ns = ...
+local O, LibStub, M, GC = ns.O, ns.LibStub, ns.M, ns.O.GlobalConstants
+local AceEvent = O.AceLibrary.AceEvent
 local E, MSG = GC.E, GC.M
+
 --TODO next localize
 local commandTextFormat = 'Type %s on the console for available commands.'
 

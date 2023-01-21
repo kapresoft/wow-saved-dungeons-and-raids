@@ -11,11 +11,14 @@ local GetNumSavedInstances, GetSavedInstanceInfo = GetNumSavedInstances, GetSave
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, LibStub, M, ns = SDNR_LibPack(...)
-local GC, String = O.GlobalConstants, O.LU.String
+--- @type Namespace
+local _, ns = ...
+local O, LibStub, M = ns.O, ns.LibStub, ns.M
+local LibUtil = ns.Kapresoft_LibUtil
+
+local String = O.LU.String
 local IsBlank,ContainsIgnoreCase = String.IsBlank, String.ContainsIgnoreCase
 local IsEmptyTable = O.LU.Table.isEmpty
-local MixinAndInit = K_CreateAndInitFromMixin
 local pformat = ns.pformat
 
 --[[-----------------------------------------------------------------------------
@@ -100,7 +103,7 @@ local function Methods(o)
         p:log(10, 'C_LFGList.GetCategoryInfo: %s', pformat({ name=name, parentCatID=parentCatID, flags=flags }))
         if not name then return nil end
         --- @type CategoryInfo
-        local c = MixinAndInit(CategoryInfoMixin, catID, name)
+        local c = LibUtil:CreateAndInitFromMixin(CategoryInfoMixin, catID, name)
         return c
     end
 

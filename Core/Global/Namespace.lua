@@ -119,7 +119,7 @@ local LibPackMixin = {
 ---local AceConsole = O.AceConsole
 ---```
 --- @return Namespace
-local function SDNR_Namespace(...)
+local function CreatNameSpace(...)
     --- @type string
     local addon
     --- @type Namespace
@@ -149,8 +149,6 @@ local function SDNR_Namespace(...)
     ns.GC = ns.O.GlobalConstants
     ns.LibStubAce = ns.O.LibStubAce
 
-    K_Mixin(ns, LibPackMixin)
-
     local getSortedKeys = ns.O.LU.Table.getSortedKeys
 
     --- @param libName string The library name. Ex: 'GlobalConstants'
@@ -164,25 +162,29 @@ local function SDNR_Namespace(...)
     function ns:NewLogger(libName) return self.O.Logger:NewLogger(libName) end
     function ns:ToStringNamespaceKeys() return pformat(getSortedKeys(ns)) end
     function ns:ToStringObjectKeys() return pformat(getSortedKeys(ns.O)) end
-    --- @return LoggerInterface
+    --- @return Logger
     function ns:GetAddonLogger() return _G[self.name].logger end
+
+    ---```
+    --- @type Namespace
+    --- local _, ns = ...
+    --- local O, LibStub, M = ns.O, ns.LibStub, ns.M
+    ---```
+    --- @return GlobalObjects, LocalLibStub, Modules
+    function ns:LibPack() return self.O, self.LibStub, self.M end
+
+    ---Example:
+    ---```
+    --- @type Namespace
+    --- local _, ns = ...
+    --- local O, GC = ns.O, ns.O.GlobalConstants
+    ---```
+    --- @return GlobalObjects, GlobalConstants, Namespace
+    function ns:LibPack2() return self.O, self.GC end
+
     return ns
 end
 
 if _ns.name then return end
 
-local namespace = SDNR_Namespace(...)
-
----```
----local O, LibStub, M, ns = SDNR_LibPack(...)
----```
---- @return GlobalObjects, LocalLibStub, Modules, Namespace
-function SDNR_LibPack(...) return namespace:LibPack() end
-
----Example:
----```
----local O, GC, ns = SDNR_Namespace(...):SDNR_LibPack2()
----```
---- @return GlobalObjects, GlobalConstants, Namespace
-function SDNR_LibPack2(...) return namespace:LibPack2() end
-
+CreatNameSpace(...)

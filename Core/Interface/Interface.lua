@@ -36,6 +36,7 @@ local Namespace = {
     --- @type fun(o:any, ...) : void
     pformat = {}
 }
+
 --[[-----------------------------------------------------------------------------
 Others
 -------------------------------------------------------------------------------]]
@@ -43,14 +44,14 @@ Others
 local BaseLibrary = {
     --- @type table
     mt = { __tostring = function() end },
-    --- @type LoggerInterface
+    --- @type Logger
     logger = {}
 }
 --- @class BaseLibraryObject_WithAceEvent : AceEvent
 local BaseLibraryWithAceEvent = {
     --- @type table
     mt = { __tostring = function() end },
-    --- @type LoggerInterface
+    --- @type Logger
     logger = {}
 }
 

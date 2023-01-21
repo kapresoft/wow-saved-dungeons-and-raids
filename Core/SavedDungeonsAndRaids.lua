@@ -6,15 +6,15 @@ local sformat, unpack = string.format, unpack
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local O, GC, ns = SDNR_LibPack2(...)
---- Use the original LibStub
-local LibStub = ns.LibStubAce
+--- @type Namespace
+local _, ns = ...
+local O, GC = ns.O, ns.O.GlobalConstants
 
-local SavedInstances, ACE = O.SavedInstances, O.AceLibrary
-local AceConfig, AceConfigDialog = ACE.AceConfig, ACE.AceConfigDialog
+--- Use the original LibStub
+local LibStub, SavedInstances, AceConfigDialog = ns.LibStubAce, O.SavedInstances, O.AceLibrary.AceConfigDialog
 
 local Table, String = O.LU.Table, O.LU.String
-local toStringSorted, pformat = Table.toStringSorted, O.pformat
+local toStringSorted, pformat = Table.toStringSorted, ns.pformat
 local IsBlank, IsAnyOf, IsEmptyTable = String.IsBlank, String.IsAnyOf, Table.isEmpty
 
 --[[-----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ local function Methods(o)
         SavedInstances:ReportSavedInstances()
     end
 
-    function o:SlashCommand_InfoHandler() p:log(GC:GetAddonInfoFormatted()) p:log(GC:GetAddonInfoFormatted()) end
+    function o:SlashCommand_InfoHandler() p:log(GC:GetAddonInfoFormatted()) end
 
     function o:SlashCommand_Help_Handler()
         p:log('')
