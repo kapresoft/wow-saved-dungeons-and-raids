@@ -25,7 +25,7 @@ local commandTextFormat = 'Type %s on the console for available commands.'
 New Instance
 -------------------------------------------------------------------------------]]
 --- @class MainEventHandler : BaseLibraryObject
-local L = LibStub:NewLibrary(M.MainEventHandler, 1)
+local L = LibStub:NewLibrary(M.MainEventHandler, 1); if not L then return end
 L.skipCount = 0
 AceEvent:Embed(L)
 local p = L.logger

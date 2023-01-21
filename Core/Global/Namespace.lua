@@ -7,7 +7,6 @@ local addonName
 local _ns
 addonName, _ns = ...
 
-
 --- @type LibStub
 local LibStub = LibStub
 
@@ -119,14 +118,9 @@ local LibPackMixin = {
 ---local AceConsole = O.AceConsole
 ---```
 --- @return Namespace
-local function CreatNameSpace(...)
-    --- @type string
-    local addon
-    --- @type Namespace
-    local ns
-
-    addon, ns = ...
-
+---@param addon string The addon name
+---@param ns Namespace
+local function CreatNameSpace(addon, ns)
 
     --- @type GlobalObjects
     ns.O = ns.O or {}
@@ -182,9 +176,21 @@ local function CreatNameSpace(...)
     --- @return GlobalObjects, GlobalConstants, Namespace
     function ns:LibPack2() return self.O, self.GC end
 
+    local LocalLibStub = LibUtil.Objects.LibStubMixin:New(ns.name, 1.0,
+            function(name, newLibInstance)
+                --- @type Logger
+                local loggerLib = LibStub(ns.LibName(M.Logger))
+                if loggerLib then
+                    newLibInstance.logger = loggerLib:NewLogger(name)
+                    newLibInstance.logger:log(30, 'New Lib: %s', newLibInstance.major)
+                end
+                ns:Register(name, newLibInstance)
+            end)
+    ns.LibStub = LocalLibStub
+
     return ns
 end
 
 if _ns.name then return end
 
-CreatNameSpace(...)
+CreatNameSpace(addonName, _ns)

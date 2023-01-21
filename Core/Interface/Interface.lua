@@ -1,6 +1,9 @@
 --[[-----------------------------------------------------------------------------
 Namespace
 -------------------------------------------------------------------------------]]
+--- @class LocalLibStub : Kapresoft_LibUtil_LibStubMixin
+local LocalLibStub = {}
+
 --- @class Namespace : LibPackMixin
 local Namespace = {
     --- @type Kapresoft_LibUtil_ConsoleColor
@@ -41,19 +44,20 @@ local Namespace = {
 Others
 -------------------------------------------------------------------------------]]
 --- @class BaseLibraryObject
-local BaseLibrary = {
+local BaseLibraryObject = {
     --- @type table
     mt = { __tostring = function() end },
-    --- @type Logger
-    logger = {}
 }
+--- @type Logger
+BaseLibraryObject.logger = {}
+
 --- @class BaseLibraryObject_WithAceEvent : AceEvent
-local BaseLibraryWithAceEvent = {
+local BaseLibraryObject_WithAceEvent = {
     --- @type table
     mt = { __tostring = function() end },
-    --- @type Logger
-    logger = {}
 }
+--- @type Logger
+BaseLibraryObject_WithAceEvent.logger = {}
 
 --- @class MainEventHandlerFrame : _Frame
 local MainEventHandlerFrame = {
