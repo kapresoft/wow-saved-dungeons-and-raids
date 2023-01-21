@@ -115,9 +115,7 @@ local function InitPrettyPrint()
 end
 
 local nsk = ns.Kapresoft_LibUtil
-if nsk and nsk.pformat then ns.pformat = nsk.pformat;
-    print('External-Lib-Wrapper::pformat is:', ns.pformat({ 1, 2 }))
-    return end
+if nsk and nsk.pformat then ns.pformat = nsk.pformat; return end
 if (Kapresoft_LibUtil and Kapresoft_LibUtil.PrettyPrint) then ns.pformat = InitPrettyPrint(); return end
 
 --- Fallback to a simple formatter
