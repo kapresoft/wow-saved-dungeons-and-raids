@@ -176,6 +176,7 @@ local function CreatNameSpace(addon, ns)
     --- @return GlobalObjects, GlobalConstants, Namespace
     function ns:LibPack2() return self.O, self.GC end
 
+    --- @class LocalLibStub : Kapresoft_LibUtil_LibStubMixin
     local LocalLibStub = LibUtil.Objects.LibStubMixin:New(ns.name, 1.0,
             function(name, newLibInstance)
                 --- @type Logger

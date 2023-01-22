@@ -1,9 +1,6 @@
 --[[-----------------------------------------------------------------------------
 Namespace
 -------------------------------------------------------------------------------]]
---- @class LocalLibStub : Kapresoft_LibUtil_LibStubMixin
-local LocalLibStub = {}
-
 --- @class Namespace : LibPackMixin
 local Namespace = {
     --- @type Kapresoft_LibUtil_ConsoleColor
@@ -23,7 +20,7 @@ local Namespace = {
     --- @return string The full LibStub library name. Example:  'SavedDungeonsAndRaids-GlobalConstants-1.0.1'
     LibName = {},
 
-    --- @type LocalLibStub
+    --- @type Kapresoft_LibUtil_LibStub
     LibStub = {},
     --- @type LibStub
     LibStubAce = {},
