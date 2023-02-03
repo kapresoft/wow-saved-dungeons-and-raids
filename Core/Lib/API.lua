@@ -6,14 +6,16 @@ local sformat = string.format
 --[[-----------------------------------------------------------------------------
 Blizzard Vars
 -------------------------------------------------------------------------------]]
+local C_LFGList = C_LFGList
 local GetNumSavedInstances, GetSavedInstanceInfo = GetNumSavedInstances, GetSavedInstanceInfo
-
+local Mixin, GetDifficultyInfo = Mixin, GetDifficultyInfo
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
 --- @type Namespace
 local _, ns = ...
-local O, LibStub, M = ns.O, ns.LibStub, ns.M
+local O, LibStub, M, GC = ns.O, ns.LibStub, ns.M, ns.GC
+local MockAPI = O.MockAPI
 local LibUtil = ns.Kapresoft_LibUtil
 
 local String = O.LU.String
@@ -28,19 +30,6 @@ New Instance
 local L = LibStub:NewLibrary(M.API)
 local p = L.logger;
 
---- @class SavedInstanceInfo
-local _SavedInstance = {
-    id = -1,
-    name = 'The Nexus',
-    nameId = 'The Nexus (Heroic)',
-    instanceLockId = 123456789,
-    maxPlayers = maxPlayers,
-    difficulty = 2,
-    difficultyName = 'Normal|Heroic|Mythic',
-    isRaid = false,
-    isLocked = false,
-    instanceIDMostSig = -1,
-}
 local CategoryID = { Dungeon = 2, Raid = 114 }
 --- @class CategoryInfo
 local CategoryInfoMixin = {
@@ -107,76 +96,160 @@ local function Methods(o)
         return c
     end
 
+    --- #### See
+    --- - [https://wowpedia.fandom.com/wiki/API_GetSavedInstanceInfo](https://wowpedia.fandom.com/wiki/API_GetSavedInstanceInfo)
+    --- - [https://wowpedia.fandom.com/wiki/InstanceID](https://wowpedia.fandom.com/wiki/InstanceID)
     --- @param index number
     --- @return SavedInstanceInfo
     function o:GetSavedInstanceInfoByIndex(index)
-        local name, id, _, difficulty, isLocked, _, instanceIDMostSig, isRaid,
-            maxPlayers, difficultyName = GetSavedInstanceInfo(index)
+        if SDNR_MOCK_SAVED_DUNGEONS == true then
+            return MockAPI:GetSavedInstanceInfoByIndex(index)
+        end
+
+        local name, id, reset, difficulty, isLocked, isExtended, _, isRaid,
+            maxPlayers, difficultyName, numEncounters, encounterProgress,
+            extendDisabled, instanceID = GetSavedInstanceInfo(index)
         if IsBlank(name) then return nil end
+
         --- @type SavedInstanceInfo
         local d = {
             name = name,
-            id = id,
+            lockoutID = id,
+            reset = reset,
             nameId = {},
-            instanceLockId = id,
-            maxPlayers = maxPlayers,
             difficulty = difficulty,
-            difficultyName = difficultyName,
             isLocked = isLocked,
+            isExtended = isExtended,
             isRaid = isRaid,
-            instanceIDMostSig = instanceIDMostSig
+            maxPlayers = maxPlayers,
+            difficultyName = difficultyName,
+            numEncounters = numEncounters,
+            encounterProgress = encounterProgress,
+            extendDisabled = extendDisabled,
+            instanceID = instanceID,
+            encounters = self:GetSavedInstanceEncounters(index)
         }
         return d
     end
 
-    --- @return table<string, DataProviderElement>
+    --- @return table<string, SavedInstanceDetails>
     function o:GetSavedDungeonsElement()
-        return self:GetSavedInstanceByFilter(function(s) return s.isRaid == false end)
+        return self:GetSavedInstanceByFilter(function(s)
+            return  s.isRaid == false and s.difficulty == GC.C.HEROIC_DIFFICULTY end)
     end
 
-    --- @return table<string, DataProviderElement>
+    function o:GetNumSavedInstances()
+        if SDNR_MOCK_SAVED_DUNGEONS == true then return MockAPI:GetNumSavedInstances() end
+        return GetNumSavedInstances()
+    end
+
+    --- @return table<string, SavedInstanceDetails>
     function o:GetSavedRaidsElement()
         return self:GetSavedInstanceByFilter(function(s) return s.isRaid == true end)
     end
 
     --- @param predicateFn fun(savedInstanceInfo:SavedInstanceInfo)
-    --- @return table<string, DataProviderElement>
+    --- @return table<string, SavedInstanceDetails>
     function o:GetSavedInstanceByFilter(predicateFn)
-        local C_LFGList = _G['C_LFGList']
         if not C_LFGList then return end
 
         --- @type LFGListingFrameActivityViewScrollBox
         local view = _G['LFGListingFrameActivityViewScrollBox']
         if not (view and view:GetDataProvider()) then return end
-
         local dataProvider = view:GetDataProvider()
 
         --- @type table<string, DataProviderElement>
         local results = {}
 
-        --- @param info SavedInstanceInfo
-        local createMainPredicate = function(info)
+        --- @param savedInstanceInfo SavedInstanceInfo
+        local createMainPredicate = function(savedInstanceInfo)
+            ---@param elem DataProviderElement
             return function(elem)
                 if not (elem and elem.data) then return false end
-                local iName = info.name
+                local savedName = savedInstanceInfo.name
                 local data = elem.data
                 if data.activityID then
-                    local ai = C_LFGList.GetActivityInfoTable(data.activityID)
-                    return ai and ai.maxNumPlayers and (iName == data.name and info.maxPlayers == ai.maxNumPlayers)
+                    local ai = self:GetActivityInfo(data.activityID)
+                    return ai and savedName == ai.shortName and data.minLevel == ai.minLevel
                 end
-                return iName == data.name
+                return savedName == data.name
             end
         end
 
-        for i=1,25 do
-            local info = self:GetSavedInstanceInfoByIndex(i)
-            if info and info.name then
-                local savedElem = dataProvider:FindElementDataByPredicate(createMainPredicate(info))
-                if savedElem and predicateFn(info) then results[info.name] = savedElem end
+        local count = self:GetNumSavedInstances()
+        for i=1, count do
+            local savedInstanceInfo = self:GetSavedInstanceInfoByIndex(i)
+            savedInstanceInfo.instanceIndex = i
+            local savedElem = dataProvider:FindElementDataByPredicate(createMainPredicate(savedInstanceInfo))
+            if savedElem then
+                local activity = self:GetActivityInfo(savedElem.data.activityID)
+                local ret = { data = savedElem.data, info = savedInstanceInfo, activity = activity }
+                results[savedInstanceInfo.nameId] = ret
             end
         end
 
         return results
+    end
+
+    --- @param instanceIndex number
+    --- @return Encounters
+    function o:GetSavedInstanceEncounters(instanceIndex)
+        --- @type Encounters
+        local encounters = {}
+        for i = 1, 20 do
+            local bossName, fileDataID, isKilled, unknown4 = GetSavedInstanceEncounterInfo(instanceIndex, i)
+            if bossName then
+                --- @type EncounterInfo
+                local d = { bossName=bossName, fileDataID=fileDataID, isKilled=isKilled }
+                table.insert(encounters, d)
+            else
+                return encounters
+            end
+        end
+        return encounters
+    end
+
+    ---@param activityID number
+    function o:GetActivityInfoTable(activityID)
+        if SDNR_MOCK_SAVED_DUNGEONS == true then
+            return MockAPI:GetActivityInfoTable(activityID)
+        end
+        return C_LFGList.GetActivityInfoTable(activityID)
+    end
+
+    --- ### See
+    --- - Wow Classic [https://wowpedia.fandom.com/wiki/API_C_LFGList.GetActivityInfo](https://wowpedia.fandom.com/wiki/API_C_LFGList.GetActivityInfo)
+    --- - All Others [https://wowpedia.fandom.com/wiki/API_C_LFGList.GetActivityInfoTable](https://wowpedia.fandom.com/wiki/API_C_LFGList.GetActivityInfoTable)
+    --- @param activityID number
+    --- @return ActivityInfoDetails
+    function o:GetActivityInfo(activityID)
+        local activity = self:GetActivityInfoTable(activityID)
+        if not activity then return end
+        local difficulty = self:GetDifficultyInfo(activity.difficultyID)
+
+        --- @type ActivityInfoDetails
+        local ret = {
+            id = activityID,
+            difficultyName = difficulty.name,
+            isHeroic = difficulty.isHeroic,
+        }
+        return Mixin(ret, activity)
+    end
+
+    --- @return DifficultyInfo
+    --- @param difficultyID number
+    function o:GetDifficultyInfo(difficultyID)
+        local name, groupType, isHeroic, isChallengeMode, displayHeroic,
+            displayMythic, toggleDifficultyID = GetDifficultyInfo(difficultyID)
+        return {
+            name = name,
+            groupType = groupType,
+            isHeroic = isHeroic,
+            isChallengeMode = isChallengeMode,
+            displayHeroic = displayHeroic,
+            displayMythic = displayMythic,
+            toggleDifficultyID = toggleDifficultyID
+        }
     end
 
     --- @return table<string, SavedInstanceInfo>, table<string, SavedInstanceInfo>
@@ -195,6 +268,7 @@ local function Methods(o)
         local count = GetNumSavedInstances()
         for i=1, count do
             local savedInfo = self:GetSavedInstanceInfoByIndex(i)
+            savedInfo.instanceIndex = i
             local tbl = dungeons
             if savedInfo.isRaid then tbl = raids end
             savedInfo.nameId = GetUniqueName(savedInfo)

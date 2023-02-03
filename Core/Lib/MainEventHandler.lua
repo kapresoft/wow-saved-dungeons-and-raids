@@ -8,6 +8,7 @@ Blizzard Vars
 -------------------------------------------------------------------------------]]
 local CreateFrame, FrameUtil = CreateFrame, FrameUtil
 local RegisterFrameForEvents, RegisterFrameForUnitEvents = FrameUtil.RegisterFrameForEvents, FrameUtil.RegisterFrameForUnitEvents
+local After = C_Timer.After
 
 --[[-----------------------------------------------------------------------------
 Local Vars
@@ -24,11 +25,12 @@ local commandTextFormat = 'Type %s on the console for available commands.'
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
---- @class MainEventHandler : BaseLibraryObject
+--- @class MainEventHandler : BaseLibraryObject_WithAceEvent
 local L = LibStub:NewLibrary(M.MainEventHandler, 1); if not L then return end
 L.skipCount = 0
 AceEvent:Embed(L)
 local p = L.logger
+
 
 --[[-----------------------------------------------------------------------------
 Support Functions
@@ -50,12 +52,12 @@ local function OnPlayerEnteringWorld(f, event, ...)
     addon.logger:log('%s Initialized. %s', version, sformat(commandTextFormat, GC.C.COMMAND, GC.C.HELP_COMMAND))
     addon:RegisterHooks()
     SendAddonReadyMessage()
+    After(2, function() L:RegisterOnRequestRaidInfo(); addon.logger:log(10,'RequestRaidInfo() event registered.') end)
 end
 
 --- @param f MainEventHandlerFrame
 --- @param event string The event name
 local function OnRequestRaidInfo(f, event)
-    if L.skipCount <= 0 then L.skipCount = 1; return end
     O.SavedInstances:ReportSavedInstances()
 end
 
@@ -79,7 +81,6 @@ local function InstanceMethods(o)
     function o:RegisterEvents()
         p:log(100, "RegisterEvents called.")
         self:RegisterOnPlayerEnteringWorld()
-        self:RegisterOnRequestRaidInfo()
     end
 
     function L:RegisterOnPlayerEnteringWorld()

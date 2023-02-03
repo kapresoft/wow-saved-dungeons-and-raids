@@ -45,6 +45,8 @@ local GlobalObjects = {
     AceDbInitializerMixin = {},
     --- @type API
     API = {},
+    --- @type MockAPI
+    MockAPI = {},
     --- @type Core
     Core = {},
     --- @type GlobalConstants
@@ -72,6 +74,7 @@ local M = {
 
     AceDbInitializerMixin = 'AceDbInitializerMixin',
     API = 'API',
+    MockAPI = 'MockAPI',
     Core = 'Core',
     GlobalConstants = 'GlobalConstants',
     Logger = 'Logger',

@@ -1,8 +1,3 @@
-------------------------------------------------------------------------
--- test stuff.
-------------------------------------------------------------------------
-local format = string.format
-
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
@@ -10,7 +5,13 @@ Local Vars
 local _, ns = ...
 local O = ns.O
 local AceEvent = O.AceLibrary.AceEvent
-local API = O.API
+local API, MockAPI = O.API, O.MockAPI
+
+--- Set this to true to mock heroic dungeons data for LFG Frame
+--- @see MockAPI
+SDNR_MOCK_SAVED_DUNGEONS=false
+-- Override the saved instances here
+MockAPI.SavedInstanceDetails = { MockAPI.CoS, MockAPI.HallsOfLightning }
 
 --[[-----------------------------------------------------------------------------
 New Instance
@@ -57,3 +58,4 @@ end
 --frame:SetScript('OnEvent', OnEvent)
 --frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 --frame:RegisterEvent('PLAYER_LEAVING_WORLD')
+

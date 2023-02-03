@@ -32,6 +32,12 @@ local ADDON_INFO_FMT = '%s|cfdeab676: %s|r'
 local TOSTRING_ADDON_FMT = '|cfdfefefe{{|r|cfdeab676%s|r|cfdfefefe}}|r'
 local TOSTRING_SUBMODULE_FMT = '|cfdfefefe{{|r|cfdeab676%s|r|cfdfefefe::|r|cfdfbeb2d%s|r|cfdfefefe}}|r'
 
+local function formatColor(color, text) return sformat('|cfd%s%s|r', color, text) end
+
+local RED_COLOR = 'FF0000'
+local ErrorText = 'ERROR'
+local errorTextWithColor = formatColor(RED_COLOR, ErrorText)
+
 --- @param moduleName string
 --- @param optionalMajorVersion number|string
 local function LibName(moduleName, optionalMajorVersion)
@@ -74,19 +80,23 @@ local function GlobalConstantProperties(o)
         CONSOLE_PLAIN = command,
         COMMAND      = sformat(consoleCommandTextFormat, command),
         HELP_COMMAND = sformat(consoleCommandTextFormat, command .. ' help'),
+
+        HEROIC_DIFFICULTY = 2,
     }
 
     --- @class EventNames
     local E = {
+        OnClick = 'OnClick',
+        OnDragStart = 'OnDragStart',
+        OnDragStop = 'OnDragStop',
         OnEnter = 'OnEnter',
         OnEvent = 'OnEvent',
         OnLeave = 'OnLeave',
         OnModifierStateChanged = 'OnModifierStateChanged',
-        OnDragStart = 'OnDragStart',
-        OnDragStop = 'OnDragStop',
-        OnMouseUp = 'OnMouseUp',
         OnMouseDown = 'OnMouseDown',
+        OnMouseUp = 'OnMouseUp',
         OnReceiveDrag = 'OnReceiveDrag',
+        OnShow = 'OnShow',
 
         -- Blizzard Events
         PLAYER_ENTERING_WORLD = 'PLAYER_ENTERING_WORLD',
@@ -107,7 +117,39 @@ end
 
 --- @param o GlobalConstants
 local function Methods(o)
-    --  TODO
+
+    --- ### Usage
+    --- ```
+    --- GC:safecall(function(arg1) print('arg1:', arg1); print(arg1x()) --- end, "myarg1")
+    --- .OnError(function(errorMsg) print('Error msg:', errorMsg) end)
+    --- .Exec()
+    ---
+    --- - OR Use the built-in error function handler -
+    ---
+    --- GC:safecall(function(arg1) print('arg1:', arg1); print(arg1x()) --- end, "myarg1")
+    --- .Exec()
+    --- ```
+    --- @param func SafeCallFn
+    --- @vararg any The target function arguments
+    --- @return FluentSafeCall
+    function o:Safecall(func, ...)
+        local args = { ... }
+        --- @type FluentSafeCall
+        local h = {
+            func = func,
+            --- @type FluentSafeCallExecute
+            Exec = function() xpcall( func,
+                    function(errorMsg) ns.O.Logger:NewLogger(errorTextWithColor):log(errorMsg) end,
+                    unpack(args) )
+            end,
+            --- @param errorFn FluentErrorHandlerFn
+            OnError = function(errorFn)
+                return { Exec = function() xpcall(func, errorFn, unpack(args)) end }
+            end
+        }
+
+        return h
+    end
 
     function o:GetLogName()
         local logName = addon

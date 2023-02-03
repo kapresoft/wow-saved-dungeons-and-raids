@@ -2,6 +2,7 @@
 Blizzard Vars
 -------------------------------------------------------------------------------]]
 local RequestRaidInfo = RequestRaidInfo
+local After = C_Timer.After
 
 --[[-----------------------------------------------------------------------------
 Lua Vars
@@ -13,15 +14,25 @@ Local Vars
 -------------------------------------------------------------------------------]]
 --- @type Namespace
 local _, ns = ...
-local O, LibStub, M = ns.O, ns.LibStub, ns.M
+local O, LibStub, M, E = ns.O, ns.LibStub, ns.M, ns.GC.E
 
 local API, pformat = O.API, ns.pformat
 local IsEmptyTable, GetSortedKeys = O.LU.Table.isEmpty, O.LU.Table.getSortedKeys
 local KC = ns.Kapresoft_LibUtil.H
 local SAVED_INSTANCE_COLOR = 'fc1605'
-
 --[[-----------------------------------------------------------------------------
-New Instance
+Support Functions
+-------------------------------------------------------------------------------]]
+---@param dungeons table<string, SavedInstanceDetails>
+---@param activityId number
+local function findDungeon(dungeons, activityId)
+    for _, savedInstanceDetails in pairs(dungeons) do
+        if activityId == savedInstanceDetails.activity.id then return savedInstanceDetails end
+    end
+    return nil
+end
+--[[-----------------------------------------------------------------------------
+New Library
 -------------------------------------------------------------------------------]]
 --- @class SavedInstances : BaseLibraryObject
 local L = LibStub:NewLibrary(M.SavedInstances)
@@ -42,7 +53,12 @@ end
 local function subh(text) return KC:FormatColor(colors.subh, text) end
 
 --- @param o SavedInstances
-local function Methods(o)
+local function PropsAndMethods(o)
+
+    o.LFGListingFrame_OnShow_Hooked = false
+    o.LFGParentFrameTab1_OnClick_Hooked = false
+    o.Dungeon_OnClick_Hooked = false
+    o.Raid_OnClick_Hooked = false
 
     ---Should only be called once
     function o:RegisterConsoleHooks()
@@ -61,7 +77,7 @@ local function Methods(o)
             if #categoryButtons <= 0 then return end
             local dungeonButton = categoryButtons[1]
             if not dungeonButton then return end
-            local success = dungeonButton:HookScript('OnClick', function()
+            local success = dungeonButton:HookScript(E.OnClick, function()
                 p:log(10, 'ApplyLFGFrameHooks::Dungeon::OnClick called...%s', GetTime())
                 self:HandleSavedInstances()
             end)
@@ -71,7 +87,7 @@ local function Methods(o)
             if #categoryButtons <= 0 then return end
             local button = categoryButtons[2]
             if not button then return end
-            local success = button:HookScript('OnClick', function()
+            local success = button:HookScript(E.OnClick, function()
                 p:log(10, 'ApplyLFGFrameHooks::Raid::OnClick called...%s', GetTime())
                 self:HandleSavedInstances()
             end)
@@ -79,35 +95,42 @@ local function Methods(o)
         end
 
         if self.LFGListingFrame_OnShow_Hooked ~= true then
-            local success = LFGListingFrame:HookScript('OnShow', function()
+            local success = LFGListingFrame:HookScript(E.OnShow, function()
                 p:log(10, 'ApplyLFGFrameHooks::LFGListingFrame:OnShow called...%s', GetTime())
                 self:HandleSavedInstances()
             end)
             self.LFGListingFrame_OnShow_Hooked = success
         end
+
+        if self.LFGParentFrameTab1_OnClick_Hooked ~= true then
+            local success = LFGParentFrameTab1:HookScript(E.OnClick, function (f)
+                self:HandleSavedInstances()
+            end)
+            assert(success, 'Failed to Register OnClick() Hook to LFGParentFrameTab1.')
+            self.LFGParentFrameTab1_OnClick_Hooked = success
+        end
     end
-    function o:RegisterLFGFrameHooksDelayed() C_Timer.After(0.5, function() self:RegisterLFGFrameHooks() end) end
+
+    function o:RegisterLFGFrameHooksDelayed() After(0.5, function() self:RegisterLFGFrameHooks() end) end
 
     function o:RegisterRetailFrameHook()
         local f = _G['PVEFrame']
         if not f then return end
-        local success = f:HookScript('OnShow', function ()
+        local success = f:HookScript(E.OnShow, function ()
             self:RegisterLFGFrameHooksDelayed()
             -- self:ReportSavedInstances()
             --- Callback function is in MainEventHandler for Event UPDATE_INSTANCE_INFO
             --- @see MainEventHandler#RegisterOnRequestRaidInfo
-            RequestRaidInfo()
+            --RequestRaidInfo()
         end)
         assert(success, 'Failed to RegisterHooks() in PVEFrame.')
     end
+
     function o:RegisterPreRetailFrameHook()
         local LFGParentFrame = _G['LFGParentFrame']
         if not LFGParentFrame then return end
-        local success = LFGParentFrame:HookScript('OnShow', function ()
+        local success = LFGParentFrame:HookScript(E.OnShow, function ()
              self:RegisterLFGFrameHooksDelayed()
-            --- Callback function is in MainEventHandler for Event UPDATE_INSTANCE_INFO
-            --- @see MainEventHandler#RegisterOnRequestRaidInfo
-            RequestRaidInfo()
         end)
         assert(success, 'Failed to RegisterHooks() in LFGParentFrame.')
     end
@@ -131,16 +154,117 @@ local function Methods(o)
     end
 
     function o:UpdateSavedDungeonsInLFGFrame()
+        --- @type LFGListingFrameActivityViewScrollBox
         local view = _G['LFGListingFrameActivityViewScrollBox']
         if not view then return end
+
+        local btn = view.view.frames[2].CheckButton
+        local nd = btn:GetParent():GetElementData()
+
+        --local count = 0
+        --view.view:ForEachFrame(function(f)
+        --    count = count + 1
+        --    local button = f.CheckButton
+        --    --- @type DataProviderElement
+        --    local node = button:GetParent():GetElementData()
+        --    local data = node.data
+        --    p:log('f: %s [%s]', f.NameButton.Name:GetText(), pformat(data))
+        --end)
+        --p:log('Count: %s', count)
+
+        --[[local dp = view:GetDataProvider()
+        ---@param dataElem DataProviderElement
+        dp:ForEach(function(dataElem)
+            local data = dataElem.data
+            --local f = safecall(function() view.view:FindFrame(data) end)
+            if data.minLevel == 80 then
+                p:log('instance name: %s frame: %s', dataElem.data.name, type(f))
+            end
+        end)]]
+
         local dungeons = API:GetSavedDungeonsElement()
         if IsEmptyTable(dungeons) then return end
 
-        for _, elem in pairs(dungeons) do
-            local data = elem:GetData()
-            if data then data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, data.name) end
+        local _dungeons = {}
+        for _, savedInstanceDetails in pairs(dungeons) do
+            local data = savedInstanceDetails.data
+            local activity = savedInstanceDetails.activity
+            local info = savedInstanceDetails.info
+            local d = { data = data, activity = activity, info = info }
+            table.insert(_dungeons, d)
+            if data and (data.maxLevel == activity.minLevel) and info.encounterProgress > 0 then
+                data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, data.name)
+            end
         end
-        view:GetView():Rebuild()
+        self:JiggleView(view)
+        self:ApplyLFGFrameTooltip(view, dungeons)
+
+    end
+
+    ---@param dungeons table<string, SavedInstanceDetails>
+    ---@param scrollBox LFGListingFrameActivityViewScrollBox
+    function o:ApplyLFGFrameTooltip(scrollBox, dungeons)
+        if 'table' ~= type(dungeons) then return end
+        if not (scrollBox and scrollBox.view and 'table' == type(scrollBox.view.frames)) then return end
+        local scrollView = scrollBox.view
+        --- @type table<number, LFGFrameGroup>
+        local frames = scrollView.frames
+        for _, f in pairs(frames) do
+            if o.hooked ~= true then self:ApplyTooltipHooks(f, dungeons) end
+        end
+    end
+
+    ---@param fgroup LFGFrameGroup
+    ---@param dungeons table<string, SavedInstanceDetails>
+    function o:ApplyTooltipHooks(fgroup, dungeons)
+        local onEnterHooked = fgroup.NameButton:HookScript('OnEnter', function(nameBtn)
+            o.hooked = true
+            local f = nameBtn:GetParent()
+            --- @type DataProviderElementData
+            local data = f:GetElementData().data; if not data then return end
+            local dungeon = findDungeon(dungeons, data.activityID)
+            if not (dungeon and dungeon.activity and dungeon.info) then return end
+
+            self:ApplyTooltip(dungeon, nameBtn)
+        end)
+
+        local onLeaveHooked = fgroup.NameButton:HookScript('OnLeave', function(_nameBtn) GameTooltip:Hide() end)
+        p:log(10, '[%s] OnEnter::Hook-Success? %s, OnLeave::Hook-Success? %s %s',
+                fgroup.NameButton:GetObjectType(),
+                tostring(onEnterHooked), tostring(onLeaveHooked), GetTime())
+    end
+
+    ---@param dungeon SavedInstanceDetails
+    ---@param nameBtn LFGFrameGroupNameButton
+    function o:ApplyTooltip(dungeon, nameBtn)
+        local info = dungeon.info
+        local encounters = info.encounters
+        if not (dungeon.activity.isHeroic and info.encounterProgress > 0) then return end
+
+        local bossesKilledText = KC:FormatColor(SAVED_INSTANCE_COLOR, '(%s/%s Bosses Killed)')
+        GameTooltip:SetOwner(nameBtn, "ANCHOR_RIGHT");
+        GameTooltip:AddLine(sformat('Instance Lock ID: %s ' .. bossesKilledText,
+                dungeon.info.lockoutID, info.encounterProgress, info.numEncounters))
+        if encounters then
+            ---@param enc EncounterInfo
+            for i, enc in ipairs(encounters) do
+                local killed = ''
+                local bossName = enc.bossName
+                if enc.isKilled then
+                    killed = KC:FormatColor(SAVED_INSTANCE_COLOR, '(Killed)')
+                    bossName = KC:FormatColor(SAVED_INSTANCE_COLOR, bossName) end
+                GameTooltip:AddLine(sformat('  • %s %s', bossName, killed))
+            end
+        end
+        GameTooltip:Show()
+    end
+
+    --- Jiggle the scroll view up and down -- a hack to get the entries to update
+    ---@param scrollBox LFGListingFrameActivityViewScrollBox
+    function o:JiggleView(scrollBox)
+        scrollBox:GetView():Rebuild()
+        scrollBox:OnMouseWheel(-1)
+        scrollBox:OnMouseWheel(1)
     end
 
     function o:UpdateSavedRaidsInLFGFrame()
@@ -149,10 +273,10 @@ local function Methods(o)
         local raids = API:GetSavedRaidsElement()
         if IsEmptyTable(raids) then return end
 
-        for name, elem in pairs(raids) do
-            local data = elem:GetData()
-            if elem.data then
-                elem.data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, elem.data.name)
+        for name, savedInstanceDetails in pairs(raids) do
+            local data = savedInstanceDetails.data
+            if data then
+                data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, data.name)
                 --p:log('%s: %s', name, pformat(elem.data))
             end
         end
@@ -188,4 +312,4 @@ local function Methods(o)
 
 end
 
-Methods(L)
+PropsAndMethods(L)

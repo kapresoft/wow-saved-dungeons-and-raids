@@ -1,4 +1,25 @@
 --[[-----------------------------------------------------------------------------
+Error Handlers
+-------------------------------------------------------------------------------]]
+--- @alias SafeCallFn fun() | "function() print('My function') end"
+--- @alias SafeCallErrorHandlerFn fun(errorMsg:string) | "function(errorMsg) print('Error occurred:', errorMsg) end"
+--- @alias FluentSafeCallExecute fun()
+--- @alias FluentErrorHandlerFn fun(errorHandlerFn:SafeCallErrorHandlerFn)
+
+------ @class FluentErrorHandler
+local FluentErrorHandler = {
+    --- @type FluentSafeCallExecute - Executes the function
+    Exec = {}
+}
+--- @class FluentSafeCall
+local FluentSafeCall = {
+    --- @type FluentSafeCallExecute - Executes the function
+    Exec = {},
+    --- @type FluentErrorHandler
+    OnError = {}
+}
+
+--[[-----------------------------------------------------------------------------
 Namespace
 -------------------------------------------------------------------------------]]
 --- @class Namespace : LibPackMixin
@@ -69,3 +90,55 @@ local EventFrameWidgetInterface = {
     --- @type SavedDungeonsAndRaid
     addon = {},
 }
+
+--- @class ActivityInfoDetails : ActivityInfo
+--- @see DifficultyInfo
+local ActivityInfoDetails = {
+    id = 1,
+    isHeroic = true|false,
+    difficultyName = '',
+}
+
+--- #### See: [https://wowpedia.fandom.com/wiki/API_GetSavedInstanceEncounterInfo](https://wowpedia.fandom.com/wiki/API_GetSavedInstanceEncounterInfo)
+--- @class EncounterInfo
+local EncounterInfo = {
+    bossName = 'General Zod',
+    fileDataID = 1,
+    isKilled = isKilled
+}
+--- @alias Encounters table<number, EncounterInfo>
+
+--- @class SavedInstanceInfo
+local _SavedInstanceInfo = {
+    id = -1,
+    --- Index from 1 to GetNumSavedInstances()
+    instanceIndex = 1,
+    name = 'The Nexus',
+    lockoutID = 123456789,
+    -- number of seconds remaining until reset
+    reset = 1,
+    nameId = 'The Nexus (Heroic)',
+    difficulty = 2,
+    isLocked = true|false,
+    isExtended = true|false,
+    isRaid = true|false,
+    maxPlayers = 5,
+    difficultyName = 'Normal|Heroic|Mythic',
+    numEncounters = 1,
+    encounterProgress = 1,
+    extendDisabled = true|false,
+    instanceID = 1,
+    --- @type Encounters
+    encounters = {}
+}
+
+--- @class SavedInstanceDetails
+local _SavedInstanceInfoDetails = {
+    --- @type SavedInstanceInfo
+    info = {},
+    --- @type ActivityInfoDetails
+    activity = {},
+    --- @type DataProviderElementData
+    data = {},
+}
+
