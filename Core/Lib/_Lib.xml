@@ -4,6 +4,7 @@
 
     <Include file="Locales\_Locales.xml"/>
 
+x    <Include file="MockAPI.lua"/>
     <Script file="API.lua" />
     <Script file="MainEventHandler.lua" />
     <Script file="AceDbInitializerMixin.lua" />
