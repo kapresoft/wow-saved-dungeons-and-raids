@@ -18,7 +18,7 @@ local O, LibStub, M, E = ns.O, ns.LibStub, ns.M, ns.GC.E
 
 local API, pformat = O.API, ns.pformat
 local IsEmptyTable, GetSortedKeys = O.LU.Table.isEmpty, O.LU.Table.getSortedKeys
-local KC = ns.Kapresoft_LibUtil.H
+local ColorHelper = ns.Kapresoft_LibUtil.CH
 local SAVED_INSTANCE_COLOR = 'fc1605'
 --[[-----------------------------------------------------------------------------
 Support Functions
@@ -50,7 +50,7 @@ local function header(text)
     return sformat(fmth, text)
 end
 --- @param text string
-local function subh(text) return KC:FormatColor(colors.subh, text) end
+local function subh(text) return ColorHelper:FormatColor(colors.subh, text) end
 
 --- @param o SavedInstances
 local function PropsAndMethods(o)
@@ -193,7 +193,7 @@ local function PropsAndMethods(o)
             local d = { data = data, activity = activity, info = info }
             table.insert(_dungeons, d)
             if data and (data.maxLevel == activity.minLevel) and info.encounterProgress > 0 then
-                data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, data.name)
+                data.name = ColorHelper:FormatColor(SAVED_INSTANCE_COLOR, data.name)
             end
         end
         self:JiggleView(view)
@@ -241,7 +241,7 @@ local function PropsAndMethods(o)
         local encounters = info.encounters
         if not (dungeon.activity.isHeroic and info.encounterProgress > 0) then return end
 
-        local bossesKilledText = KC:FormatColor(SAVED_INSTANCE_COLOR, '(%s/%s Bosses Killed)')
+        local bossesKilledText = ColorHelper:FormatColor(SAVED_INSTANCE_COLOR, '(%s/%s Bosses Killed)')
         GameTooltip:SetOwner(nameBtn, "ANCHOR_RIGHT");
         GameTooltip:AddLine(sformat('Instance Lock ID: %s ' .. bossesKilledText,
                 dungeon.info.lockoutID, info.encounterProgress, info.numEncounters))
@@ -251,8 +251,8 @@ local function PropsAndMethods(o)
                 local killed = ''
                 local bossName = enc.bossName
                 if enc.isKilled then
-                    killed = KC:FormatColor(SAVED_INSTANCE_COLOR, '(Killed)')
-                    bossName = KC:FormatColor(SAVED_INSTANCE_COLOR, bossName) end
+                    killed = ColorHelper:FormatColor(SAVED_INSTANCE_COLOR, '(Killed)')
+                    bossName = ColorHelper:FormatColor(SAVED_INSTANCE_COLOR, bossName) end
                 GameTooltip:AddLine(sformat('  • %s %s', bossName, killed))
             end
         end
@@ -276,7 +276,7 @@ local function PropsAndMethods(o)
         for name, savedInstanceDetails in pairs(raids) do
             local data = savedInstanceDetails.data
             if data then
-                data.name = KC:FormatColor(SAVED_INSTANCE_COLOR, data.name)
+                data.name = ColorHelper:FormatColor(SAVED_INSTANCE_COLOR, data.name)
                 --p:log('%s: %s', name, pformat(elem.data))
             end
         end
