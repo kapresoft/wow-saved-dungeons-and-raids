@@ -143,6 +143,7 @@ local function CreatNameSpace(addon, ns)
     ns.pformat = ns.O.pformat
     ns.sformat = ns.O.sformat
     ns.M = M
+    ns.Locale = {}
     ns.GC = ns.O.GlobalConstants
     ns.LibStubAce = ns.O.LibStubAce
 

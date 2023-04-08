@@ -24,7 +24,7 @@ Namespace
 -------------------------------------------------------------------------------]]
 --- @class Namespace : LibPackMixin
 local Namespace = {
-    --- @type Kapresoft_LibUtil_ConsoleColor
+    --- @type Kapresoft_LibUtil_ColorDefinition
     consoleColors = {
         primary   = 'hex:6-char',
         secondary = 'hex:6-char',
@@ -55,7 +55,9 @@ local Namespace = {
     ToStringFunction = {},
 
     --- @type fun(o:any, ...) : void
-    pformat = {}
+    pformat = {},
+    --- @type table<string, string|number>
+    Locale = {},
 }
 
 --[[-----------------------------------------------------------------------------
@@ -95,7 +97,7 @@ local EventFrameWidgetInterface = {
 --- @see DifficultyInfo
 local ActivityInfoDetails = {
     id = 1,
-    isHeroic = true|false,
+    isHeroic = true,
     difficultyName = '',
 }
 
@@ -119,14 +121,14 @@ local _SavedInstanceInfo = {
     reset = 1,
     nameId = 'The Nexus (Heroic)',
     difficulty = 2,
-    isLocked = true|false,
-    isExtended = true|false,
-    isRaid = true|false,
+    isLocked = true,
+    isExtended = true,
+    isRaid = true,
     maxPlayers = 5,
     difficultyName = 'Normal|Heroic|Mythic',
     numEncounters = 1,
     encounterProgress = 1,
-    extendDisabled = true|false,
+    extendDisabled = true,
     instanceID = 1,
     --- @type Encounters
     encounters = {}
