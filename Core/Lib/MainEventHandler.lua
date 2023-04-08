@@ -19,9 +19,6 @@ local O, LibStub, M, GC = ns.O, ns.LibStub, ns.M, ns.O.GlobalConstants
 local AceEvent = O.AceLibrary.AceEvent
 local E, MSG = GC.E, GC.M
 
---TODO next localize
-local commandTextFormat = 'Type %s on the console for available commands.'
-
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
@@ -49,7 +46,7 @@ end
 local function OnPlayerEnteringWorld(f, event, ...)
     local version = GC:GetAddonInfo()
     local addon = f.ctx.addon
-    addon.logger:log('%s Initialized. %s', version, sformat(commandTextFormat, GC.C.COMMAND, GC.C.HELP_COMMAND))
+    addon.logger:log(sformat(ns.Locale.COMMAND_TEXT_FORMAT, version, GC.C.COMMAND, GC.C.HELP_COMMAND))
     addon:RegisterHooks()
     SendAddonReadyMessage()
     After(2, function() L:RegisterOnRequestRaidInfo(); addon.logger:log(10,'RequestRaidInfo() event registered.') end)

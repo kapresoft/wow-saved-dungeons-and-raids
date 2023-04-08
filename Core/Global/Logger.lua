@@ -18,7 +18,7 @@ local tableUnpack = O.LU.Table.tableUnpack
 local C = LibStub('AceConsole-3.0')
 
 --- Colors are in hex:6-char
---- @type Kapresoft_LibUtil_ConsoleColor
+--- @type Kapresoft_LibUtil_ColorDefinition
 local consoleColors = ns.consoleColors or {
     primary   = '3fc7d1',
     secondary = 'fbeb2d',

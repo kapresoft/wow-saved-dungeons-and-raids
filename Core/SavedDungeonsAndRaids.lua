@@ -91,22 +91,13 @@ local function Methods(o)
 
     function o:SlashCommand_Help_Handler()
         p:log('')
-        --p:log(GC.C.CONSOLE_HEADER_FORMAT, AVAILABLE_CONSOLE_COMMANDS_TEXT)
-        --p:log(USAGE_LABEL)
-        --p:log(OPTIONS_LABEL)
-        --TODO next localize
-        local COMMAND_INFO_TEXT = ":: Prints additional addon info"
-        local COMMAND_LIST_TEXT = ":: Prints the saved dungeons and raids on the console"
-        local COMMAND_CONFIG_TEXT = ":: Shows the config UI"
-        local COMMAND_HELP_TEXT = ":: Shows this help"
-        local OPTIONS_LABEL = "options"
-        local USAGE_LABEL = sformat("usage: %s [%s]", GC.C.CONSOLE_PLAIN, OPTIONS_LABEL)
+        local L = ns.Locale
+        local USAGE_LABEL = sformat("%s: %s [%s]", L.USAGE_LABEL, GC.C.CONSOLE_PLAIN, L.OPTIONS_LABEL)
         p:log(USAGE_LABEL)
-        p:log(OPTIONS_LABEL .. ":")
-        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'list', COMMAND_LIST_TEXT)
-        --p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'config', COMMAND_CONFIG_TEXT)
-        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'info', COMMAND_INFO_TEXT)
-        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'help', COMMAND_HELP_TEXT)
+        p:log(L.OPTIONS_LABEL .. ":")
+        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'list', L.COMMAND_LIST_TEXT)
+        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'info', L.COMMAND_INFO_TEXT)
+        p:log(GC.C.CONSOLE_OPTIONS_FORMAT, 'help', L.COMMAND_HELP_TEXT)
     end
 
     function o:OpenConfig()
