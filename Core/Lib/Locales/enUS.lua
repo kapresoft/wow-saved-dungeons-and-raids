@@ -7,6 +7,17 @@
 local addonName = ...
 local L = LibStub("AceLocale-3.0"):NewLocale(addonName, "enUS", true);
 
+-- ###################### No Translations ######################
+L['Version'] = true
+L['Curse-Forge'] = true
+L['Bugs'] = true
+L['Repo'] = true
+L['Last-Update'] = true
+L['Interface-Version'] = true
+L['Locale'] = true
+-- ###################### /No Translations ######################
+
+L['Addon Info']                                     = 'Addon Info'
 L["BINDING_NAME_SDNR_OPTIONS_DLG"]                  = 'Options Dialog'
 
 L['SAVED']                                          = 'Saved'
