@@ -118,6 +118,8 @@ end
 --- @param o GlobalConstants
 local function Methods(o)
 
+    function o:GetAceLocale() return LibStub("AceLocale-3.0"):GetLocale(addon, true) end
+
     --- ### Usage
     --- ```
     --- GC:safecall(function(arg1) print('arg1:', arg1); print(arg1x()) --- end, "myarg1")
@@ -181,16 +183,16 @@ local function Methods(o)
     end
 
     function o:GetAddonInfoFormatted()
+        local C = self:GetAceLocale()
         local version, curseForge, issues, repo, lastUpdate, wowInterfaceVersion = self:GetAddonInfo()
-        --p:log("Addon Info:\n  Version: %s\n  Curse-Forge: %s\n  File-Bugs-At: %s\n  Last-Changed-Date: %s\n  WoW-Interface-Version: %s\n",
-        --        version, curseForge, issues, lastChanged, wowInterfaceVersion)
-        return sformat("Addon Info:\n%s\n%s\n%s\n%s\n%s\n%s",
-                sformat(ADDON_INFO_FMT, 'Version', version),
-                sformat(ADDON_INFO_FMT, 'Curse-Forge', curseForge),
-                sformat(ADDON_INFO_FMT, 'Bugs', issues),
-                sformat(ADDON_INFO_FMT, 'Repo', repo),
-                sformat(ADDON_INFO_FMT, 'Last-Update', lastUpdate),
-                sformat(ADDON_INFO_FMT, 'Interface-Version', wowInterfaceVersion)
+        return sformat(C['Addon Info'] .. ":\n%s\n%s\n%s\n%s\n%s\n%s\n%s",
+                sformat(ADDON_INFO_FMT, C['Version'], version),
+                sformat(ADDON_INFO_FMT, C['Curse-Forge'], curseForge),
+                sformat(ADDON_INFO_FMT, C['Bugs'], issues),
+                sformat(ADDON_INFO_FMT, C['Repo'], repo),
+                sformat(ADDON_INFO_FMT, C['Last-Update'], lastUpdate),
+                sformat(ADDON_INFO_FMT, C['Interface-Version'], wowInterfaceVersion),
+                sformat(ADDON_INFO_FMT, C['Locale'], GetLocale())
         )
     end
 
