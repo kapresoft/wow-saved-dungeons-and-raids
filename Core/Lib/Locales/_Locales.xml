@@ -4,5 +4,7 @@
 ..\..\FrameXML\UI.xsd">
   <Script file="enUS.lua"/>
   <Script file="deDE.lua"/>
+  <Script file="esES.lua"/>
+  <Script file="esMX.lua"/>
   <Script file="Localization.lua"/>
 </Ui>
