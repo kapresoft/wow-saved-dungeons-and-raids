@@ -56,10 +56,19 @@ A new option to display a frame containing the saved instance information side-b
 ## Docs
 - [Getting Started](https://github.com/kapresoft/wow-saved-dungeons-and-raids/wiki)
 
-## Curse Forge
+## Add-On Distribution
+
+**Curse Forge**
 - https://www.curseforge.com/wow/addons/saved-dungeons-raids
 
-## Donations
+**WoW Interface**
+- https://www.wowinterface.com/downloads/info26523-SavedDungeonsampRaids.html
+
+## Author Notes
+
+- About the Author (Tony Lagnada) • [Resumé](https://tony.resume.lagnada.com/) • [LinkedIn](https://www.linkedin.com/in/lagnada/)
+
+### Donations
 
 As a software engineer, I am passionate about this project and have dedicated a significant amount of time and effort to creating a high-quality product. If you enjoy using this World of Warcraft add-on, please consider supporting me through a donation via [Paypal&trade;](https://www.paypal.com/donate/?hosted_button_id=AX58YP3GSGXVU) or the Bitcoin Address provided below. Your support is greatly appreciated. Thank you in advance for your generosity.
 
@@ -68,5 +77,6 @@ As a software engineer, I am passionate about this project and have dedicated a 
 
 ## Try My Other AddOns
 - [ActionbarPlus](https://www.curseforge.com/wow/addons/actionbarplus)
+- [ActionbarPlus-M6](https://www.curseforge.com/wow/addons/actionbarplus-m6)
 - [MacrobarPlus](https://www.curseforge.com/wow/addons/macrobarplus)
 - [Addon Template](https://www.curseforge.com/wow/addons/addon-template)
