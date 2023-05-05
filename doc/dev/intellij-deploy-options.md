@@ -10,7 +10,7 @@ Go to Settings, Deployment/Options or type "Options" in Settings
 
 Exclude Items By Name:
 
-`.svn;.cvs;.idea;.DS_Store;.git;.hg;*.hprof;*.pyc;.github;.gitattributes;.gitignore;*.sh;dev;build;doc;.release;Core/ExtLib/_NotDeployed;Dev.toc;pkgmeta.yaml;README.md;CHANGELOG.txt`
+`.svn;.cvs;.idea;.vscode;.DS_Store;.git;.hg;*.hprof;*.pyc;.github;.gitattributes;.gitignore;*.sh;dev;build;.release;_SV;Core/ExtLib/_NotDeployed;Dev.toc;pkgmeta.yaml;README.md;CHANGELOG.txt`
 
 Or in ./idea/deployment.xml, use the follow similar setting for Mac env (Windows is similar)
 
