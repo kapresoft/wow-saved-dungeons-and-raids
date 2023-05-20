@@ -7,11 +7,14 @@ local O = ns.O
 local AceEvent = O.AceLibrary.AceEvent
 local API, MockAPI = O.API, O.MockAPI
 
+--SDNR_LOG_LEVEL = 0
 --- Set this to true to mock heroic dungeons data for LFG Frame
 --- @see MockAPI
 SDNR_MOCK_SAVED_DUNGEONS=false
 -- Override the saved instances here
-MockAPI.SavedInstanceDetails = { MockAPI.CoS, MockAPI.HallsOfLightning }
+MockAPI.SavedInstanceDetails = {
+    MockAPI.CoS, MockAPI.HallsOfLightning,
+    MockAPI.EOE_25, MockAPI.NAXX_25, MockAPI.NAXX_10 }
 
 --[[-----------------------------------------------------------------------------
 New Instance
@@ -33,8 +36,12 @@ function L:GetAllSavedInstances()
     local dungeons, raids = API:GetAllSavedInstances()
     return { dungeons = dungeons, raids = raids }
 end
+
+--- have be in the instance for this
+function L:GetInstanceInfo() return API:GetInstanceInfo() end
+
 --- @param level number
-function L:LogLevel(level)
+function L:LL(level)
     if not level then
         p:log('SDNR_LOG_LEVEL: %s', SDNR_LOG_LEVEL)
         return

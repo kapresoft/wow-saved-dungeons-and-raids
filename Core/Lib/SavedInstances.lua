@@ -138,8 +138,12 @@ local function PropsAndMethods(o)
     function o:ReportSavedInstances()
         local dungeons, raids = O.API:GetSavedInstances()
         print('\n')
-        self:ReportSavedDungeons(dungeons)
-        self:ReportSavedRaid(raids)
+        if not IsEmptyTable(dungeons) then
+            self:ReportSavedDungeons(dungeons)
+        end
+        if not IsEmptyTable(raids) then
+            self:ReportSavedRaid(raids)
+        end
     end
 
     function o:HandleSavedInstances()
@@ -158,40 +162,13 @@ local function PropsAndMethods(o)
         local view = _G['LFGListingFrameActivityViewScrollBox']
         if not view then return end
 
-        local btn = view.view.frames[2].CheckButton
-        local nd = btn:GetParent():GetElementData()
-
-        --local count = 0
-        --view.view:ForEachFrame(function(f)
-        --    count = count + 1
-        --    local button = f.CheckButton
-        --    --- @type DataProviderElement
-        --    local node = button:GetParent():GetElementData()
-        --    local data = node.data
-        --    p:log('f: %s [%s]', f.NameButton.Name:GetText(), pformat(data))
-        --end)
-        --p:log('Count: %s', count)
-
-        --[[local dp = view:GetDataProvider()
-        ---@param dataElem DataProviderElement
-        dp:ForEach(function(dataElem)
-            local data = dataElem.data
-            --local f = safecall(function() view.view:FindFrame(data) end)
-            if data.minLevel == 80 then
-                p:log('instance name: %s frame: %s', dataElem.data.name, type(f))
-            end
-        end)]]
-
-        local dungeons = API:GetSavedDungeonsElement()
+        local dungeons = API:GetSavedInstanceByFilter()
         if IsEmptyTable(dungeons) then return end
 
-        local _dungeons = {}
         for _, savedInstanceDetails in pairs(dungeons) do
             local data = savedInstanceDetails.data
             local activity = savedInstanceDetails.activity
             local info = savedInstanceDetails.info
-            local d = { data = data, activity = activity, info = info }
-            table.insert(_dungeons, d)
             if data and (data.maxLevel == activity.minLevel) and info.encounterProgress > 0 then
                 data.name = ColorHelper:FormatColor(SAVED_INSTANCE_COLOR, data.name)
             end
@@ -199,6 +176,25 @@ local function PropsAndMethods(o)
         self:JiggleView(view)
         self:ApplyLFGFrameTooltip(view, dungeons)
 
+    end
+
+    -- TODO next: Can be merged with HandleSavedInstances
+    function o:UpdateSavedRaidsInLFGFrame()
+        local view = _G['LFGListingFrameActivityViewScrollBox']
+        if not view then return end
+        local raids = API:GetSavedInstanceByFilter()
+        if IsEmptyTable(raids) then return end
+
+        for name, savedInstanceDetails in pairs(raids) do
+            local data = savedInstanceDetails.data
+            local activity = savedInstanceDetails.activity
+            --print('data:', pformat(data), 'activityID:', activity.id)
+            if data and data.maxLevel == activity.minLevel
+                    and data.activityID == activity.id then
+                data.name = ColorHelper:FormatColor(SAVED_INSTANCE_COLOR, data.name)
+            end
+        end
+        self:JiggleView(view)
     end
 
     ---@param dungeons table<string, SavedInstanceDetails>
@@ -265,22 +261,6 @@ local function PropsAndMethods(o)
         scrollBox:GetView():Rebuild()
         scrollBox:OnMouseWheel(-1)
         scrollBox:OnMouseWheel(1)
-    end
-
-    function o:UpdateSavedRaidsInLFGFrame()
-        local view = _G['LFGListingFrameActivityViewScrollBox']
-        if not view then return end
-        local raids = API:GetSavedRaidsElement()
-        if IsEmptyTable(raids) then return end
-
-        for name, savedInstanceDetails in pairs(raids) do
-            local data = savedInstanceDetails.data
-            if data then
-                data.name = ColorHelper:FormatColor(SAVED_INSTANCE_COLOR, data.name)
-                --p:log('%s: %s', name, pformat(elem.data))
-            end
-        end
-        view:GetView():Rebuild()
     end
 
     --- @param dungeons table<string,SavedInstanceInfo>

@@ -21,7 +21,7 @@ local function Methods(o)
     --- @return SavedInstanceInfo
     function o:GetSavedInstanceInfoByIndex(index)
         local saved = self.SavedInstanceDetails[index]
-        p:log('Mocked saved dungeon index: %s [%s]', index, saved.info.name)
+        p:log('Mocked saved dungeon index: %s [%s]', index, O.API:GetUniqueName(saved.info))
         return saved.info
     end
     function o:GetNumSavedInstances()
@@ -112,7 +112,7 @@ L.HallsOfLightning = {
         lockoutID = 201742307,
         maxPlayers = 5,
         name = 'Halls of Lightning',
-        nameId = {},
+        nameId = '',
         numEncounters = 4,
         reset = 28904
     }
@@ -176,7 +176,7 @@ L.Gundrak = {
         lockoutID = 201742306,
         maxPlayers = 5,
         name = 'Gundrak',
-        nameId = {},
+        nameId = '',
         numEncounters = 5,
         reset = 28904
     }
@@ -252,7 +252,7 @@ L.VioletHold = {
         lockoutID = 201697488,
         maxPlayers = 5,
         name = 'Violet Hold',
-        nameId = {},
+        nameId = '',
         numEncounters = 9,
         reset = 28904
     }
@@ -313,11 +313,110 @@ L.CoS = {
         lockoutID = 201684163,
         maxPlayers = 5,
         name = 'The Culling of Stratholme',
-        nameId = {},
+        nameId = '',
         numEncounters = 4,
         reset = 28904
     }
 }
+
+---@param instanceInfo MockedInstanceInfo
+local function CreateMockData(instanceInfo)
+    local mockData = {
+        activity = {
+            categoryID = 2,
+            difficultyID = 3,
+            difficultyName = instanceInfo.difficultyName,
+            displayType = 1,
+            filters = 1,
+            fullName = instanceInfo.name,
+            groupFinderActivityGroupID = 289,
+            iconFileDataID = 0,
+            id = instanceInfo.activity,
+            isHeroic = false,
+            mapID = 596,
+            maxLevel = 0,
+            maxLevelSuggestion = 80,
+            maxNumPlayers = instanceInfo.maxNumPlayers,
+            minLevel = 80,
+            orderIndex = 0,
+            redirectedDifficultyID = 2,
+            shortName = instanceInfo.name,
+            useDungeonRoleExpectations = true
+        },
+        data = {
+            activityID = instanceInfo.activity,
+            buttonType = 2,
+            maxLevel = 80,
+            minLevel = 80,
+            name = instanceInfo.name,
+            orderIndex = 0
+        },
+        info = {
+            difficulty = 2,
+            difficultyName = instanceInfo.difficultyName,
+            encounterProgress = 4,
+            encounters = { {
+                               bossName = 'Malygos',
+                               isKilled = true
+                           }},
+            extendDisabled = false,
+            instanceID = 596,
+            instanceIndex = 1,
+            isExtended = false,
+            isLocked = true,
+            isRaid = instanceInfo.isRaid or false,
+            lockoutID = 201684163,
+            maxPlayers = instanceInfo.maxNumPlayers,
+            name = instanceInfo.name,
+            nameId = '',
+            numEncounters = 4,
+            reset = 28904
+        }
+    }
+
+    if instanceInfo.isRaid == true then
+        mockData.activity.categoryID = 114
+    end
+    return mockData
+end
+
+L.NAXX_10 = CreateMockData({
+    isRaid = true,
+    activity = 841,
+    name = 'Naxxramas',
+    difficultyName = '10 Player',
+    maxNumPlayers = 10,
+    maxLevel = 80,
+    minLevel = 80,
+})
+L.NAXX_25 = CreateMockData({
+    isRaid = true,
+    activity = 1098,
+    name = 'Naxxramas',
+    difficultyName = '25 Player',
+    maxNumPlayers = 25,
+    maxLevel = 80,
+    minLevel = 80,
+})
+L.EOE_10 = CreateMockData({
+    isRaid = true,
+    activity = 1102,
+    name = 'The Eye of Eternity',
+    difficultyName = '10 Player',
+    maxNumPlayers = 10,
+    maxLevel = 80,
+    minLevel = 80,
+})
+L.EOE_25 = CreateMockData({
+    isRaid = true,
+    activity = 1094,
+    name = 'The Eye of Eternity',
+    difficultyName = '25 Player',
+    maxNumPlayers = 25,
+    maxLevel = 80,
+    minLevel = 80,
+})
+
 
 --- @type table<number, SavedInstanceDetails>
 L.SavedInstanceDetails = { L.HallsOfLightning, L.Gundrak }

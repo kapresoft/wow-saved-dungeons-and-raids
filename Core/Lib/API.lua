@@ -67,19 +67,19 @@ local function IsMythic(savedInstanceInfo)
     return ContainsIgnoreCase(savedInstanceInfo.difficultyName, 'mythic')
 end
 
---- @param savedInstanceInfo SavedInstanceInfo
---- @return string
-local function GetUniqueName(savedInstanceInfo)
-    local difficultyName = savedInstanceInfo.difficultyName:gsub('[%(%)]', '')
-    return sformat("%s (%s)", savedInstanceInfo.name, difficultyName)
-end
-
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
 --- @return table, table The first table is regular instance and second is raid
 --- @param o API
 local function Methods(o)
+
+    --- @param savedInstanceInfo SavedInstanceInfo
+    --- @return string
+    function o:GetUniqueName(savedInstanceInfo)
+        local difficultyName = savedInstanceInfo.difficultyName:gsub('[%(%)]', '')
+        return sformat("%s (%s)", savedInstanceInfo.name, difficultyName)
+    end
 
     --- @return CategoryInfo
     function o:GetSelectedCategory()
@@ -94,6 +94,30 @@ local function Methods(o)
         --- @type CategoryInfo
         local c = LibUtil:CreateAndInitFromMixin(CategoryInfoMixin, catID, name)
         return c
+    end
+
+    --- Player has to be in the instance for this
+    --- @return InstanceInfo
+    function o:GetInstanceInfo()
+        local name, instanceType, difficultyID, difficultyName, maxPlayers,
+            dynamicDifficulty, isDynamic, instanceID, instanceGroupSize,
+            LfgDungeonID = GetInstanceInfo()
+        if not name then return nil end
+
+        --- @type InstanceInfo
+        local info = {
+            name = name,
+            instanceType = instanceType,
+            difficultyID = difficultyID,
+            difficultyName = difficultyName,
+            maxPlayers = maxPlayers,
+            dynamicDifficulty = dynamicDifficulty,
+            isDynamic = isDynamic,
+            instanceID = instanceID,
+            instanceGroupSize = instanceGroupSize,
+            LfgDungeonID = LfgDungeonID,
+        }
+        return info
     end
 
     --- #### See
@@ -132,25 +156,14 @@ local function Methods(o)
         return d
     end
 
-    --- @return table<string, SavedInstanceDetails>
-    function o:GetSavedDungeonsElement()
-        return self:GetSavedInstanceByFilter(function(s)
-            return  s.isRaid == false and s.difficulty == GC.C.HEROIC_DIFFICULTY end)
-    end
-
     function o:GetNumSavedInstances()
         if SDNR_MOCK_SAVED_DUNGEONS == true then return MockAPI:GetNumSavedInstances() end
         return GetNumSavedInstances()
     end
 
-    --- @return table<string, SavedInstanceDetails>
-    function o:GetSavedRaidsElement()
-        return self:GetSavedInstanceByFilter(function(s) return s.isRaid == true end)
-    end
 
-    --- @param predicateFn fun(savedInstanceInfo:SavedInstanceInfo)
     --- @return table<string, SavedInstanceDetails>
-    function o:GetSavedInstanceByFilter(predicateFn)
+    function o:GetSavedInstanceByFilter()
         if not C_LFGList then return end
 
         --- @type LFGListingFrameActivityViewScrollBox
@@ -170,7 +183,9 @@ local function Methods(o)
                 local data = elem.data
                 if data.activityID then
                     local ai = self:GetActivityInfo(data.activityID)
-                    return ai and savedName == ai.shortName and data.minLevel == ai.minLevel
+                    return ai and savedName == ai.shortName
+                            and data.minLevel == ai.minLevel
+                            and savedInstanceInfo.difficultyName == ai.difficultyName
                 end
                 return savedName == data.name
             end
@@ -265,13 +280,13 @@ local function Methods(o)
         --- @type SavedInstanceInfo
         local raids = {}
 
-        local count = GetNumSavedInstances()
+        local count = self:GetNumSavedInstances()
         for i=1, count do
             local savedInfo = self:GetSavedInstanceInfoByIndex(i)
             savedInfo.instanceIndex = i
             local tbl = dungeons
             if savedInfo.isRaid then tbl = raids end
-            savedInfo.nameId = GetUniqueName(savedInfo)
+            savedInfo.nameId = self:GetUniqueName(savedInfo)
 
             if filterFn then
                 if filterFn(savedInfo) then tbl[savedInfo.nameId] = savedInfo end

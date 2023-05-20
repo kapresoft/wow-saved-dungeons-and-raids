@@ -144,3 +144,14 @@ local _SavedInstanceInfoDetails = {
     data = {},
 }
 
+--- @class MockedInstanceInfo
+local MockedInstanceInfo = {
+    activity = 1102,
+    maxNumPlayers = 10,
+    name = 'The Eye of Eternity',
+    --- @type instanceDifficultyName
+    difficultyName = '10 Player',
+    isRaid = true,
+    maxLevel = 80,
+    minLevel = 80,
+}
