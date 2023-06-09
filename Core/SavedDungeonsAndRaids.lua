@@ -30,7 +30,7 @@ A.logger = p
 --setmetatable(A, mt)
 ns['addon'] = A
 
---- @type AceDB
+--- @type fun() : AceDB
 A.db = nil
 
 --[[-----------------------------------------------------------------------------
