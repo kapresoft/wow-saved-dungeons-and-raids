@@ -3,7 +3,7 @@ Local Vars
 -------------------------------------------------------------------------------]]
 --- @type string
 local addonName
---- @type Namespace
+--- @class __Namespace_Lib
 local _ns
 addonName, _ns = ...
 
@@ -18,8 +18,6 @@ local pformat = LibUtil.pformat
 --- @type Kapresoft_LibUtil_PrettyPrint
 local PrettyPrint = _ns.pformat.pprint
 PrettyPrint.setup({ show_function = true, show_metatable = true, indent_size = 2, depth_limit = 3 })
-
-
 
 local LibName = _ns.LibName
 
@@ -81,6 +79,7 @@ local M = {
     MainEventHandler = 'MainEventHandler',
     OptionsMixin = 'OptionsMixin',
     SavedInstances = 'SavedInstances',
+
 }
 
 local LibUtilObjects = LibUtil.Objects
@@ -99,18 +98,16 @@ local InitialModuleInstances = {
 --- @type GlobalConstants
 local GC = LibStub(LibName(M.GlobalConstants))
 
---- @class LibPackMixin
+--- @class __LibPackMixin
 local LibPackMixin = {
 
-    --- @return GlobalObjects, LocalLibStub, Modules, Namespace
-    --- @param self LibPackMixin
+    --- @type fun() : GlobalObjects, Kapresoft_LibUtil_LibStub, Modules, __LibPackMixin
     LibPack = function(self) return self.O, self.LibStub, self.M, self end,
 
-    --- @param self LibPackMixin
-    --- @return GlobalObjects, GlobalConstants, Namespace
+    --- @type fun() : GlobalConstants, __LibPackMixin
     LibPack2 = function(self) return self.O, self.O.GlobalConstants, self end,
 
-    --- @param self LibPackMixin
+    --- @type fun( self: __LibPackMixin ) : AceEvent
     AceEvent = function(self) return self.O.AceLibrary.AceEvent:Embed({}) end,
 
 }
@@ -120,10 +117,12 @@ local LibPackMixin = {
 ---local O, LibStub = SDNR_Namespace(...)
 ---local AceConsole = O.AceConsole
 ---```
+--- @param addon string The addon name
+--- @param ns __Namespace_Lib | __LibPackMixin | __Namespace_Interface
 --- @return Namespace
----@param addon string The addon name
----@param ns Namespace
 local function CreatNameSpace(addon, ns)
+
+    Mixin(ns, LibPackMixin)
 
     --- @type GlobalObjects
     ns.O = ns.O or {}
@@ -146,6 +145,8 @@ local function CreatNameSpace(addon, ns)
     ns.Locale = {}
     ns.GC = ns.O.GlobalConstants
     ns.LibStubAce = ns.O.LibStubAce
+
+    if not _G['pformat'] then _G['pformat'] = ns.pformat end
 
     local getSortedKeys = ns.O.LU.Table.getSortedKeys
 

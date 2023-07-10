@@ -20,17 +20,7 @@ local API, pformat = O.API, ns.pformat
 local IsEmptyTable, GetSortedKeys = O.LU.Table.isEmpty, O.LU.Table.getSortedKeys
 local ColorHelper = ns.Kapresoft_LibUtil.CH
 local SAVED_INSTANCE_COLOR = 'fc1605'
---[[-----------------------------------------------------------------------------
-Support Functions
--------------------------------------------------------------------------------]]
----@param dungeons table<string, SavedInstanceDetails>
----@param activityId number
-local function findDungeon(dungeons, activityId)
-    for _, savedInstanceDetails in pairs(dungeons) do
-        if activityId == savedInstanceDetails.activity.id then return savedInstanceDetails end
-    end
-    return nil
-end
+
 --[[-----------------------------------------------------------------------------
 New Library
 -------------------------------------------------------------------------------]]
@@ -43,6 +33,19 @@ local colors = {
     headerSides = 'ffffff',
     subh = 'fbeb2d',
 }
+
+--[[-----------------------------------------------------------------------------
+Support Functions
+-------------------------------------------------------------------------------]]
+---@param dungeons table<string, SavedInstanceDetails>
+---@param activityId number
+local function findDungeon(dungeons, activityId)
+    for _, savedInstanceDetails in pairs(dungeons) do
+        if activityId == savedInstanceDetails.activity.id then return savedInstanceDetails end
+    end
+    return nil
+end
+
 --- @param text string
 local function header(text)
     local sides = sformat("|cfd%s%s|r", colors.headerSides, ':::')
@@ -147,9 +150,13 @@ local function PropsAndMethods(o)
     end
 
     function o:HandleSavedInstances()
+        C_Timer.After(0.1, function() self:HandleSavedInstancesDelayed() end)
+    end
+
+    function o:HandleSavedInstancesDelayed()
         local selectedCategory = API:GetSelectedCategory()
         if not selectedCategory then return end
-        p:log(10, 'HandleSavedDungeons::Category: %s', pformat({ selectedCategory.id, selectedCategory.name }))
+        --p:log(10, 'HandleSavedDungeons::Category: %s', pformat({ selectedCategory.id, selectedCategory.name }))
         if selectedCategory:IsDungeon() then
             self:UpdateSavedDungeonsInLFGFrame()
         elseif selectedCategory:IsRaid() then
@@ -162,10 +169,11 @@ local function PropsAndMethods(o)
         local view = _G['LFGListingFrameActivityViewScrollBox']
         if not view then return end
 
+        --- @type table<string, SavedInstanceDetails>
         local dungeons = API:GetSavedInstanceByFilter()
         if IsEmptyTable(dungeons) then return end
 
-        for _, savedInstanceDetails in pairs(dungeons) do
+        for nameID, savedInstanceDetails in pairs(dungeons) do
             local data = savedInstanceDetails.data
             local activity = savedInstanceDetails.activity
             local info = savedInstanceDetails.info
@@ -202,17 +210,27 @@ local function PropsAndMethods(o)
     function o:ApplyLFGFrameTooltip(scrollBox, dungeons)
         if 'table' ~= type(dungeons) then return end
         if not (scrollBox and scrollBox.view and 'table' == type(scrollBox.view.frames)) then return end
+
+        --- @see Interface/SharedXML/Scroll/ScrollBoxListView.lua
         local scrollView = scrollBox.view
         --- @type table<number, LFGFrameGroup>
         local frames = scrollView.frames
         for _, f in pairs(frames) do
-            if o.hooked ~= true then self:ApplyTooltipHooks(f, dungeons) end
+            if o.hooked ~= true then self:ApplyTooltipHooks(dungeons) end
         end
+    end
+
+    ---@param dungeons table<string, SavedInstanceDetails>
+    function o:ApplyTooltipHooks(dungeons)
+        if not LFGListingActivityView_InitActivityButton then return end
+        hooksecurefunc('LFGListingActivityView_InitActivityButton', function(fgroup, data, collapsed)
+            self:HandleTooltip(fgroup, dungeons)
+        end)
     end
 
     ---@param fgroup LFGFrameGroup
     ---@param dungeons table<string, SavedInstanceDetails>
-    function o:ApplyTooltipHooks(fgroup, dungeons)
+    function o:HandleTooltip(fgroup, dungeons)
         local onEnterHooked = fgroup.NameButton:HookScript('OnEnter', function(nameBtn)
             o.hooked = true
             local f = nameBtn:GetParent()

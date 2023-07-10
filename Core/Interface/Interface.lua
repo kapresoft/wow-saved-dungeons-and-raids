@@ -22,7 +22,8 @@ local FluentSafeCall = {
 --[[-----------------------------------------------------------------------------
 Namespace
 -------------------------------------------------------------------------------]]
---- @class Namespace : LibPackMixin
+--- @alias Namespace __Namespace_Lib | __Namespace_Interface | __LibPackMixin
+--- @class __Namespace_Interface
 local Namespace = {
     --- @type Kapresoft_LibUtil_ColorDefinition
     consoleColors = {
@@ -149,7 +150,7 @@ local MockedInstanceInfo = {
     activity = 1102,
     maxNumPlayers = 10,
     name = 'The Eye of Eternity',
-    --- @type instanceDifficultyName
+    --- @type InstanceDifficultyName
     difficultyName = '10 Player',
     isRaid = true,
     maxLevel = 80,
