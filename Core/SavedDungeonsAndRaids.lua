@@ -14,7 +14,6 @@ local O, GC = ns.O, ns.O.GlobalConstants
 local LibStub, SavedInstances, AceConfigDialog = ns.LibStubAce, O.SavedInstances, O.AceLibrary.AceConfigDialog
 
 local Table, String = O.LU.Table, O.LU.String
-local toStringSorted, pformat = Table.toStringSorted, ns.pformat
 local IsBlank, IsAnyOf, IsEmptyTable = String.IsBlank, String.IsAnyOf, Table.isEmpty
 
 --[[-----------------------------------------------------------------------------
@@ -38,7 +37,6 @@ Methods
 -------------------------------------------------------------------------------]]
 --- @param o SavedDungeonsAndRaid
 local function Methods(o)
-    O.MainEventHandler:Init(o)
 
     function o:OnInitialize()
         p:log(10, "Initialized called..")

@@ -140,7 +140,7 @@ local function Methods(o)
             name = name,
             lockoutID = id,
             reset = reset,
-            nameId = {},
+            nameId = nil,
             difficulty = difficulty,
             isLocked = isLocked,
             isExtended = isExtended,
@@ -153,6 +153,7 @@ local function Methods(o)
             instanceID = instanceID,
             encounters = self:GetSavedInstanceEncounters(index)
         }
+        d.nameId = self:GetUniqueName(d)
         return d
     end
 
@@ -198,6 +199,7 @@ local function Methods(o)
             local savedElem = dataProvider:FindElementDataByPredicate(createMainPredicate(savedInstanceInfo))
             if savedElem then
                 local activity = self:GetActivityInfo(savedElem.data.activityID)
+                --- @type SavedInstanceDetails
                 local ret = { data = savedElem.data, info = savedInstanceInfo, activity = activity }
                 results[savedInstanceInfo.nameId] = ret
             end

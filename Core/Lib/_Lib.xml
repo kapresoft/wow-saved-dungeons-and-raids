@@ -3,10 +3,10 @@
 ..\FrameXML\UI.xsd">
 
     <Include file="Locales\_Locales.xml"/>
+    <Include file="MainEventHandler.xml" />
 
     <Include file="MockAPI.lua"/>
     <Script file="API.lua" />
-    <Script file="MainEventHandler.lua" />
     <Script file="AceDbInitializerMixin.lua" />
     <Script file="OptionsMixin.lua" />
     <Script file="SavedInstances.lua" />
