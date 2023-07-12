@@ -3,8 +3,8 @@ Local Vars
 -------------------------------------------------------------------------------]]
 --- @type Namespace
 local _, ns = ...
-local O, GC, M, LibStub, pformat, sformat = ns.O, ns.O.GlobalConstants, ns.M, ns.LibStub, ns.pformat, ns.sformat
-
+local O, GC, M, LibStub, sformat = ns.O, ns.O.GlobalConstants, ns.M, ns.LibStub, ns.sformat
+local INSTANCE_DIFFICULTY = GC.C.INSTANCE_DIFFICULTY
 --[[-----------------------------------------------------------------------------
 New Instance
 -------------------------------------------------------------------------------]]
@@ -15,316 +15,27 @@ if not L then
 end
 local p = L.logger;
 
----@param o MockAPI
-local function Methods(o)
-    --- @param index number
-    --- @return SavedInstanceInfo
-    function o:GetSavedInstanceInfoByIndex(index)
-        local saved = self.SavedInstanceDetails[index]
-        p:log('Mocked saved dungeon index: %s [%s]', index, O.API:GetUniqueName(saved.info))
-        return saved.info
-    end
-    function o:GetNumSavedInstances()
-        local count = #self.SavedInstanceDetails
-        p:log('Mock SavedInstanceDetails count: %s', count)
-        return count
-    end
-
-    function o:FindActivityInfoTable(activityID)
-        for _, v in pairs(self.SavedInstanceDetails) do
-            if activityID == v.activity.id then
-                return v.activity
+--[[-----------------------------------------------------------------------------
+Support Functions
+-------------------------------------------------------------------------------]]
+--- @param instanceInfo MockedInstanceInfo
+local function CreateMockData(instanceInfo)
+    local difficultyID = instanceInfo.difficultyID or INSTANCE_DIFFICULTY.Heroic.id
+    local encounterSize = 1
+    local encounterProgress = 0
+    if instanceInfo.encounters then
+        encounterSize = #instanceInfo.encounters
+        for i, encounter in ipairs(instanceInfo.encounters) do
+            if encounter.isKilled == true then
+                encounterProgress = encounterProgress + 1
             end
         end
-        return nil
     end
 
-    ---@param activityID number
-    function o:GetActivityInfoTable(activityID)
-        local activity = self:FindActivityInfoTable(activityID)
-        if activity then p:log('Retrieve mocked activity: %s', activity.fullName) end
-        return activity
-    end
-end
-
-Methods(L)
-
---[[-----------------------------------------------------------------------------
-Mocked Data
--------------------------------------------------------------------------------]]
-L.HallsOfLightning = {
-    activity = {
-        categoryID = 2,
-        difficultyID = 2,
-        difficultyName = 'Heroic',
-        displayType = 1,
-        filters = 1,
-        fullName = 'Halls of Lightning',
-        groupFinderActivityGroupID = 289,
-        iconFileDataID = 0,
-        id = 1127,
-        isHeroic = true,
-        mapID = 605,
-        maxLevel = 0,
-        maxLevelSuggestion = 80,
-        maxNumPlayers = 5,
-        minLevel = 80,
-        orderIndex = 0,
-        redirectedDifficultyID = 2,
-        shortName = 'Halls of Lightning',
-        useDungeonRoleExpectations = true
-    },
-    data = {
-        activityID = 1127,
-        buttonType = 2,
-        maxLevel = 80,
-        minLevel = 80,
-        name = 'Halls of Lightning',
-        orderIndex = 0
-    },
-    info = {
-        difficulty = 2,
-        difficultyName = 'Heroic',
-        encounterProgress = 1,
-        encounters = {
-            {
-                bossName = "General Bjarngrim",
-                isKilled = true
-            },
-            {
-                bossName = 'Vokhan',
-                isKilled = false
-            },
-            {
-                bossName = 'Ionar',
-                isKilled = false
-            },
-            {
-                bossName = "Loken",
-                isKilled = false
-            } },
-        extendDisabled = false,
-        instanceID = 604,
-        instanceIndex = 3,
-        isExtended = false,
-        isLocked = true,
-        isRaid = false,
-        lockoutID = 201742307,
-        maxPlayers = 5,
-        name = 'Halls of Lightning',
-        nameId = '',
-        numEncounters = 4,
-        reset = 28904
-    }
-}
-L.Gundrak = {
-    activity = {
-        categoryID = 2,
-        difficultyID = 2,
-        difficultyName = 'Heroic',
-        displayType = 1,
-        filters = 1,
-        fullName = 'Gundrak',
-        groupFinderActivityGroupID = 289,
-        iconFileDataID = 0,
-        id = 1130,
-        isHeroic = true,
-        mapID = 604,
-        maxLevel = 0,
-        maxLevelSuggestion = 80,
-        maxNumPlayers = 5,
-        minLevel = 80,
-        orderIndex = 0,
-        redirectedDifficultyID = 2,
-        shortName = 'Gundrak',
-        useDungeonRoleExpectations = true
-    },
-    data = {
-        activityID = 1130,
-        buttonType = 2,
-        maxLevel = 80,
-        minLevel = 80,
-        name = 'Gundrak',
-        orderIndex = 0
-    },
-    info = {
-        difficulty = 2,
-        difficultyName = 'Heroic',
-        encounterProgress = 5,
-        encounters = { {
-                           bossName = "Slad'ran",
-                           isKilled = true
-                       }, {
-                           bossName = 'Drakkari Colossus',
-                           isKilled = true
-                       }, {
-                           bossName = 'Moorabi',
-                           isKilled = true
-                       }, {
-                           bossName = "Gal'darah",
-                           isKilled = true
-                       }, {
-                           bossName = 'Eck the Ferocious',
-                           isKilled = true
-                       } },
-        extendDisabled = false,
-        instanceID = 604,
-        instanceIndex = 3,
-        isExtended = false,
-        isLocked = true,
-        isRaid = false,
-        lockoutID = 201742306,
-        maxPlayers = 5,
-        name = 'Gundrak',
-        nameId = '',
-        numEncounters = 5,
-        reset = 28904
-    }
-}
-L.VioletHold = {
-    activity = {
-        categoryID = 2,
-        difficultyID = 2,
-        difficultyName = 'Heroic',
-        displayType = 1,
-        filters = 1,
-        fullName = 'Violet Hold',
-        groupFinderActivityGroupID = 289,
-        iconFileDataID = 0,
-        id = 1123,
-        isHeroic = true,
-        mapID = 608,
-        maxLevel = 0,
-        maxLevelSuggestion = 80,
-        maxNumPlayers = 5,
-        minLevel = 80,
-        orderIndex = 0,
-        redirectedDifficultyID = 2,
-        shortName = 'Violet Hold',
-        useDungeonRoleExpectations = true
-    },
-    data = {
-        activityID = 1123,
-        buttonType = 2,
-        maxLevel = 80,
-        minLevel = 80,
-        name = 'Violet Hold',
-        orderIndex = 0
-    },
-    info = {
-        difficulty = 2,
-        difficultyName = 'Heroic',
-        encounterProgress = 5,
-        encounters = { {
-                           bossName = 'First Prisoner',
-                           isKilled = true
-                       }, {
-                           bossName = 'Second Prisoner',
-                           isKilled = true
-                       }, {
-                           bossName = 'Erekem',
-                           isKilled = true
-                       }, {
-                           bossName = 'Moragg',
-                           isKilled = false
-                       }, {
-                           bossName = 'Ichoron',
-                           isKilled = false
-                       }, {
-                           bossName = 'Xevozz',
-                           isKilled = false
-                       }, {
-                           bossName = 'Lavanthor',
-                           isKilled = true
-                       }, {
-                           bossName = 'Zuramat',
-                           isKilled = false
-                       }, {
-                           bossName = 'Cyanigosa',
-                           isKilled = true
-                       } },
-        extendDisabled = false,
-        instanceID = 608,
-        instanceIndex = 2,
-        isExtended = false,
-        isLocked = true,
-        isRaid = false,
-        lockoutID = 201697488,
-        maxPlayers = 5,
-        name = 'Violet Hold',
-        nameId = '',
-        numEncounters = 9,
-        reset = 28904
-    }
-}
-L.CoS = {
-    activity = {
-        categoryID = 2,
-        difficultyID = 2,
-        difficultyName = 'Heroic',
-        displayType = 1,
-        filters = 1,
-        fullName = 'The Culling of Stratholme',
-        groupFinderActivityGroupID = 289,
-        iconFileDataID = 0,
-        id = 1126,
-        isHeroic = true,
-        mapID = 595,
-        maxLevel = 0,
-        maxLevelSuggestion = 80,
-        maxNumPlayers = 5,
-        minLevel = 80,
-        orderIndex = 0,
-        redirectedDifficultyID = 2,
-        shortName = 'The Culling of Stratholme',
-        useDungeonRoleExpectations = true
-    },
-    data = {
-        activityID = 1126,
-        buttonType = 2,
-        maxLevel = 80,
-        minLevel = 80,
-        name = 'The Culling of Stratholme',
-        orderIndex = 0
-    },
-    info = {
-        difficulty = 2,
-        difficultyName = 'Heroic',
-        encounterProgress = 4,
-        encounters = { {
-                           bossName = 'Meathook',
-                           isKilled = true
-                       }, {
-                           bossName = 'Salram the Fleshcrafter',
-                           isKilled = true
-                       }, {
-                           bossName = 'Chrono-Lord Epoch',
-                           isKilled = true
-                       }, {
-                           bossName = "Mal'ganis",
-                           isKilled = true
-                       } },
-        extendDisabled = false,
-        instanceID = 595,
-        instanceIndex = 1,
-        isExtended = false,
-        isLocked = true,
-        isRaid = false,
-        lockoutID = 201684163,
-        maxPlayers = 5,
-        name = 'The Culling of Stratholme',
-        nameId = '',
-        numEncounters = 4,
-        reset = 28904
-    }
-}
-
----@param instanceInfo MockedInstanceInfo
-local function CreateMockData(instanceInfo)
     local mockData = {
         activity = {
             categoryID = 2,
-            difficultyID = 3,
+            difficultyID = difficultyID,
             difficultyName = instanceInfo.difficultyName,
             displayType = 1,
             filters = 1,
@@ -332,7 +43,7 @@ local function CreateMockData(instanceInfo)
             groupFinderActivityGroupID = 289,
             iconFileDataID = 0,
             id = instanceInfo.activity,
-            isHeroic = false,
+            isHeroic = difficultyID == INSTANCE_DIFFICULTY.Heroic.id,
             mapID = 596,
             maxLevel = 0,
             maxLevelSuggestion = 80,
@@ -352,13 +63,10 @@ local function CreateMockData(instanceInfo)
             orderIndex = 0
         },
         info = {
-            difficulty = 2,
+            difficulty = difficultyID,
             difficultyName = instanceInfo.difficultyName,
-            encounterProgress = 4,
-            encounters = { {
-                               bossName = 'Malygos',
-                               isKilled = true
-                           }},
+            encounterProgress = encounterProgress,
+            encounters = instanceInfo.encounters or {},
             extendDisabled = false,
             instanceID = 596,
             instanceIndex = 1,
@@ -369,7 +77,7 @@ local function CreateMockData(instanceInfo)
             maxPlayers = instanceInfo.maxNumPlayers,
             name = instanceInfo.name,
             nameId = '',
-            numEncounters = 4,
+            numEncounters = encounterSize,
             reset = 28904
         }
     }
@@ -380,11 +88,214 @@ local function CreateMockData(instanceInfo)
     return mockData
 end
 
+---@param activityID number
+---@param instanceName string
+---@param encounters Encounters|nil
+---@param encounterProgress number|nil
+local function CreateMockDataHeroicInstance(activityID, instanceName, encounters, encounterProgress)
+    return CreateMockData({
+        isRaid = false,
+        activity = activityID,
+        name = instanceName,
+        difficultyName = INSTANCE_DIFFICULTY.Heroic.name,
+        difficultyID = INSTANCE_DIFFICULTY.Heroic.id,
+        maxNumPlayers = 5,
+        maxLevel = 80,
+        minLevel = 80,
+        encounterProgress = encounterProgress,
+        encounters = encounters
+    })
+end
+
+--[[-----------------------------------------------------------------------------
+Methods
+-------------------------------------------------------------------------------]]
+---@param o MockAPI
+local function Methods(o)
+    --- @param index number
+    --- @return SavedInstanceInfo
+    function o:GetSavedInstanceInfoByIndex(index)
+        local saved = self.SavedInstanceDetails[index]
+        p:log(0, 'Mocked::SavedInstanceInfo: index=%s [%s]', index, O.API:GetUniqueName(saved.info))
+        return saved.info
+    end
+    function o:GetNumSavedInstances()
+        local count = #self.SavedInstanceDetails
+        p:log('Mock::SavedInstanceDetails: count=%s', count)
+        return count
+    end
+
+    function o:FindActivityInfoTable(activityID)
+        for _, v in pairs(self.SavedInstanceDetails) do
+            if activityID == v.activity.id then
+                return v.activity
+            end
+        end
+        return nil
+    end
+
+    ---@param activityID number
+    function o:GetActivityInfoTable(activityID)
+        local activity = self:FindActivityInfoTable(activityID)
+        if activity then p:log(0, 'Mock::Activity: %s', activity.fullName) end
+        return activity
+    end
+end
+
+Methods(L)
+
+--[[-----------------------------------------------------------------------------
+Mocked Data
+-------------------------------------------------------------------------------]]
+
+
+--[[-----------------------------------------------------------------------------
+Halls of Lightning
+-------------------------------------------------------------------------------]]
+local HoL_Title = 'Halls of Lightning'
+L.HallsOfLightning = CreateMockDataHeroicInstance(1127, HoL_Title, {
+    {
+        bossName = "General Bjarngrim",
+        isKilled = true
+    },
+    {
+        bossName = 'Vokhan',
+        isKilled = true
+    },
+    {
+        bossName = 'Ionar',
+        isKilled = true
+    },
+    {
+        bossName = "Loken",
+        isKilled = false
+    }
+})
+L.HallsOfLightning_TitanRuneAlpha = CreateMockDataHeroicInstance(1202, HoL_Title, {
+    {
+        bossName = "General Bjarngrim",
+        isKilled = true
+    },
+    {
+        bossName = 'Vokhan',
+        isKilled = true
+    },
+    {
+        bossName = 'Ionar',
+        isKilled = false
+    },
+    {
+        bossName = "Loken",
+        isKilled = false
+    }
+})
+
+--[[-----------------------------------------------------------------------------
+Gundrak
+-------------------------------------------------------------------------------]]
+local Gundrak_Title = 'Gundrak'
+L.Gundrak = CreateMockDataHeroicInstance(1130, Gundrak_Title, {
+    {
+        bossName = "Slad'ran",
+        isKilled = true
+    }, {
+        bossName = 'Drakkari Colossus',
+        isKilled = true
+    }, {
+        bossName = 'Moorabi',
+        isKilled = true
+    }, {
+        bossName = "Gal'darah",
+        isKilled = true
+    }, {
+        bossName = 'Eck the Ferocious',
+        isKilled = true
+    }
+})
+L.Gundrak_TitanRuneBeta = CreateMockDataHeroicInstance(1217, Gundrak_Title, {
+    {
+        bossName = "Slad'ran",
+        isKilled = true
+    }, {
+        bossName = 'Drakkari Colossus',
+        isKilled = true
+    }, {
+        bossName = 'Moorabi',
+        isKilled = false
+    }, {
+        bossName = "Gal'darah",
+        isKilled = false
+    }, {
+        bossName = 'Eck the Ferocious',
+        isKilled = false
+    }
+})
+
+--[[-----------------------------------------------------------------------------
+Violet Hold
+-------------------------------------------------------------------------------]]
+local VioletHold_Title = 'Violet Hold'
+L.VioletHold = CreateMockDataHeroicInstance(1123, VioletHold_Title, {
+    { bossName = 'First Prisoner', isKilled = true },
+    { bossName = 'Second Prisoner', isKilled = true },
+    { bossName = 'Erekem', isKilled = true },
+    { bossName = 'Moragg', isKilled = false },
+    { bossName = 'Ichoron', isKilled = false },
+    { bossName = 'Xevozz', isKilled = false },
+    { bossName = 'Lavanthor', isKilled = true },
+    { bossName = 'Zuramat', isKilled = false },
+    { bossName = 'Cyanigosa', isKilled = true }
+})
+L.VioletHold_TitanRuneBeta = CreateMockDataHeroicInstance(1209, VioletHold_Title, {
+    { bossName = 'First Prisoner', isKilled = true },
+    { bossName = 'Second Prisoner', isKilled = true },
+    { bossName = 'Erekem', isKilled = true },
+    { bossName = 'Moragg', isKilled = false },
+    { bossName = 'Ichoron', isKilled = false },
+    { bossName = 'Xevozz', isKilled = false },
+    { bossName = 'Lavanthor', isKilled = false },
+    { bossName = 'Zuramat', isKilled = false },
+    { bossName = 'Cyanigosa', isKilled = false }
+})
+
+local CoS_Title = 'The Culling of Stratholme'
+L.CoS = CreateMockDataHeroicInstance(1126, CoS_Title, {
+    {
+        bossName = 'Meathook',
+        isKilled = true
+    }, {
+        bossName = 'Salram the Fleshcrafter',
+        isKilled = true
+    }, {
+        bossName = 'Chrono-Lord Epoch',
+        isKilled = true
+    }, {
+        bossName = "Mal'ganis",
+        isKilled = true
+    }
+})
+L.CoS_TitanRuneBeta = CreateMockDataHeroicInstance(1214, CoS_Title, {
+    {
+        bossName = 'Meathook',
+        isKilled = true
+    }, {
+        bossName = 'Salram the Fleshcrafter',
+        isKilled = true
+    }, {
+        bossName = 'Chrono-Lord Epoch',
+        isKilled = true
+    }, {
+        bossName = "Mal'ganis",
+        isKilled = true
+    }
+})
+
 L.NAXX_10 = CreateMockData({
     isRaid = true,
     activity = 841,
     name = 'Naxxramas',
-    difficultyName = '10 Player',
+    difficultyName = INSTANCE_DIFFICULTY.Normal_10Player.name,
+    difficultyID = INSTANCE_DIFFICULTY.Normal_10Player.id,
     maxNumPlayers = 10,
     maxLevel = 80,
     minLevel = 80,
@@ -393,7 +304,8 @@ L.NAXX_25 = CreateMockData({
     isRaid = true,
     activity = 1098,
     name = 'Naxxramas',
-    difficultyName = '25 Player',
+    difficultyName = INSTANCE_DIFFICULTY.Normal_25Player.name,
+    difficultyID = INSTANCE_DIFFICULTY.Normal_25Player.id,
     maxNumPlayers = 25,
     maxLevel = 80,
     minLevel = 80,
@@ -402,7 +314,8 @@ L.EOE_10 = CreateMockData({
     isRaid = true,
     activity = 1102,
     name = 'The Eye of Eternity',
-    difficultyName = '10 Player',
+    difficultyName = INSTANCE_DIFFICULTY.Normal_10Player.name,
+    difficultyID = INSTANCE_DIFFICULTY.Normal_10Player.id,
     maxNumPlayers = 10,
     maxLevel = 80,
     minLevel = 80,
@@ -411,7 +324,8 @@ L.EOE_25 = CreateMockData({
     isRaid = true,
     activity = 1094,
     name = 'The Eye of Eternity',
-    difficultyName = '25 Player',
+    difficultyName = INSTANCE_DIFFICULTY.Normal_25Player.name,
+    difficultyID = INSTANCE_DIFFICULTY.Normal_25Player.id,
     maxNumPlayers = 25,
     maxLevel = 80,
     minLevel = 80,

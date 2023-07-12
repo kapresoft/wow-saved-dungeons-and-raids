@@ -13,7 +13,7 @@ local API, MockAPI = O.API, O.MockAPI
 SDNR_MOCK_SAVED_DUNGEONS=false
 -- Override the saved instances here
 MockAPI.SavedInstanceDetails = {
-    MockAPI.CoS, MockAPI.HallsOfLightning,
+    MockAPI.CoS_TitanRuneBeta, MockAPI.Gundrak, MockAPI.VioletHold_TitanRuneBeta,
     MockAPI.EOE_25, MockAPI.NAXX_25, MockAPI.NAXX_10 }
 
 --[[-----------------------------------------------------------------------------

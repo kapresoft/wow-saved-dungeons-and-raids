@@ -143,8 +143,15 @@ local _SavedInstanceInfoDetails = {
     activity = {},
     --- @type DataProviderElementData
     data = {},
+
+    --- @table<number, DataProviderElementData>
+    relatedInstances = {},
 }
 
+
+
+--- @see https://wowpedia.fandom.com/wiki/API_GetDifficultyInfo
+--- @see https://wowpedia.fandom.com/wiki/DifficultyID
 --- @class MockedInstanceInfo
 local MockedInstanceInfo = {
     activity = 1102,
@@ -152,7 +159,12 @@ local MockedInstanceInfo = {
     name = 'The Eye of Eternity',
     --- @type InstanceDifficultyName
     difficultyName = '10 Player',
+    --- @see GlobalConstants.C
+    --- @type InstanceDifficultyID
+    difficultyID = 2,
     isRaid = true,
     maxLevel = 80,
     minLevel = 80,
+    --- @type Encounters
+    encounters = {},
 }
