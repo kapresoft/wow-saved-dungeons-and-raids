@@ -107,8 +107,13 @@ local LibPackMixin = {
     --- @type fun() : GlobalConstants, __LibPackMixin
     LibPack2 = function(self) return self.O, self.O.GlobalConstants, self end,
 
+    --- Creates a new instance of AceEvent
     --- @type fun( self: __LibPackMixin ) : AceEvent
     AceEvent = function(self) return self.O.AceLibrary.AceEvent:Embed({}) end,
+
+    --- Creates a new instance of AceEvent
+    --- @type fun( self: __LibPackMixin ) : AceHook
+    AceHook = function(self) return self.O.AceLibrary.AceHook:Embed({}) end,
 
 }
 

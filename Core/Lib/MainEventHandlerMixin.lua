@@ -43,21 +43,26 @@ local function SendAddonReadyMessage()
     ns:AceEvent():SendMessage(MSG.OnAddonReady)
 end
 
+--- @return SavedDungeonsAndRaid
+local function AddOn() return _G[ns.name] end
+
 --- @param f MainEventHandler
 --- @param event string The event name
 local function OnPlayerEnteringWorld(f, event, ...)
     local version = GC:GetAddonInfo()
-    --- @type SavedDungeonsAndRaid
-    local addon = _G[ns.name]
+    local addon = AddOn()
     addon.logger:log(sformat(ns.Locale.COMMAND_TEXT_FORMAT, version, GC.C.COMMAND, GC.C.HELP_COMMAND))
     addon:RegisterHooks()
     SendAddonReadyMessage()
-    After(2, function() f:RegisterOnRequestRaidInfo(); addon.logger:log(10,'RequestRaidInfo() event registered.') end)
+    After(0.1, function() f:RegisterOnRequestRaidInfo(); addon.logger:log(10,'RequestRaidInfo() event registered.') end)
 end
 
 --- @param f MainEventHandlerFrame
 --- @param event string The event name
-local function OnRequestRaidInfo() O.SavedInstances:ReportSavedInstances() end
+local function OnRequestRaidInfo()
+    p:log(10, 'OnRequestRaidInfo')
+    O.SavedInstances:ReportSavedInstances()
+end
 
 --[[-----------------------------------------------------------------------------
 Methods

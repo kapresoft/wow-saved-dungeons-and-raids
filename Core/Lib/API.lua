@@ -162,7 +162,6 @@ local function Methods(o)
         return GetNumSavedInstances()
     end
 
-
     --- @return table<string, SavedInstanceDetails>
     function o:GetSavedInstanceByFilter()
         if not C_LFGList then return end
@@ -191,6 +190,32 @@ local function Methods(o)
                 return savedName == data.name
             end
         end
+        local WOTLK_MAX_LEVEL = 80
+        ---@param activityID number
+        local createRelatedPredicate = function(activityID)
+            ---@param elem DataProviderElement
+            return function(elem)
+                if not (elem and elem.data) then return false end
+                local data = elem.data
+                if data.activityID then
+                    local ai = self:GetActivityInfo(data.activityID)
+                    if ai and ai.minLevel == WOTLK_MAX_LEVEL
+                            and ai.isHeroic == true
+                            and activityID == data.activityID then
+                        return true
+                    end
+                end
+                return false
+            end
+        end
+
+        -- TODO NEXT: Add tooltip to related instances which dungeon run (categoryName) was saved
+        --[[local savedInCategoryName
+        --- @type DataProviderElement
+        local categoryElem = dataProvider:Find(1)
+        if categoryElem and categoryElem.data then
+            savedInCategoryName = categoryElem.data.name
+        end]]
 
         local count = self:GetNumSavedInstances()
         for i=1, count do
@@ -200,12 +225,44 @@ local function Methods(o)
             if savedElem then
                 local activity = self:GetActivityInfo(savedElem.data.activityID)
                 --- @type SavedInstanceDetails
-                local ret = { data = savedElem.data, info = savedInstanceInfo, activity = activity }
+                local ret = {
+                    data = savedElem.data,
+                    info = savedInstanceInfo, activity = activity,
+                    -- savedCategoryName = savedInCategoryName,
+                }
+                ret.relatedInstances = self:GetRelatedInstances(dataProvider, function(elem)
+                    local elemData = elem.data
+                    return savedInstanceInfo.name == elemData.name
+                            and activity.id ~= elemData.activityID
+                            and activity.minLevel == elemData.minLevel
+                end)
                 results[savedInstanceInfo.nameId] = ret
             end
         end
 
         return results
+    end
+
+    --- @param filterFn DataProviderFilterFn
+    function o:GetRelatedInstances(dataProvider, filterFn) return self:FindAll(dataProvider, filterFn) end
+
+    --- @param predicateFn DataProviderFilterFn
+    --- @param dp DataProvider
+    --- @return table<number, DataProviderElementData>
+    function o:FindAll(dp, predicateFn)
+        local results = {}
+        for index, elem in dp:Enumerate() do
+            if predicateFn(elem) == true then table.insert(results, elem.data) end
+        end
+        return results
+    end
+
+    --- @param instanceName string
+    --- @param relatedInstances table<number, DataProviderElementData>
+    function o:LogElementData(instanceName, relatedInstances)
+        for i, elemData in ipairs(relatedInstances) do
+            p:log('EleData %s[%s]: %s', savedInstanceInfo.name, i, pformat(elemData))
+        end
     end
 
     --- @param instanceIndex number

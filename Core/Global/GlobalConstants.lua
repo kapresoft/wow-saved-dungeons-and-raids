@@ -81,7 +81,26 @@ local function GlobalConstantProperties(o)
         COMMAND      = sformat(consoleCommandTextFormat, command),
         HELP_COMMAND = sformat(consoleCommandTextFormat, command .. ' help'),
 
-        HEROIC_DIFFICULTY = 2,
+        --- @see https://wowpedia.fandom.com/wiki/API_GetDifficultyInfo
+        --- @see https://wowpedia.fandom.com/wiki/DifficultyID
+
+        --- @table<string, InstanceDifficulty>
+        INSTANCE_DIFFICULTY = {
+            --- @type InstanceDifficulty
+            Normal = { id = 1, name = 'Normal' },
+            --- @type InstanceDifficulty
+            Heroic = { id = 2, name = 'Heroic' },
+            --- @type InstanceDifficulty
+            Normal_10Player = { id = 3, name = '10 Player' },
+            --- @type InstanceDifficulty
+            Normal_25Player = { id = 4, name = '25 Player' },
+            --- @type InstanceDifficulty
+            Heroic_10Player = { id = 5, name = '10 Player (Heroic)' },
+            --- @type InstanceDifficulty
+            Heroic_25Player = { id = 6, name = '25 Player (Heroic)' },
+        },
+
+        DEBUG_LFG_PRE_RETAIL_DEBUG_HOOK_ENABLED = false,
     }
 
     --- @class EventNames

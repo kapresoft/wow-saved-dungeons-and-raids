@@ -16,10 +16,12 @@ Local Vars
 local _, ns = ...
 local O, LibStub, M, E = ns.O, ns.LibStub, ns.M, ns.GC.E
 
-local API, pformat = O.API, ns.pformat
+local GC, API = O.GlobalConstants, O.API
 local IsEmptyTable, GetSortedKeys = O.LU.Table.isEmpty, O.LU.Table.getSortedKeys
 local ColorHelper = ns.Kapresoft_LibUtil.CH
-local SAVED_INSTANCE_COLOR = 'fc1605'
+-- TODO NEXT: Add to Settings
+local SAVED_INSTANCE_COLOR = 'FC1605'
+local SAVED_INSTANCE_REL_COLOR = 'FC511C'
 
 --[[-----------------------------------------------------------------------------
 New Library
@@ -65,9 +67,34 @@ local function PropsAndMethods(o)
 
     ---Should only be called once
     function o:RegisterConsoleHooks()
-        --TODO next: If profile.showReportInConsole
+        self:RegisterDebugHooks()
         self:RegisterPreRetailFrameHook()
         self:RegisterRetailFrameHook()
+    end
+
+    function o:RegisterDebugHooks()
+        if GC.C.DEBUG_LFG_PRE_RETAIL_DEBUG_HOOK_ENABLED == true then
+            self:RegisterPreRetailDebugFrameHook()
+        end
+    end
+
+    function o:RegisterPreRetailDebugFrameHook()
+        if self.preRetailDebugHook == true then return end
+        ---@param data DataProviderElementData
+        hooksecurefunc('LFGListingActivityView_InitActivityButton', function(fgroup, data, collapsed)
+            local onEnterHooked = fgroup.NameButton:HookScript('OnEnter', function(nameBtn)
+                --local f = nameBtn:GetParent()
+                --@type DataProviderElementData
+                --local data = f:GetElementData().data; if not data then return end
+                p:log('ElemData::%s %s [DEBUG]', data.name, pformat(data))
+            end)
+            self.preRetailDebugHook = true
+
+            p:log(10, '[%s] RegisterPreRetailDebugFrameHook::OnEnter::Hook-Success? %s preRetailDebugHook=%s [%s]',
+                    fgroup.NameButton:GetObjectType(), tostring(onEnterHooked),
+                    tostring(self.preRetailDebugHook), GetTime())
+        end)
+        p:log(10, 'GC.C.DEBUG_LFG_PRE_RETAIL_DEBUG_HOOK_ENABLED is set')
     end
 
     --TODO next: If profile.showSavedInLFGFrame
@@ -179,6 +206,13 @@ local function PropsAndMethods(o)
             local info = savedInstanceDetails.info
             if data and (data.maxLevel == activity.minLevel) and info.encounterProgress > 0 then
                 data.name = ColorHelper:FormatColor(SAVED_INSTANCE_COLOR, data.name)
+                --- @type DataProviderElementData
+                local rel = savedInstanceDetails.relatedInstances
+                if #rel > 0 then
+                    for i, elemData in ipairs(rel) do
+                        elemData.name = ColorHelper:FormatColor(SAVED_INSTANCE_REL_COLOR, elemData.name)
+                    end
+                end
             end
         end
         self:JiggleView(view)
