@@ -3,14 +3,16 @@ Local Vars
 -------------------------------------------------------------------------------]]
 --- @type Namespace
 local _, ns = ...
-local O = ns.O
+local O, GC = ns.O, ns.GC
 local AceEvent = O.AceLibrary.AceEvent
 local API, MockAPI = O.API, O.MockAPI
 
 --SDNR_LOG_LEVEL = 0
 --- Set this to true to mock heroic dungeons data for LFG Frame
 --- @see MockAPI
-SDNR_MOCK_SAVED_DUNGEONS=false
+SDNR_MOCK_SAVED_DUNGEONS = false
+GC.C.DEBUG_LFG_PRE_RETAIL_DEBUG_HOOK_ENABLED = false
+
 -- Override the saved instances here
 MockAPI.SavedInstanceDetails = {
     MockAPI.CoS_TitanRuneBeta, MockAPI.Gundrak, MockAPI.VioletHold_TitanRuneBeta,

@@ -190,32 +190,6 @@ local function Methods(o)
                 return savedName == data.name
             end
         end
-        local WOTLK_MAX_LEVEL = 80
-        ---@param activityID number
-        local createRelatedPredicate = function(activityID)
-            ---@param elem DataProviderElement
-            return function(elem)
-                if not (elem and elem.data) then return false end
-                local data = elem.data
-                if data.activityID then
-                    local ai = self:GetActivityInfo(data.activityID)
-                    if ai and ai.minLevel == WOTLK_MAX_LEVEL
-                            and ai.isHeroic == true
-                            and activityID == data.activityID then
-                        return true
-                    end
-                end
-                return false
-            end
-        end
-
-        -- TODO NEXT: Add tooltip to related instances which dungeon run (categoryName) was saved
-        --[[local savedInCategoryName
-        --- @type DataProviderElement
-        local categoryElem = dataProvider:Find(1)
-        if categoryElem and categoryElem.data then
-            savedInCategoryName = categoryElem.data.name
-        end]]
 
         local count = self:GetNumSavedInstances()
         for i=1, count do

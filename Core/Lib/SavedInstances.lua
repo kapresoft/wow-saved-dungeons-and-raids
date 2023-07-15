@@ -39,11 +39,25 @@ local colors = {
 --[[-----------------------------------------------------------------------------
 Support Functions
 -------------------------------------------------------------------------------]]
+--- @param savedInstance SavedInstanceDetails
+--- @param activityID number
+--- @return Boolean
+local function IsRelatedInstance(savedInstance, activityID)
+    if not savedInstance.relatedInstances or #savedInstance.relatedInstances <= 0 then return false end
+    for i, elementData in ipairs(savedInstance.relatedInstances) do
+        if activityID == elementData.activityID then return true end
+    end
+    return false
+end
+
 ---@param dungeons table<string, SavedInstanceDetails>
----@param activityId number
-local function findDungeon(dungeons, activityId)
-    for _, savedInstanceDetails in pairs(dungeons) do
-        if activityId == savedInstanceDetails.activity.id then return savedInstanceDetails end
+---@param activityID number
+local function FindDungeon(dungeons, activityID)
+    for _, savedInstance in pairs(dungeons) do
+        if (activityID == savedInstance.activity.id)
+                or IsRelatedInstance(savedInstance, activityID) then
+            return savedInstance
+        end
     end
     return nil
 end
@@ -270,7 +284,7 @@ local function PropsAndMethods(o)
             local f = nameBtn:GetParent()
             --- @type DataProviderElementData
             local data = f:GetElementData().data; if not data then return end
-            local dungeon = findDungeon(dungeons, data.activityID)
+            local dungeon = FindDungeon(dungeons, data.activityID)
             if not (dungeon and dungeon.activity and dungeon.info) then return end
 
             self:ApplyTooltip(dungeon, nameBtn)
