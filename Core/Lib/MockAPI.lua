@@ -152,6 +152,44 @@ Mocked Data
 --[[-----------------------------------------------------------------------------
 Halls of Lightning
 -------------------------------------------------------------------------------]]
+local Nexus_Title = 'The Nexus'
+L.Nexus = CreateMockDataHeroicInstance(1132, Nexus_Title, {
+    {
+        bossName = "Grand Magus Telestra",
+        isKilled = true
+    },
+    {
+        bossName = 'Anomalus',
+        isKilled = false
+    },
+    {
+        bossName = 'Ormorok the Tree-Shaper',
+        isKilled = false
+    },
+    {
+        bossName = "Keristrasza",
+        isKilled = true
+    }
+})
+L.Nexus_TitanRuneBeta = CreateMockDataHeroicInstance(1213, Nexus_Title, {
+    {
+        bossName = "Grand Magus Telestra",
+        isKilled = true
+    },
+    {
+        bossName = 'Anomalus',
+        isKilled = true
+    },
+    {
+        bossName = 'Ormorok the Tree-Shaper',
+        isKilled = false
+    },
+    {
+        bossName = "Keristrasza",
+        isKilled = true
+    }
+})
+
 local HoL_Title = 'Halls of Lightning'
 L.HallsOfLightning = CreateMockDataHeroicInstance(1127, HoL_Title, {
     {

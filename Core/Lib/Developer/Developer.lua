@@ -15,7 +15,8 @@ GC.C.DEBUG_LFG_PRE_RETAIL_DEBUG_HOOK_ENABLED = false
 
 -- Override the saved instances here
 MockAPI.SavedInstanceDetails = {
-    MockAPI.CoS_TitanRuneBeta, MockAPI.Gundrak, MockAPI.VioletHold_TitanRuneBeta,
+    MockAPI.Nexus_TitanRuneBeta,
+    --MockAPI.CoS_TitanRuneBeta, MockAPI.Gundrak, MockAPI.VioletHold_TitanRuneBeta,
     MockAPI.EOE_25, MockAPI.NAXX_25, MockAPI.NAXX_10 }
 
 --[[-----------------------------------------------------------------------------
