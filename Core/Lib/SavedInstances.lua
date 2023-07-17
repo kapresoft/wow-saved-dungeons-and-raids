@@ -242,7 +242,10 @@ local function PropsAndMethods(o)
                 local qObjs = C_QuestLog.GetQuestObjectives(questID)
                 if not qObjs or #qObjs <=0 or qObjs == '0/1' then return end
                 local elem = dp:FindElementDataByPredicate(NewActivityIDPredicateFn(activityID)); if not elem then return end
-                handlerFn(elem, qObjs[1].text)
+                local obj = qObjs[1]
+                if obj.finished ~= true then
+                    handlerFn(elem, obj.text)
+                end
             end
         end
     end
@@ -256,10 +259,13 @@ local function PropsAndMethods(o)
             local questIndex = GetQuestLogIndexByID(questID)
             if questIndex > 0 then
                 for i, activityID in ipairs(activities) do
-                    local questObjectives = C_QuestLog.GetQuestObjectives(questID)
-                    if not questObjectives or #questObjectives <=0 or questObjectives == '0/1' then return end
+                    local qObjs = C_QuestLog.GetQuestObjectives(questID)
+                    if not qObjs or #qObjs <=0 or qObjs == '0/1' then return end
                     local elem = dp:FindElementDataByPredicate(NewActivityIDPredicateFn(activityID)); if not elem then return end
-                    handlerFn(elem, questObjectives[1].text)
+                    local obj = qObjs[1]
+                    if obj.finished ~= true then
+                        handlerFn(elem, obj.text)
+                    end
                 end
             end
         end
