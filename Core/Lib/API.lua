@@ -74,6 +74,11 @@ Methods
 --- @param o API
 local function Methods(o)
 
+    --- @return LFGListingFrameActivityViewScrollBox
+    function o:GetLFGView() return _G['LFGListingFrameActivityViewScrollBox'] end
+    --- @return DataProvider
+    function o:GetLFGDataProvider() local view = self:GetLFGView(); return view and view:GetDataProvider() end
+
     --- @param savedInstanceInfo SavedInstanceInfo
     --- @return string
     function o:GetUniqueName(savedInstanceInfo)

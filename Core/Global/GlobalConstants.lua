@@ -99,8 +99,35 @@ local function GlobalConstantProperties(o)
             --- @type InstanceDifficulty
             Heroic_25Player = { id = 6, name = '25 Player (Heroic)' },
         },
-
         DEBUG_LFG_PRE_RETAIL_DEBUG_HOOK_ENABLED = false,
+    }
+
+    local DAILY_DUNGEON_QUESTS = {
+        --- @type table<QuestID, LFGActivities> Beta, Alpha, Heroic
+        HEROIC_ACTIVITIES = {
+            [13248] = { 1210, 1204, 1125 }, -- UP / Ymiron
+            [13245] = { 1211, 1207, 1122 }, -- UK / Ingvar
+            [13247] = { 1212, 1205, 1124 }, -- Oculus / Ley Line
+            [13256] = { 1212, 1205, 1124 }, -- Oculus / Cyanigosa
+            [13246] = { 1213, 1197, 1132 }, -- Nexus / Keristrasza
+            [13251] = { 1214, 1203, 1126 }, -- CoS / Mal'Ganis
+            [13252] = { 1215, 1201, 1128 }, -- HoS / Sjonnir
+            [13253] = { 1216, 1202, 1127 }, -- HoL / Loken
+            [13250] = { 1217, 1199, 1130 }, -- Gun / Gal'darah
+            [13249] = { 1218, 1200, 1129 }, -- DTK / Prophet
+            [13254] = { 1219, 1219, 1121 }, -- AN / Anub'arak
+            [13255] = { 1220, 1220, 1131 }, -- OK / Volazj
+            [14199] = { 1238, -1, 1133 },   -- ToC / Black Night
+        },
+
+        --- only 1 normal instance
+        --- @type table<QuestID, LFGActivityID>
+        NORMAL_ACTIVITIES = {
+            [13240] = 1067, -- Oc
+            [13241] = 1075, -- UP
+            [13243] = 1065, -- CoS
+            [13244] = 1068, -- HoL
+        },
     }
 
     --- @class EventNames
@@ -131,6 +158,7 @@ local function GlobalConstantProperties(o)
     o.C = C
     o.E = E
     o.M = M
+    o.DAILY_DUNGEON_QUESTS = DAILY_DUNGEON_QUESTS
 
 end
 

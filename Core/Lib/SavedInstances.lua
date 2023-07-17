@@ -22,6 +22,8 @@ local ColorHelper = ns.Kapresoft_LibUtil.CH
 -- TODO NEXT: Add to Settings
 local SAVED_INSTANCE_COLOR = 'FC1605'
 local SAVED_INSTANCE_REL_COLOR = 'FC511C'
+local DAILY_QUEST_ICON = "|TInterface\\GossipFrame\\AvailableQuestIcon:15:15:0:0|t"
+local DAILY_QUEST_FONT = BLUE_FONT_COLOR
 
 --[[-----------------------------------------------------------------------------
 New Library
@@ -94,6 +96,7 @@ local function PropsAndMethods(o)
 
     function o:RegisterPreRetailDebugFrameHook()
         if self.preRetailDebugHook == true then return end
+        if not LFGListingActivityView_InitActivityButton then return end
         ---@param data DataProviderElementData
         hooksecurefunc('LFGListingActivityView_InitActivityButton', function(fgroup, data, collapsed)
             local onEnterHooked = fgroup.NameButton:HookScript('OnEnter', function(nameBtn)
@@ -191,7 +194,10 @@ local function PropsAndMethods(o)
     end
 
     function o:HandleSavedInstances()
-        C_Timer.After(0.1, function() self:HandleSavedInstancesDelayed() end)
+        C_Timer.After(0.1, function()
+            self:HandleSavedInstancesDelayed()
+            self:HandleDailyQuests()
+        end)
     end
 
     function o:HandleSavedInstancesDelayed()
@@ -202,6 +208,60 @@ local function PropsAndMethods(o)
             self:UpdateSavedDungeonsInLFGFrame()
         elseif selectedCategory:IsRaid() then
             self:UpdateSavedRaidsInLFGFrame()
+        end
+    end
+
+    function o:HandleDailyQuests()
+        if not (C_QuestLog and C_QuestLog.GetQuestObjectives and GetQuestLogIndexByID) then return end
+        local dp = API:GetLFGDataProvider(); if not dp then return end
+
+        self:ApplyForEachDailyHeroic(dp, function(elem, objective)
+            elem.data.name = DAILY_QUEST_FONT:WrapTextInColorCode(elem.data.name .. DAILY_QUEST_ICON)
+        end)
+
+        self:ApplyForEachNormalDungeon(dp, function(elem, objective)
+            elem.data.name = DAILY_QUEST_FONT:WrapTextInColorCode(elem.data.name .. DAILY_QUEST_ICON)
+        end)
+    end
+
+    ---@param activityID LFGActivityID
+    local function NewActivityIDPredicateFn(activityID)
+        ---@param elem DataProviderElement
+        return function(elem) return elem.data.activityID == activityID end
+    end
+
+    --- @alias DailyHeroicsHandlerFn fun(elem:DataProviderElement, questObjective: string)
+    --- @see https://www.wowinterface.com/forums/showthread.php?t=46221 for text icons
+    --- @see https://wowwiki-archive.fandom.com/wiki/UI_escape_sequences#Textures
+    --- @param dp DataProvider
+    --- @param handlerFn DailyHeroicsHandlerFn
+    function o:ApplyForEachNormalDungeon(dp, handlerFn)
+        for questID, activityID in pairs(GC.DAILY_DUNGEON_QUESTS.NORMAL_ACTIVITIES) do
+            local questIndex = GetQuestLogIndexByID(questID)
+            if questIndex > 0 then
+                local qObjs = C_QuestLog.GetQuestObjectives(questID)
+                if not qObjs or #qObjs <=0 or qObjs == '0/1' then return end
+                local elem = dp:FindElementDataByPredicate(NewActivityIDPredicateFn(activityID)); if not elem then return end
+                handlerFn(elem, qObjs[1].text)
+            end
+        end
+    end
+
+    --- @alias DailyHeroicsHandlerFn fun(elem:DataProviderElement, questObjective: string)
+    --- @see https://www.wowinterface.com/forums/showthread.php?t=46221 for text icons
+    --- @param dp DataProvider
+    --- @param handlerFn DailyHeroicsHandlerFn
+    function o:ApplyForEachDailyHeroic(dp, handlerFn)
+        for questID, activities in pairs(GC.DAILY_DUNGEON_QUESTS.HEROIC_ACTIVITIES) do
+            local questIndex = GetQuestLogIndexByID(questID)
+            if questIndex > 0 then
+                for i, activityID in ipairs(activities) do
+                    local questObjectives = C_QuestLog.GetQuestObjectives(questID)
+                    if not questObjectives or #questObjectives <=0 or questObjectives == '0/1' then return end
+                    local elem = dp:FindElementDataByPredicate(NewActivityIDPredicateFn(activityID)); if not elem then return end
+                    handlerFn(elem, questObjectives[1].text)
+                end
+            end
         end
     end
 
