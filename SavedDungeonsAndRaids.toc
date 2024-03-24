@@ -1,4 +1,4 @@
-## Interface: 100203
+## Interface: 100206
 ## Version: @project-version@
 ## Title: Saved |cff1784d1Dungeons & Raids|r Retail
 ## Notes: Utility Addon for reporting saved dungeons & raids
