@@ -78,5 +78,6 @@ As a software engineer, I am passionate about this project and have dedicated a 
 ## Try My Other AddOns
 - [ActionbarPlus](https://www.curseforge.com/wow/addons/actionbarplus)
 - [ActionbarPlus-M6](https://www.curseforge.com/wow/addons/actionbarplus-m6)
-- [MacrobarPlus](https://www.curseforge.com/wow/addons/macrobarplus)
+- [AddonSuite](https://www.curseforge.com/wow/addons/addon-suite)
+- [DevSuite](https://www.curseforge.com/wow/addons/devsuite)
 - [Addon Template](https://www.curseforge.com/wow/addons/addon-template)
